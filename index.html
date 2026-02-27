@@ -37,7 +37,7 @@
     align-items:center; justify-content:center;
     text-align:center; padding:80px 5% 0;
     position:relative; overflow:hidden;
-    background:#fff;
+    background:#f0ede8;
   }
   .hero-checker-top { position:absolute; top:64px; left:0; right:0; height:70px; }
   .hero-checker-bottom { position:absolute; bottom:0; left:0; right:0; height:70px; }
@@ -320,31 +320,34 @@ function formatTime(d) {
   return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
 }
 
-fetch(API_URL)
-  .then(r => r.json())
-  .then(events => {
-    const container = document.getElementById('events-container');
-    if (!events.length) {
-      container.innerHTML = '<p class="event-loading">Geen aankomende evenementen gepland.</p>';
-      return;
-    }
-    container.innerHTML = events.map(e => {
-      const start = new Date(e.start);
-      const end = new Date(e.end);
-      return `
-        <div class="locatie-item">
-          <div class="loc-icon">📍</div>
-          <div>
-            <h4>${e.title}</h4>
-            <p>${formatDate(start)} · ${formatTime(start)} – ${formatTime(end)}${e.location ? ' · ' + e.location : ''}</p>
-          </div>
-        </div>`;
-    }).join('');
-  })
-  .catch(() => {
-    document.getElementById('events-container').innerHTML =
-      '<p class="event-loading">Kon evenementen niet laden. Probeer later opnieuw.</p>';
-  });
+function handleEvents(events) {
+  const container = document.getElementById('events-container');
+  if (!events || !events.length) {
+    container.innerHTML = '<p class="event-loading">Geen aankomende evenementen gepland.</p>';
+    return;
+  }
+  container.innerHTML = events.map(e => {
+    const start = new Date(e.start);
+    const end = new Date(e.end);
+    return `
+      <div class="locatie-item">
+        <div class="loc-icon">📍</div>
+        <div>
+          <h4>${e.title}</h4>
+          <p>${formatDate(start)} · ${formatTime(start)} – ${formatTime(end)}${e.location ? ' · ' + e.location : ''}</p>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// Laad via script tag om CORS te omzeilen
+const s = document.createElement('script');
+s.src = API_URL + '?callback=handleEvents';
+s.onerror = () => {
+  document.getElementById('events-container').innerHTML =
+    '<p class="event-loading">Kon evenementen niet laden.</p>';
+};
+document.body.appendChild(s);
 </script>
 </body>
 </html>
