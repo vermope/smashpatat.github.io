@@ -7,12 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --black: #111111;
-    --white: #f5f5f0;
-    --red: #D72B2B;
-    --cs: 40px;
-  }
+  :root { --black:#111111; --white:#f5f5f0; --red:#D72B2B; --cs:40px; }
   body { font-family:'Inter',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
 
   .checker {
@@ -27,8 +22,7 @@
     padding:0 5%; height:64px;
     background:var(--black); border-bottom:3px solid var(--red);
   }
-  .nav-logo { display:flex; align-items:center; gap:.6rem; }
-  .nav-logo img { height:38px; filter:invert(1) brightness(2); }
+  .nav-logo img { height:42px; }
   .nav-links { display:flex; gap:2rem; list-style:none; }
   .nav-links a {
     color:var(--white); text-decoration:none;
@@ -43,19 +37,23 @@
     align-items:center; justify-content:center;
     text-align:center; padding:80px 5% 0;
     position:relative; overflow:hidden;
+    background:#fff;
   }
   .hero-checker-top { position:absolute; top:64px; left:0; right:0; height:70px; }
   .hero-checker-bottom { position:absolute; bottom:0; left:0; right:0; height:70px; }
   .hero-content { position:relative; z-index:2; padding-bottom:80px; }
-  .hero-logo {
-    width:220px; margin:0 auto 1.5rem; display:block;
-    /* The white-bg logo is inverted so it shows white on dark */
-    filter: invert(1);
+  .hero-tagline { color:#555; }
+
+  /* Logo groot op witte achtergrond */
+  .hero-logo-wrap {
+    display:inline-block;
+    margin-bottom:1.5rem;
   }
+  .hero-logo-wrap img { width:560px; max-width:80vw; display:block; }
+
   .hero-tagline {
     font-size:clamp(.85rem,2vw,1rem); font-weight:700;
-    letter-spacing:4px; text-transform:uppercase; color:#888;
-    margin-top:.5rem;
+    letter-spacing:4px; text-transform:uppercase; color:#888; margin-top:.5rem;
   }
   .hero-btn {
     display:inline-block; margin-top:2.5rem;
@@ -83,9 +81,7 @@
   /* MENU */
   #menu { background:#181818; }
   .menu-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(270px,1fr));
-    gap:1.5rem;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(270px,1fr)); gap:1.5rem;
   }
   .menu-card {
     background:var(--black); border:2px solid #2a2a2a;
@@ -106,75 +102,94 @@
   }
   .menu-card p { font-size:.85rem; color:#aaa; line-height:1.65; }
   .menu-card .price {
-    margin-top:1.2rem;
-    font-family:'Alfa Slab One',serif; font-size:1.7rem; color:var(--white);
+    margin-top:1.2rem; font-family:'Alfa Slab One',serif; font-size:1.7rem; color:var(--white);
   }
-
   .extras-box {
-    margin-top:2.5rem; padding:1.5rem;
-    border:2px dashed #333;
+    margin-top:2.5rem; padding:1.5rem; border:2px dashed #333;
     display:flex; align-items:flex-start; gap:1.5rem; flex-wrap:wrap;
   }
   .extras-box h4 {
-    font-family:'Alfa Slab One',serif;
-    font-size:1rem; letter-spacing:2px; text-transform:uppercase;
-    color:var(--red); margin-bottom:.6rem; white-space:nowrap;
+    font-family:'Alfa Slab One',serif; font-size:1rem;
+    letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.6rem;
   }
   .extra-item {
     display:inline-block; margin:.25rem .4rem .25rem 0;
-    padding:.35rem .9rem;
-    border:2px solid #444; font-size:.8rem; font-weight:700;
-    letter-spacing:1px; text-transform:uppercase;
+    padding:.35rem .9rem; border:2px solid #444;
+    font-size:.8rem; font-weight:700; letter-spacing:1px; text-transform:uppercase;
   }
 
-  /* OVER ONS */
+  /* OVER ONS – prikbord stijl op checker achtergrond */
   #over {
-    display:grid; grid-template-columns:1fr 1fr;
-    gap:4rem; align-items:center;
+    padding:80px 5%;
+    position:relative;
   }
-  .checker-block {
-    width:100%; aspect-ratio:1;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px;
-    color:rgba(0,0,0,.35); border:4px solid var(--white);
+  .over-header { margin-bottom:3rem; }
+  .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
+
+  .prikbord {
+    background-image: repeating-conic-gradient(#222 0% 25%, #ddd 0% 50%);
+    background-size:36px 36px;
+    padding:3rem 2rem;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:2.5rem;
+    border:4px solid #333;
   }
-  #over p { color:#ccc; line-height:1.85; margin-bottom:1rem; font-size:.95rem; }
+  .pin-foto {
+    position:relative;
+    background:#fff;
+    padding:10px 10px 40px;
+    box-shadow: 4px 4px 12px rgba(0,0,0,.6), 0 0 0 1px #ccc;
+    transform: rotate(-2deg);
+    transition: transform .2s, box-shadow .2s;
+    cursor:pointer;
+    width:280px;
+  }
+  .pin-foto:nth-child(2) { transform:rotate(1.5deg); }
+  .pin-foto:nth-child(3) { transform:rotate(-1deg); }
+  .pin-foto:hover { transform:rotate(0deg) scale(1.04); box-shadow:8px 8px 20px rgba(0,0,0,.7); z-index:2; }
+  .pin-foto img { width:100%; height:220px; object-fit:cover; display:block; }
+  /* punaise */
+  .pin-foto::before {
+    content:'';
+    position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+    width:20px; height:20px; border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #ff6b6b, var(--red));
+    box-shadow:0 2px 6px rgba(0,0,0,.5);
+    z-index:3;
+  }
 
   /* LOCATIES */
   #locaties { background:#181818; }
   .locatie-list { display:flex; flex-direction:column; gap:1rem; max-width:720px; }
   .locatie-item {
     display:flex; align-items:center; gap:1.5rem;
-    padding:1.2rem 1.5rem; border:2px solid #2a2a2a;
-    transition:border-color .2s;
+    padding:1.2rem 1.5rem; border:2px solid #2a2a2a; transition:border-color .2s;
   }
   .locatie-item:hover { border-color:var(--red); }
   .loc-icon {
-    width:48px; height:48px; flex-shrink:0;
-    background:var(--red);
+    width:48px; height:48px; flex-shrink:0; background:var(--red);
     display:flex; align-items:center; justify-content:center; font-size:1.4rem;
   }
   .locatie-item h4 {
-    font-family:'Alfa Slab One',serif;
-    font-size:1rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:.2rem;
+    font-family:'Alfa Slab One',serif; font-size:1rem;
+    letter-spacing:1px; text-transform:uppercase; margin-bottom:.2rem;
   }
   .locatie-item p { font-size:.8rem; color:#aaa; }
-  .cal-note {
-    margin-top:1.5rem; padding:1rem 1.5rem;
-    border-left:4px solid var(--red);
-    font-size:.85rem; color:#888;
+  .cal-wrap {
+    margin-top:2rem; border:2px solid #2a2a2a; overflow:hidden;
   }
+  .cal-note { margin-top:.75rem; font-size:.8rem; color:#666; letter-spacing:1px; }
   .cal-note a { color:var(--red); }
 
   /* CONTACT */
   #contact { text-align:center; }
   .contact-strip { margin-top:2rem; display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
   .contact-btn {
-    padding:.8rem 2rem;
-    font-family:'Alfa Slab One',serif; font-size:.85rem;
+    padding:.8rem 2rem; font-family:'Alfa Slab One',serif; font-size:.85rem;
     letter-spacing:2px; text-transform:uppercase; text-decoration:none;
-    border:3px solid var(--white); color:var(--white);
-    transition:background .2s, color .2s;
+    border:3px solid var(--white); color:var(--white); transition:background .2s, color .2s;
   }
   .contact-btn:hover { background:var(--white); color:var(--black); }
   .contact-btn.primary { background:var(--red); border-color:var(--red); }
@@ -189,8 +204,8 @@
   }
 
   @media(max-width:700px) {
-    #over { grid-template-columns:1fr; }
-    .checker-block { display:none; }
+    .foto-grid { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
+    .foto-grid .f.big { grid-column:1/3; grid-row:auto; height:220px; }
     .nav-links { display:none; }
   }
 </style>
@@ -200,7 +215,7 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <img id="navLogo" src="" alt="Smash Patat">
+    <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat">
   </div>
   <ul class="nav-links">
     <li><a href="#menu">Menu</a></li>
@@ -214,7 +229,9 @@
 <section class="hero">
   <div class="hero-checker-top checker"></div>
   <div class="hero-content">
-    <img id="heroLogo" class="hero-logo" src="" alt="Smash Patat Logo">
+    <div class="hero-logo-wrap">
+      <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat Logo">
+    </div>
     <p class="hero-tagline">Handgesmashed burgers · Verse patat · Pure smaak</p>
     <a href="#menu" class="hero-btn">Bekijk ons menu</a>
   </div>
@@ -226,35 +243,29 @@
   <div class="sec-title">Ons <span>Menu</span></div>
   <div class="divider"></div>
   <div class="menu-grid">
-
     <div class="menu-card">
       <div class="tag">Bestseller</div>
       <h3>Classic</h3>
       <p>Dubbel beef patty, emmental cheese, uien, augurk, huissaus, sla, tomaat</p>
       <div class="price">€ 9,50</div>
     </div>
-
     <div class="menu-card">
       <h3>Double Cheese</h3>
       <p>Dubbel beef patty, cheddar cheese, uien, augurk</p>
       <div class="price">€ 10,00</div>
     </div>
-
     <div class="menu-card">
       <h3>Chili</h3>
       <p>Dubbel beef patty, emmental cheese, uien, chilisaus, jalapeño</p>
       <div class="price">€ 10,50</div>
     </div>
-
     <div class="menu-card">
       <div class="tag special">★ Special</div>
       <h3>Gorgo</h3>
       <p>Dubbel beef patty, gorgonzola spread, rucola, peren confijt</p>
       <div class="price">€ 11,00</div>
     </div>
-
   </div>
-
   <div class="extras-box">
     <div>
       <h4>Extra toppings</h4>
@@ -268,14 +279,22 @@
 
 <!-- OVER ONS -->
 <section id="over">
-  <div>
+  <div class="over-header">
     <div class="sec-title">Over <span>Ons</span></div>
     <div class="divider"></div>
-    <p>Wij zijn Smash Patat — een foodtruck met één missie: de beste smashed burger van de streek op jouw bord krijgen. Geen poespas, gewoon top vlees, vers brood en eerlijke smaken.</p>
-    <p>Onze burgers worden ter plekke gesmashed op een gloeiend hete plaat, waardoor die unieke krokante korst ontstaat waar je voor terugkomt.</p>
-    <p>Vind ons op markten, festivals en events door heel de regio.</p>
+    <p>Wij zijn Smash Patat — een foodtruck met één missie: de beste smashed burger van de streek op jouw bord krijgen. Geen poespas, gewoon top vlees, vers brood en eerlijke smaken. Onze burgers worden ter plekke gesmashed op een gloeiend hete plaat, waardoor die unieke krokante korst ontstaat waar je voor terugkomt.</p>
   </div>
-  <div class="checker-block checker">FOTO / ILLUSTRATIE</div>
+  <div class="prikbord">
+    <div class="pin-foto">
+      <img src="https://vermope.github.io/smashpatat.github.io/sfeer_2.jpg" alt="Smash Patat burger">
+    </div>
+    <div class="pin-foto">
+      <img src="https://vermope.github.io/smashpatat.github.io/sfeer_3.jpg" alt="Smash Patat sfeer">
+    </div>
+    <div class="pin-foto">
+      <img src="https://vermope.github.io/smashpatat.github.io/sfeer_1.jpg" alt="Smash Patat foodtruck">
+    </div>
+  </div>
 </section>
 
 <div class="checker-strip checker"></div>
@@ -307,27 +326,21 @@
       </div>
     </div>
   </div>
-  <div style="margin-top:2rem;">
-    <div style="border:2px solid #2a2a2a; overflow:hidden;">
-      <!-- STAP: Vervang de src hieronder door jouw eigen Google Agenda embed link -->
-      <!-- Hoe: Google Agenda → ⋮ naast je agenda → Instellingen → "Integreer agenda" → kopieer de src uit de iframe code -->
-      <iframe
-        src="https://calendar.google.com/calendar/embed?src=smashpatat%40gmail.com&ctz=Europe%2FBrussels&bgcolor=%23111111&color=%23D72B2B&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&mode=AGENDA"
-        style="border:0; width:100%; height:400px; filter:invert(1) hue-rotate(180deg);"
-        frameborder="0" scrolling="no">
-      </iframe>
-    </div>
-    <p style="margin-top:.75rem; font-size:.8rem; color:#666; letter-spacing:1px;">
-      📅 Kalender gesynchroniseerd met smashpatat@gmail.com — events toevoegen in Google Agenda verschijnen hier automatisch.
-    </p>
+  <div class="cal-wrap">
+    <iframe
+      src="https://calendar.google.com/calendar/embed?src=smashpatat%40gmail.com&ctz=Europe%2FBrussels&bgcolor=%23181818&color=%23D72B2B&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&mode=AGENDA"
+      style="border:0;width:100%;height:380px;display:block;"
+      frameborder="0" scrolling="no">
+    </iframe>
   </div>
+  <p class="cal-note">📅 Gesynchroniseerd met <a href="mailto:smashpatat@gmail.com">smashpatat@gmail.com</a> — events toevoegen in Google Agenda verschijnen hier automatisch.</p>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
   <div class="sec-title">Boek <span>Ons</span></div>
   <div class="divider" style="margin:0 auto 2rem;"></div>
-  <p style="color:#aaa; max-width:520px; margin:0 auto; line-height:1.75;">Interesse om ons te boeken voor jouw evenement, festival of bedrijfsfeest? Neem gerust contact op!</p>
+  <p style="color:#aaa;max-width:520px;margin:0 auto;line-height:1.75;">Interesse om ons te boeken voor jouw evenement, festival of bedrijfsfeest? Neem gerust contact op!</p>
   <div class="contact-strip">
     <a href="mailto:smashpatat@gmail.com" class="contact-btn primary">✉ smashpatat@gmail.com</a>
     <a href="https://instagram.com/smashpatat" class="contact-btn">📷 Instagram</a>
@@ -343,18 +356,5 @@
   </div>
 </footer>
 
-<script>
-// ── Logo inladen ──────────────────────────────────────────────
-// Het logo heeft een witte achtergrond, we inverteren het via CSS
-// zodat het wit wordt op de zwarte achtergrond.
-// Vervang de src hieronder door het werkelijke pad op de server,
-// bv: src="/wp-content/uploads/smashpatat-logo.png"
-// Of gebruik de transparante versie en verwijder de filter.
-
-const LOGO_SRC = "https://vermope.github.io/smashpatat.github.io/logo.png";
-['heroLogo','navLogo'].forEach(id => {
-  document.getElementById(id).src = LOGO_SRC;
-});
-</script>
 </body>
 </html>
