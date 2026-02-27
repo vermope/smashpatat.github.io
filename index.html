@@ -35,15 +35,24 @@
   .hero {
     min-height:100vh; display:flex; flex-direction:column;
     align-items:center; justify-content:center;
-    text-align:center; padding:80px 5% 0;
+    text-align:center;
     position:relative; overflow:hidden;
-    background:#ebebeb;
+    background:#e8e8e8;
   }
-  .hero-checker-top { position:absolute; top:64px; left:0; right:0; height:70px; }
-  .hero-checker-bottom { position:absolute; bottom:0; left:0; right:0; height:70px; }
-  .hero-content { position:relative; z-index:2; padding-bottom:80px; }
+  .hero-checker-top {
+    position:absolute; top:64px; left:0; right:0; height:70px;
+    flex-shrink:0;
+  }
+  .hero-checker-bottom {
+    position:absolute; bottom:0; left:0; right:0; height:70px;
+  }
+  .hero-content {
+    position:relative; z-index:2;
+    padding: 150px 5% 120px;
+    display:flex; flex-direction:column; align-items:center;
+  }
   .hero-logo-wrap { display:inline-block; margin-bottom:1.5rem; }
-  .hero-logo-wrap img { width:560px; max-width:80vw; display:block; }
+  .hero-logo-wrap img { width:480px; max-width:75vw; display:block; }
   .hero-tagline {
     font-size:clamp(.85rem,2vw,1rem); font-weight:700;
     letter-spacing:4px; text-transform:uppercase; color:#555; margin-top:.5rem;
@@ -115,7 +124,6 @@
   #over { padding:80px 5%; }
   .over-header { margin-bottom:3rem; }
   .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
-
   .prikbord {
     background-image: repeating-conic-gradient(#222 0% 25%, #ddd 0% 50%);
     background-size:36px 36px;
@@ -340,14 +348,21 @@ function handleEvents(events) {
   }).join('');
 }
 
-// Laad via script tag om CORS te omzeilen
-const s = document.createElement('script');
-s.src = API_URL + '?callback=handleEvents';
-s.onerror = () => {
-  document.getElementById('events-container').innerHTML =
-    '<p class="event-loading">Kon evenementen niet laden.</p>';
-};
-document.body.appendChild(s);
+// Probeer eerst fetch, val terug op JSONP
+fetch(API_URL)
+  .then(r => r.json())
+  .then(handleEvents)
+  .catch(() => {
+    // Fallback: JSONP
+    window._calCallback = handleEvents;
+    const s = document.createElement('script');
+    s.src = API_URL + '?callback=_calCallback';
+    s.onerror = () => {
+      document.getElementById('events-container').innerHTML =
+        '<p class="event-loading">Kon evenementen niet laden.</p>';
+    };
+    document.body.appendChild(s);
+  });
 </script>
 </body>
 </html>
