@@ -307,10 +307,20 @@
       </div>
     </div>
   </div>
-  <p class="cal-note">
-    📅 Kalender automatisch gesynchroniseerd met <a href="mailto:smashpatat@gmail.com">smashpatat@gmail.com</a> —
-    zie onderaan voor de koppeling instructies.
-  </p>
+  <div style="margin-top:2rem;">
+    <div style="border:2px solid #2a2a2a; overflow:hidden;">
+      <!-- STAP: Vervang de src hieronder door jouw eigen Google Agenda embed link -->
+      <!-- Hoe: Google Agenda → ⋮ naast je agenda → Instellingen → "Integreer agenda" → kopieer de src uit de iframe code -->
+      <iframe
+        src="https://calendar.google.com/calendar/embed?src=smashpatat%40gmail.com&ctz=Europe%2FBrussels&bgcolor=%23111111&color=%23D72B2B&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&mode=AGENDA"
+        style="border:0; width:100%; height:400px; filter:invert(1) hue-rotate(180deg);"
+        frameborder="0" scrolling="no">
+      </iframe>
+    </div>
+    <p style="margin-top:.75rem; font-size:.8rem; color:#666; letter-spacing:1px;">
+      📅 Kalender gesynchroniseerd met smashpatat@gmail.com — events toevoegen in Google Agenda verschijnen hier automatisch.
+    </p>
+  </div>
 </section>
 
 <!-- CONTACT -->
@@ -341,28 +351,10 @@
 // bv: src="/wp-content/uploads/smashpatat-logo.png"
 // Of gebruik de transparante versie en verwijder de filter.
 
-const LOGO_SRC = ""; // ← hier jouw logo pad invullen
-
-function setLogos(src) {
-  if (!src) {
-    // Demo fallback: teken SVG tekst
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 60">
-      <text x="130" y="44" font-family="serif" font-size="38" font-weight="900" fill="white"
-        text-anchor="middle" letter-spacing="3">SMASH PATAT</text>
-    </svg>`;
-    const url = URL.createObjectURL(new Blob([svg], {type:'image/svg+xml'}));
-    document.getElementById('heroLogo').src = url;
-    document.getElementById('heroLogo').style.cssText = 'filter:none;width:280px;height:auto';
-    document.getElementById('navLogo').src = url;
-    document.getElementById('navLogo').style.cssText = 'filter:none;height:32px';
-    return;
-  }
-  ['heroLogo','navLogo'].forEach(id => {
-    const el = document.getElementById(id);
-    el.src = src;
-  });
-}
-setLogos(LOGO_SRC);
+const LOGO_SRC = "https://vermope.github.io/smashpatat/logo.png";
+['heroLogo','navLogo'].forEach(id => {
+  document.getElementById(id).src = LOGO_SRC;
+});
 </script>
 </body>
 </html>
