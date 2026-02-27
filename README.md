@@ -69,7 +69,7 @@ De evenementen op de website worden **automatisch** opgehaald uit Google Agenda.
 
 De koppeling loopt via een Google Apps Script dat als tussendienst fungeert.
 
-- **Script URL:** https://script.google.com/macros/s/AKfycbynWoGUmhFAs9JoRmlPdwsbBqsWd9-Cs1HqBTzkSNRncVjdw2HciL5wKyIarMDa95wpKw/exec
+- **Script URL:** https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec
 - **Script beheren:** [script.google.com](https://script.google.com) → inloggen met smashpatat@gmail.com → project "SmashPatatCalendarSyncAPI"
 - Het script leest de komende **6 maanden** aan events uit
 - Als het script ooit stopt met werken: ga naar Apps Script → Implementeren → Nieuwe implementatie → opnieuw deployen als Webtoepassing
@@ -115,5 +115,4 @@ Zoek in `index.html` naar `<!-- CONTACT -->` en pas de links aan:
 De website wordt gratis gehost via **GitHub Pages**.  
 Elke wijziging aan `index.html` is na 1-2 minuten live.
 
-> Gemaakt met ❤️ voor Smash Patat# smashpatat.github.io
-website test
+> Gemaakt met ❤️ voor Smash Patat
