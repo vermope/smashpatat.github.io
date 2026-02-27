@@ -91,6 +91,7 @@ De koppeling loopt via een Google Apps Script dat als tussendienst fungeert.
 | Element | Waarde |
 |---|---|
 | Achtergrond | `#111111` |
+| Hero achtergrond | `#ffffff` |
 | Wit | `#f5f5f0` |
 | Rood accent | `#D72B2B` |
 | Font titels | Alfa Slab One (Google Fonts) |
