@@ -15,6 +15,19 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .nav-links { display:flex; gap:2rem; list-style:none; }
 .nav-links a { color:var(--white); text-decoration:none; font-weight:700; font-size:.85rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; }
 .nav-links a:hover { color:var(--red); }
+
+/* Mobile menu */
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
+.hamburger span { width:24px; height:2px; background:var(--white); transition:all .3s; display:block; }
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; background:var(--black); border-bottom:3px solid var(--red); z-index:99; padding:1rem 5%; flex-direction:column; gap:0; }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:var(--white); text-decoration:none; font-weight:700; font-size:.9rem; letter-spacing:1px; text-transform:uppercase; padding:.9rem 0; border-bottom:1px solid #222; transition:color .2s; }
+.mobile-menu a:last-child { border-bottom:none; }
+.mobile-menu a:hover { color:var(--red); }
+
 .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden; background:#ffffff; }
 .hero-checker-top { position:absolute; top:64px; left:0; right:0; height:70px; }
 .hero-checker-bottom { position:absolute; bottom:0; left:0; right:0; height:70px; }
@@ -68,7 +81,11 @@ section { padding:80px 5%; }
 .contact-btn.primary:hover { background:transparent; color:var(--white); border-color:var(--white); }
 footer { text-align:center; padding:0; }
 .footer-inner { background:var(--black); padding:2rem; border-top:3px solid var(--red); font-size:.8rem; color:#555; letter-spacing:1px; }
-@media(max-width:700px) { .pin-foto { width:85vw; } .nav-links { display:none; } }
+@media(max-width:700px) {
+  .pin-foto { width:85vw; }
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+}
 </style>
 </head>
 <body>
@@ -80,7 +97,17 @@ footer { text-align:center; padding:0; }
     <li><a href="#locaties">Locaties</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#menu" onclick="closeMenu()">Menu</a>
+  <a href="#over" onclick="closeMenu()">Over ons</a>
+  <a href="#locaties" onclick="closeMenu()">Locaties</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+</div>
 
 <section class="hero">
   <div class="hero-checker-top checker"></div>
@@ -88,7 +115,7 @@ footer { text-align:center; padding:0; }
     <div class="hero-logo-wrap">
       <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat Logo">
     </div>
-    <p class="hero-tagline">Handgesmashed burgers · Verse patat · Pure smaak</p>
+    <p class="hero-tagline">Premium Smashed Burgers · Verse Friet · Pure Smaak</p>
     <a href="#menu" class="hero-btn">Bekijk ons menu</a>
   </div>
   <div class="hero-checker-bottom checker"></div>
@@ -101,23 +128,23 @@ footer { text-align:center; padding:0; }
     <div class="menu-card">
       <div class="tag">Bestseller</div>
       <h3>Classic</h3>
-      <p>Dubbel beef patty, emmental cheese, uien, augurk, huissaus, sla, tomaat</p>
+      <p>Dubbel premium beef patty, emmental, pickle, smash patat saus, sla, tomaat, ui</p>
       <div class="price">€ 9,50</div>
     </div>
     <div class="menu-card">
       <h3>Double Cheese</h3>
-      <p>Dubbel beef patty, cheddar cheese, uien, augurk</p>
-      <div class="price">€ 10,00</div>
+      <p>Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui</p>
+      <div class="price">€ 9,50</div>
     </div>
     <div class="menu-card">
       <h3>Chili</h3>
-      <p>Dubbel beef patty, emmental cheese, uien, chilisaus, jalapeño</p>
-      <div class="price">€ 10,50</div>
+      <p>Dubbel premium beef patty, emmental, pickle, smash patat chili saus, jalapeño</p>
+      <div class="price">€ 11,00</div>
     </div>
     <div class="menu-card">
       <div class="tag special">★ Special</div>
       <h3>Gorgo</h3>
-      <p>Dubbel beef patty, gorgonzola spread, rucola, peren confijt</p>
+      <p>Dubbel premium beef patty, zesty gorgonzola, peer confijt, rucola, tomaat, ui</p>
       <div class="price">€ 11,00</div>
     </div>
   </div>
@@ -136,7 +163,7 @@ footer { text-align:center; padding:0; }
   <div class="over-header">
     <div class="sec-title">Over <span>Ons</span></div>
     <div class="divider"></div>
-    <p>Wij zijn Smash Patat — een foodtruck met één missie: de beste smashed burger van de streek op jouw bord krijgen. Geen poespas, gewoon top vlees, vers brood en eerlijke smaken. Onze burgers worden ter plekke gesmashed op een gloeiend hete plaat, waardoor die unieke krokante korst ontstaat waar je voor terugkomt.</p>
+    <p>Wij zijn Smash Patat — een foodtruck met één missie: de beste smashed burger van de streek op jouw bord krijgen. Geen poespas, gewoon eerlijke smaken en ingrediënten die we lokaal selecteren. Kwaliteitsvlees uit de regio, een boterzacht broodje en de perfecte smash. Onze burgers worden ter plekke platgedrukt op een gloeiend hete plancha, waardoor die unieke, gekarameliseerde en krokante korst ontstaat waar je voor terugkomt.</p>
   </div>
   <div class="prikbord">
     <div class="pin-foto"><img src="https://vermope.github.io/smashpatat.github.io/sfeer_2.jpg" alt="burger"></div>
@@ -173,6 +200,17 @@ footer { text-align:center; padding:0; }
 </footer>
 
 <script>
+function toggleMenu() {
+  const h = document.getElementById('hamburger');
+  const m = document.getElementById('mobileMenu');
+  h.classList.toggle('open');
+  m.classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
 const API_URL="https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec";
 const DAYS=['ZO','MA','DI','WO','DO','VR','ZA'];
 const MONTHS=['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
