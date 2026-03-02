@@ -44,7 +44,9 @@ section { padding:80px 5%; }
 .divider { width:55px; height:5px; background:var(--red); margin-bottom:2.5rem; }
 .checker-strip { height:50px; opacity:.75; }
 #menu { background:#181818; }
-.menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:1.5rem; }
+.menu-section { margin-bottom:3rem; }
+.menu-section-title { font-family:'Alfa Slab One',serif; font-size:1.5rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:1.5rem; }
+.menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:1.5rem; margin-bottom:2rem; }
 .menu-card { background:var(--black); border:2px solid #2a2a2a; padding:1.8rem 1.5rem 1.5rem; position:relative; transition:transform .2s,border-color .2s; }
 .menu-card:hover { transform:translateY(-5px); border-color:var(--red); }
 .tag { position:absolute; top:-13px; left:1rem; background:var(--red); color:var(--white); font-size:.6rem; font-weight:900; letter-spacing:2px; text-transform:uppercase; padding:4px 10px; }
@@ -52,6 +54,11 @@ section { padding:80px 5%; }
 .menu-card h3 { font-family:'Alfa Slab One',serif; font-size:1.35rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:.6rem; }
 .menu-card p { font-size:.85rem; color:#aaa; line-height:1.65; }
 .menu-card .price { margin-top:1.2rem; font-family:'Alfa Slab One',serif; font-size:1.7rem; color:var(--white); }
+.simple-items { display:flex; flex-wrap:wrap; gap:1rem; }
+.simple-item { background:var(--black); border:2px solid #2a2a2a; padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; min-width:200px; transition:border-color .2s; }
+.simple-item:hover { border-color:var(--red); }
+.simple-item .name { font-weight:700; letter-spacing:1px; text-transform:uppercase; font-size:.9rem; }
+.simple-item .price { font-family:'Alfa Slab One',serif; font-size:1.3rem; color:var(--white); margin-left:1.5rem; }
 .extras-box { margin-top:2.5rem; padding:1.5rem; border:2px dashed #333; display:flex; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; }
 .extras-box h4 { font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.6rem; }
 .extra-item { display:inline-block; margin:.25rem .4rem .25rem 0; padding:.35rem .9rem; border:2px solid #444; font-size:.8rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
@@ -116,7 +123,7 @@ footer { text-align:center; padding:0; }
     <div class="hero-logo-wrap">
       <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat Logo">
     </div>
-    <p class="hero-tagline">Premium Smashed Burgers · Verse Friet · Pure Smaak</p>
+    <p class="hero-tagline">Premium Smashed Burgers · Pure Smaak</p>
     <a href="#menu" class="hero-btn">Bekijk ons menu</a>
   </div>
   <div class="hero-checker-bottom checker"></div>
@@ -125,35 +132,26 @@ footer { text-align:center; padding:0; }
 <section id="menu">
   <div class="sec-title">Ons <span>Menu</span></div>
   <div class="divider"></div>
-  <div class="menu-grid">
-    <div class="menu-card">
-      <div class="tag">Bestseller</div>
-      <h3>Classic</h3>
-      <p>Dubbel premium beef patty, emmental, pickle, smash patat saus, sla, tomaat, ui</p>
-      <div class="price">€ 9,50</div>
-    </div>
-    <div class="menu-card">
-      <h3>Double Cheese</h3>
-      <p>Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui</p>
-      <div class="price">€ 9,50</div>
-    </div>
-    <div class="menu-card">
-      <h3>Chili</h3>
-      <p>Dubbel premium beef patty, emmental, pickle, smash patat chili saus, jalapeño</p>
-      <div class="price">€ 11,00</div>
-    </div>
-    <div class="menu-card">
-      <div class="tag special">★ Special</div>
-      <h3>Gorgo</h3>
-      <p>Dubbel premium beef patty, zesty gorgonzola, peer confijt, rucola, tomaat, ui</p>
-      <div class="price">€ 11,00</div>
-    </div>
+  
+  <div class="menu-section">
+    <div class="menu-section-title">Burgers</div>
+    <div class="menu-grid" id="burgers-grid"></div>
   </div>
+
+  <div class="menu-section">
+    <div class="menu-section-title">Bijgerechten</div>
+    <div class="simple-items" id="sides-container"></div>
+  </div>
+
+  <div class="menu-section">
+    <div class="menu-section-title">Dranken</div>
+    <div class="simple-items" id="drinks-container"></div>
+  </div>
+  
   <div class="extras-box">
     <div>
       <h4>Extra toppings</h4>
-      <span class="extra-item">+ Pancetta</span>
-      <span class="extra-item">+ Extra Patty</span>
+      <div id="extras-container"></div>
     </div>
   </div>
 </section>
@@ -212,6 +210,64 @@ function closeMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
+// Load menu from JSON
+async function loadMenu() {
+  try {
+    const response = await fetch('menu.json');
+    const menuData = await response.json();
+    
+    // Load burgers
+    const burgersGrid = document.getElementById('burgers-grid');
+    burgersGrid.innerHTML = menuData.burgers.map(burger => {
+      let tagHTML = '';
+      if (burger.tag) {
+        const tagClass = burger.tag === 'Special' ? 'tag special' : 'tag';
+        const tagIcon = burger.tag === 'Special' ? '★ ' : '';
+        tagHTML = `<div class="${tagClass}">${tagIcon}${burger.tag}</div>`;
+      }
+      return `
+        <div class="menu-card">
+          ${tagHTML}
+          <h3>${burger.name}</h3>
+          <p>${burger.description}</p>
+          <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
+        </div>
+      `;
+    }).join('');
+
+    // Load sides
+    const sidesContainer = document.getElementById('sides-container');
+    sidesContainer.innerHTML = menuData.sides.map(side => `
+      <div class="simple-item">
+        <div class="name">${side.name}</div>
+        <div class="price">€ ${side.price.toFixed(2).replace('.', ',')}</div>
+      </div>
+    `).join('');
+
+    // Load drinks
+    const drinksContainer = document.getElementById('drinks-container');
+    drinksContainer.innerHTML = menuData.drinks.map(drink => `
+      <div class="simple-item">
+        <div class="name">${drink.name}</div>
+        <div class="price">€ ${drink.price.toFixed(2).replace('.', ',')}</div>
+      </div>
+    `).join('');
+
+    // Load extras
+    const extrasContainer = document.getElementById('extras-container');
+    extrasContainer.innerHTML = menuData.extras.map(extra => `
+      <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
+    `).join('');
+    
+  } catch (error) {
+    console.error('Error loading menu:', error);
+  }
+}
+
+// Load menu on page load
+loadMenu();
+
+// Calendar events
 const API_URL="https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec";
 const DAYS=['ZO','MA','DI','WO','DO','VR','ZA'];
 const MONTHS=['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
