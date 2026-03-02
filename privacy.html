@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy – Smash Patat</title>
+<link rel="icon" type="image/png" href="https://vermope.github.io/smashpatat.github.io/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --black:#111111; --white:#f5f5f0; --red:#D72B2B; --cs:40px; }
+body { font-family:'Inter',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
+.checker { background-image:repeating-conic-gradient(var(--black) 0% 25%,var(--white) 0% 50%); background-size:var(--cs) var(--cs); }
+nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 5%; height:64px; background:var(--black); border-bottom:3px solid var(--red); }
+.nav-logo img { height:42px; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { color:var(--white); text-decoration:none; font-weight:700; font-size:.85rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; }
+.nav-links a:hover { color:var(--red); }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
+.hamburger span { width:24px; height:2px; background:var(--white); transition:all .3s; display:block; }
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; background:var(--black); border-bottom:3px solid var(--red); z-index:99; padding:1rem 5%; flex-direction:column; }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:var(--white); text-decoration:none; font-weight:700; font-size:.9rem; letter-spacing:1px; text-transform:uppercase; padding:.9rem 0; border-bottom:1px solid #222; transition:color .2s; }
+.mobile-menu a:last-child { border-bottom:none; }
+.mobile-menu a:hover { color:var(--red); }
+
+.checker-strip { height:50px; opacity:.75; }
+.page-header { padding:120px 5% 60px; background:#181818; border-bottom:3px solid var(--red); }
+.page-header h1 { font-family:'Alfa Slab One',serif; font-size:clamp(2rem,5vw,3.5rem); letter-spacing:2px; text-transform:uppercase; }
+.page-header h1 span { color:var(--red); }
+.divider { width:55px; height:5px; background:var(--red); margin:1rem 0 0; }
+.page-header p { margin-top:1rem; color:#777; font-size:.85rem; letter-spacing:1px; }
+
+.content { max-width:800px; margin:0 auto; padding:60px 5% 80px; }
+.content h2 { font-family:'Alfa Slab One',serif; font-size:1.2rem; letter-spacing:1px; text-transform:uppercase; color:var(--red); margin:2.5rem 0 .75rem; }
+.content h2:first-child { margin-top:0; }
+.content p { color:#ccc; line-height:1.85; font-size:.95rem; margin-bottom:.75rem; }
+.content a { color:var(--red); text-decoration:none; }
+.content a:hover { text-decoration:underline; }
+.content ul { color:#ccc; line-height:1.85; font-size:.95rem; padding-left:1.5rem; margin-bottom:.75rem; }
+.content ul li { margin-bottom:.4rem; }
+.highlight-box { border:2px solid var(--red); padding:1.2rem 1.5rem; margin:2rem 0; background:#1a1a1a; }
+.highlight-box p { margin:0; color:#ddd; }
+
+footer { text-align:center; padding:0; }
+.footer-inner { background:var(--black); padding:2rem; border-top:3px solid var(--red); font-size:.8rem; color:#555; letter-spacing:1px; }
+.footer-inner a { color:var(--red); text-decoration:none; }
+
+@media(max-width:700px) {
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><a href="index.html"><img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat"></a></div>
+  <ul class="nav-links">
+    <li><a href="index.html#menu">Menu</a></li>
+    <li><a href="index.html#over">Over ons</a></li>
+    <li><a href="index.html#locaties">Locaties</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#menu" onclick="closeMenu()">Menu</a>
+  <a href="index.html#over" onclick="closeMenu()">Over ons</a>
+  <a href="index.html#locaties" onclick="closeMenu()">Locaties</a>
+  <a href="index.html#contact" onclick="closeMenu()">Contact</a>
+</div>
+
+<div class="page-header">
+  <h1>Privacy <span>Policy</span></h1>
+  <div class="divider"></div>
+  <p>Laatst bijgewerkt: maart 2026</p>
+</div>
+
+<div class="checker-strip checker"></div>
+
+<div class="content">
+
+  <div class="highlight-box">
+    <p>Smash Patat respecteert jouw privacy en verwerkt persoonsgegevens conform de Europese Algemene Verordening Gegevensbescherming (AVG/GDPR) en de Belgische privacywetgeving.</p>
+  </div>
+
+  <h2>1. Wie zijn wij?</h2>
+  <p><strong>Smash Patat</strong><br>
+  E-mail: <a href="mailto:smashpatat@gmail.com">smashpatat@gmail.com</a><br>
+  Instagram: <a href="https://instagram.com/smashpatat" target="_blank">@smashpatat</a></p>
+
+  <h2>2. Welke gegevens verzamelen we?</h2>
+  <p>Wij verzamelen enkel gegevens die je zelf vrijwillig aan ons doorgeeft, bijvoorbeeld wanneer je ons een e-mail stuurt om ons te boeken of een vraag te stellen. Dit kan zijn:</p>
+  <ul>
+    <li>Naam</li>
+    <li>E-mailadres</li>
+    <li>Telefoonnummer (indien doorgegeven)</li>
+    <li>Inhoud van je bericht</li>
+  </ul>
+  <p>Wij verzamelen <strong>geen</strong> gegevens automatisch via cookies of tracking software op deze website.</p>
+
+  <h2>3. Waarvoor gebruiken we jouw gegevens?</h2>
+  <p>Jouw gegevens worden uitsluitend gebruikt om:</p>
+  <ul>
+    <li>Op jouw bericht of boekaanvraag te antwoorden</li>
+    <li>Een boeking of evenement te bevestigen en op te volgen</li>
+  </ul>
+  <p>Wij gebruiken jouw gegevens nooit voor commerciële doeleinden of om nieuwsbrieven te sturen zonder jouw expliciete toestemming.</p>
+
+  <h2>4. Hoelang bewaren we jouw gegevens?</h2>
+  <p>Wij bewaren jouw gegevens niet langer dan noodzakelijk. E-mailcorrespondentie wordt maximaal <strong>2 jaar</strong> bewaard, tenzij een wettelijke verplichting een langere bewaartermijn vereist (bv. voor boekhoudkundige doeleinden: 7 jaar).</p>
+
+  <h2>5. Delen we jouw gegevens met derden?</h2>
+  <p>Nee. Wij verkopen, verhuren of delen jouw persoonsgegevens niet met derden, tenzij dit wettelijk verplicht is (bv. op verzoek van de overheid).</p>
+  <p>Onze e-mailcommunicatie verloopt via <strong>Gmail (Google)</strong>. Google verwerkt e-maildata conform hun eigen privacybeleid en de GDPR.</p>
+
+  <h2>6. Sociale media</h2>
+  <p>Onze website bevat links naar onze Instagram- en Facebookpagina. Wanneer je op deze links klikt, verlaat je onze website en gelden de privacyvoorwaarden van het betreffende platform. Wij hebben geen controle over deze gegevensverwerking.</p>
+
+  <h2>7. Jouw rechten</h2>
+  <p>Onder de GDPR heb je de volgende rechten:</p>
+  <ul>
+    <li><strong>Recht op inzage</strong> — je kunt opvragen welke gegevens wij van jou hebben</li>
+    <li><strong>Recht op correctie</strong> — je kunt onjuiste gegevens laten aanpassen</li>
+    <li><strong>Recht op verwijdering</strong> — je kunt vragen jouw gegevens te wissen</li>
+    <li><strong>Recht op bezwaar</strong> — je kunt bezwaar maken tegen de verwerking</li>
+  </ul>
+  <p>Stuur hiervoor een e-mail naar <a href="mailto:smashpatat@gmail.com">smashpatat@gmail.com</a>. We reageren binnen 30 dagen.</p>
+
+  <h2>8. Klacht indienen</h2>
+  <p>Ben je niet tevreden over hoe wij jouw gegevens verwerken? Dan kan je een klacht indienen bij de Belgische toezichthouder:</p>
+  <p><strong>Gegevensbeschermingsautoriteit (GBA)</strong><br>
+  Drukpersstraat 35, 1000 Brussel<br>
+  <a href="https://www.gegevensbeschermingsautoriteit.be" target="_blank">www.gegevensbeschermingsautoriteit.be</a></p>
+
+  <h2>9. Wijzigingen</h2>
+  <p>Wij behouden het recht om deze privacy policy te wijzigen. De meest recente versie is altijd beschikbaar op deze pagina. Bij belangrijke wijzigingen communiceren wij dit via onze sociale media.</p>
+
+</div>
+
+<div class="checker-strip checker"></div>
+
+<footer>
+  <div class="footer-inner">
+    © 2026 Smash Patat · Alle rechten voorbehouden · <a href="mailto:smashpatat@gmail.com">smashpatat@gmail.com</a>
+  </div>
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+</script>
+</body>
+</html>
