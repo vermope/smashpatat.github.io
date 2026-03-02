@@ -1,15 +1,14 @@
 # 🍔 Smash Patat – Website Documentatie
-
 Live website: https://vermope.github.io/smashpatat.github.io/
 
 ---
 
 ## 📁 Bestandsstructuur
-
 ```
 smashpatat.github.io/
-├── index.html        → De volledige website
-├── logo.png          → Zwart/wit logo (witte achtergrond)
+├── index.html        → De volledige hoofdpagina
+├── privacy.html      → Privacybeleid (GDPR-verplicht)
+├── logo.png          → Zwart/wit logo (witte achtergrond) + favicon
 ├── sfeer_1.jpg       → Sfeerfoto foodtruck
 ├── sfeer_2.jpg       → Sfeerfoto burger
 ├── sfeer_3.jpg       → Sfeerfoto meisje met burger
@@ -19,9 +18,8 @@ smashpatat.github.io/
 ---
 
 ## ✏️ Iets aanpassen op de website
-
 1. Ga naar [github.com/vermope/smashpatat.github.io](https://github.com/vermope/smashpatat.github.io)
-2. Klik op `index.html`
+2. Klik op `index.html` (of `privacy.html`)
 3. Klik op het **potloodje** (rechtsboven in het bestand)
 4. Maak je wijziging
 5. Klik op **"Commit changes"**
@@ -30,32 +28,38 @@ smashpatat.github.io/
 ---
 
 ## 🍔 Menu aanpassen
-
-Zoek in `index.html` naar de sectie `<!-- MENU -->`.  
+Zoek in `index.html` naar de sectie met `id="menu"`.  
 Elke burger ziet er zo uit:
 
 ```html
-<div class="menu-card">
-  <h3>Naam van de burger</h3>
-  <p>Ingrediënten hier</p>
-  <div class="price">€ 0,00</div>
-</div>
+
+  Naam van de burger
+  Ingrediënten hier
+  € 0,00
+
 ```
 
 **Speciale tag toevoegen** (bv. "Nieuw" of "Bestseller"):
 ```html
-<div class="tag">Bestseller</div>
+Bestseller
 ```
 
 **Witte special tag:**
 ```html
-<div class="tag special">★ Special</div>
+★ Special
 ```
+
+### Huidig menu
+| Burger | Ingrediënten | Prijs |
+|---|---|---|
+| Classic | Dubbel premium beef patty, emmental, pickle, smash patat saus, sla, tomaat, ui | € 9,50 |
+| Double Cheese | Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui | € 9,50 |
+| Chili | Dubbel premium beef patty, emmental, pickle, smash patat chili saus, jalapeño | € 11,00 |
+| Gorgo ★ Special | Dubbel premium beef patty, zesty gorgonzola, peer confijt, rucola, tomaat, ui | € 11,00 |
 
 ---
 
 ## 📅 Locaties & Agenda (automatisch via Google Agenda)
-
 De evenementen op de website worden **automatisch** opgehaald uit Google Agenda.
 
 **Een nieuw evenement toevoegen:**
@@ -66,7 +70,6 @@ De evenementen op de website worden **automatisch** opgehaald uit Google Agenda.
 **Alleen jij kan de agenda bewerken** — bezoekers van de website kunnen enkel lezen.
 
 ### 🔧 Technische details Google Apps Script
-
 De koppeling loopt via een Google Apps Script dat als tussendienst fungeert.
 
 - **Script URL:** https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec
@@ -77,17 +80,17 @@ De koppeling loopt via een Google Apps Script dat als tussendienst fungeert.
 ---
 
 ## 🖼️ Logo of foto's vervangen
-
 1. Upload het nieuwe bestand op GitHub via **"Add file → Upload files"**
 2. Gebruik **exact dezelfde bestandsnaam** (bv. `logo.png`, `sfeer_1.jpg`)
 3. GitHub overschrijft het oude bestand automatisch
 
 > ⚠️ GitHub is hoofdlettergevoelig: `Logo.png` ≠ `logo.png`
 
+Het logo wordt ook gebruikt als **favicon** (icoontje in het browsertabblad). Bij het vervangen van `logo.png` wordt het favicon dus automatisch ook bijgewerkt.
+
 ---
 
 ## 🎨 Kleuren & stijl
-
 | Element | Waarde |
 |---|---|
 | Achtergrond | `#111111` |
@@ -100,20 +103,28 @@ De koppeling loopt via een Google Apps Script dat als tussendienst fungeert.
 ---
 
 ## 📬 Contact & socials aanpassen
-
-Zoek in `index.html` naar `<!-- CONTACT -->` en pas de links aan:
+Zoek in `index.html` naar de sectie met `id="contact"` en pas de links aan:
 
 ```html
-<a href="mailto:smashpatat@gmail.com">...</a>
-<a href="https://instagram.com/smashpatat">...</a>
-<a href="https://facebook.com/smashpatat">...</a>
+...
+...
+...
 ```
 
 ---
 
-## 🚀 Hosting
+## 🔒 Privacybeleid
+De website bevat een aparte `privacy.html` pagina, verplicht onder de **GDPR/AVG**.  
+De footer van de hoofdpagina linkt automatisch naar deze pagina.
 
+Bij wijzigingen in hoe je gegevens verwerkt (bv. nieuw contactformulier, analytics toevoegen), dien je ook `privacy.html` bij te werken. Vergeet dan ook de datum "Laatst bijgewerkt" bovenaan aan te passen.
+
+> De toezichthouder in België is de **Gegevensbeschermingsautoriteit (GBA)**: [gegevensbeschermingsautoriteit.be](https://www.gegevensbeschermingsautoriteit.be)
+
+---
+
+## 🚀 Hosting
 De website wordt gratis gehost via **GitHub Pages**.  
-Elke wijziging aan `index.html` is na 1-2 minuten live.
+Elke wijziging aan `index.html` of `privacy.html` is na 1-2 minuten live.
 
 > Gemaakt met ❤️ voor Smash Patat
