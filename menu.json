@@ -1,0 +1,80 @@
+{
+  "burgers": [
+    {
+      "id": "kids-smash",
+      "name": "Kids Smash",
+      "description": "Premium beef patty, saus naar keuze, gefrituurde ajuin",
+      "price": 5.50,
+      "tag": null
+    },
+    {
+      "id": "classic",
+      "name": "Classic",
+      "description": "Dubbel premium beef patty, smash patat saus, sla, tomaat, ui, pickle",
+      "price": 9.50,
+      "tag": "Bestseller"
+    },
+    {
+      "id": "double-cheese",
+      "name": "Double Cheese",
+      "description": "Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui",
+      "price": 9.50,
+      "tag": null
+    },
+    {
+      "id": "chili",
+      "name": "Chili",
+      "description": "Dubbel premium beef patty, smash patat chili saus, romige relish, sla, jalapeño mix",
+      "price": 11.00,
+      "tag": null
+    },
+    {
+      "id": "gorgo",
+      "name": "Gorgo",
+      "description": "Dubbel premium beef patty, zesty gorgonzola, peer confijt, rucola, tomaat, ui",
+      "price": 11.00,
+      "tag": "Special"
+    }
+  ],
+  "sides": [
+    {
+      "id": "friet",
+      "name": "Friet",
+      "price": 3.50
+    }
+  ],
+  "drinks": [
+    {
+      "id": "fris-pils",
+      "name": "Fris/Pils",
+      "price": 2.80
+    },
+    {
+      "id": "speciaal-bier",
+      "name": "Speciaal Bier",
+      "price": 3.50
+    }
+  ],
+  "extras": [
+    {
+      "id": "pancetta",
+      "name": "Pancetta",
+      "price": 1.00
+    },
+    {
+      "id": "extra-patty",
+      "name": "Extra Patty",
+      "price": 2.00
+    },
+    {
+      "id": "cheddar",
+      "name": "Cheddar",
+      "price": 1.00
+    },
+    {
+      "id": "emmental",
+      "name": "Emmental",
+      "price": 1.00
+    }
+  ]
+}
