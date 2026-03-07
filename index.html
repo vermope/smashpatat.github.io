@@ -16,8 +16,6 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .nav-links { display:flex; gap:2rem; list-style:none; }
 .nav-links a { color:var(--white); text-decoration:none; font-weight:700; font-size:.85rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; }
 .nav-links a:hover { color:var(--red); }
-
-/* Mobile menu */
 .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
 .hamburger span { width:24px; height:2px; background:var(--white); transition:all .3s; display:block; }
 .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
@@ -28,7 +26,6 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .mobile-menu a { color:var(--white); text-decoration:none; font-weight:700; font-size:.9rem; letter-spacing:1px; text-transform:uppercase; padding:.9rem 0; border-bottom:1px solid #222; transition:color .2s; }
 .mobile-menu a:last-child { border-bottom:none; }
 .mobile-menu a:hover { color:var(--red); }
-
 .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden; background:#ffffff; }
 .hero-checker-top { position:absolute; top:64px; left:0; right:0; height:70px; }
 .hero-checker-bottom { position:absolute; bottom:0; left:0; right:0; height:70px; }
@@ -97,6 +94,7 @@ footer { text-align:center; padding:0; }
 </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-logo"><img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat"></div>
   <ul class="nav-links">
@@ -123,7 +121,7 @@ footer { text-align:center; padding:0; }
     <div class="hero-logo-wrap">
       <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat Logo">
     </div>
-    <p class="hero-tagline">Premium Smashed Burgers · Pure Smaak</p>
+    <p class="hero-tagline">Premium Smashed Burgers · Verse Friet · Pure Smaak</p>
     <a href="#menu" class="hero-btn">Bekijk ons menu</a>
   </div>
   <div class="hero-checker-bottom checker"></div>
@@ -132,7 +130,7 @@ footer { text-align:center; padding:0; }
 <section id="menu">
   <div class="sec-title">Ons <span>Menu</span></div>
   <div class="divider"></div>
-  
+
   <div class="menu-section">
     <div class="menu-section-title">Burgers</div>
     <div class="menu-grid" id="burgers-grid"></div>
@@ -144,10 +142,15 @@ footer { text-align:center; padding:0; }
   </div>
 
   <div class="menu-section">
+    <div class="menu-section-title">Sausen</div>
+    <div class="simple-items" id="sauces-container"></div>
+  </div>
+
+  <div class="menu-section">
     <div class="menu-section-title">Dranken</div>
     <div class="simple-items" id="drinks-container"></div>
   </div>
-  
+
   <div class="extras-box">
     <div>
       <h4>Extra toppings</h4>
@@ -200,92 +203,75 @@ footer { text-align:center; padding:0; }
 
 <script>
 function toggleMenu() {
-  const h = document.getElementById('hamburger');
-  const m = document.getElementById('mobileMenu');
-  h.classList.toggle('open');
-  m.classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
 }
 function closeMenu() {
   document.getElementById('hamburger').classList.remove('open');
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
-// Load menu from JSON
 async function loadMenu() {
   try {
-    const response = await fetch('menu.json');
-    const menuData = await response.json();
-    
-    // Load burgers
-    const burgersGrid = document.getElementById('burgers-grid');
-    burgersGrid.innerHTML = menuData.burgers.map(burger => {
-      let tagHTML = '';
-      if (burger.tag) {
-        const tagClass = burger.tag === 'Special' ? 'tag special' : 'tag';
-        const tagIcon = burger.tag === 'Special' ? '★ ' : '';
-        tagHTML = `<div class="${tagClass}">${tagIcon}${burger.tag}</div>`;
+    const res = await fetch('menu.json');
+    const m = await res.json();
+
+    // Burgers
+    document.getElementById('burgers-grid').innerHTML = m.burgers.map(b => {
+      let tag = '';
+      if (b.tag) {
+        const isSpecial = b.tag === 'Special';
+        tag = `<div class="${isSpecial ? 'tag special' : 'tag'}">${isSpecial ? '★ ' : ''}${b.tag}</div>`;
       }
-      return `
-        <div class="menu-card">
-          ${tagHTML}
-          <h3>${burger.name}</h3>
-          <p>${burger.description}</p>
-          <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
-        </div>
-      `;
+      return `<div class="menu-card">${tag}<h3>${b.name}</h3><p>${b.description}</p><div class="price">€ ${b.price.toFixed(2).replace('.', ',')}</div></div>`;
     }).join('');
 
-    // Load sides
-    const sidesContainer = document.getElementById('sides-container');
-    sidesContainer.innerHTML = menuData.sides.map(side => `
-      <div class="simple-item">
-        <div class="name">${side.name}</div>
-        <div class="price">€ ${side.price.toFixed(2).replace('.', ',')}</div>
-      </div>
-    `).join('');
+    // Bijgerechten
+    document.getElementById('sides-container').innerHTML = m.sides.map(s =>
+      `<div class="simple-item"><div class="name">${s.name}</div><div class="price">€ ${s.price.toFixed(2).replace('.', ',')}</div></div>`
+    ).join('');
 
-    // Load drinks
-    const drinksContainer = document.getElementById('drinks-container');
-    drinksContainer.innerHTML = menuData.drinks.map(drink => `
-      <div class="simple-item">
-        <div class="name">${drink.name}</div>
-        <div class="price">€ ${drink.price.toFixed(2).replace('.', ',')}</div>
-      </div>
-    `).join('');
+    // Sausen
+    document.getElementById('sauces-container').innerHTML = m.sauces.map(s =>
+      `<div class="simple-item"><div class="name">${s.name}</div><div class="price">€ ${s.price.toFixed(2).replace('.', ',')}</div></div>`
+    ).join('');
 
-    // Load extras
-    const extrasContainer = document.getElementById('extras-container');
-    extrasContainer.innerHTML = menuData.extras.map(extra => `
-      <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
-    `).join('');
-    
-  } catch (error) {
-    console.error('Error loading menu:', error);
+    // Dranken
+    document.getElementById('drinks-container').innerHTML = m.drinks.map(d =>
+      `<div class="simple-item"><div class="name">${d.name}</div><div class="price">€ ${d.price.toFixed(2).replace('.', ',')}</div></div>`
+    ).join('');
+
+    // Extra toppings
+    document.getElementById('extras-container').innerHTML = m.extras.map(e =>
+      `<span class="extra-item">+ ${e.name} (€ ${e.price.toFixed(2).replace('.', ',')})</span>`
+    ).join('');
+
+  } catch (err) {
+    console.error('Menu laden mislukt:', err);
   }
 }
 
-// Load menu on page load
 loadMenu();
 
-// Calendar events
-const API_URL="https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec";
-const DAYS=['ZO','MA','DI','WO','DO','VR','ZA'];
-const MONTHS=['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
-function formatDate(d){return`${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;}
-function formatTime(d){return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}
-function handleEvents(events){
-  const c=document.getElementById('events-container');
-  if(!events||!events.length){c.innerHTML='<p class="event-loading">Geen aankomende evenementen gepland.</p>';return;}
-  c.innerHTML=events.map(e=>{
-    const s=new Date(e.start),en=new Date(e.end);
-    return`<div class="locatie-item"><div class="loc-icon">📍</div><div><h4>${e.title}</h4><p>${formatDate(s)} · ${formatTime(s)} – ${formatTime(en)}${e.location?' · '+e.location:''}</p></div></div>`;
+// Agenda
+const API_URL = "https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec";
+const DAYS = ['ZO','MA','DI','WO','DO','VR','ZA'];
+const MONTHS = ['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
+function formatDate(d) { return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`; }
+function formatTime(d) { return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0'); }
+function handleEvents(events) {
+  const c = document.getElementById('events-container');
+  if (!events || !events.length) { c.innerHTML = '<p class="event-loading">Geen aankomende evenementen gepland.</p>'; return; }
+  c.innerHTML = events.map(e => {
+    const s = new Date(e.start), en = new Date(e.end);
+    return `<div class="locatie-item"><div class="loc-icon">📍</div><div><h4>${e.title}</h4><p>${formatDate(s)} · ${formatTime(s)} – ${formatTime(en)}${e.location ? ' · ' + e.location : ''}</p></div></div>`;
   }).join('');
 }
-fetch(API_URL).then(r=>r.json()).then(handleEvents).catch(()=>{
-  window._cb=handleEvents;
-  const s=document.createElement('script');
-  s.src=API_URL+'?callback=_cb';
-  s.onerror=()=>{document.getElementById('events-container').innerHTML='<p class="event-loading">Kon evenementen niet laden.</p>';};
+fetch(API_URL).then(r => r.json()).then(handleEvents).catch(() => {
+  window._cb = handleEvents;
+  const s = document.createElement('script');
+  s.src = API_URL + '?callback=_cb';
+  s.onerror = () => { document.getElementById('events-container').innerHTML = '<p class="event-loading">Kon evenementen niet laden.</p>'; };
   document.body.appendChild(s);
 });
 </script>
