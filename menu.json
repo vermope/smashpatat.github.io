@@ -10,7 +10,7 @@
     {
       "id": "classic",
       "name": "Classic",
-      "description": "Dubbel premium beef patty, smash patat saus, sla, tomaat, ui, pickle",
+      "description": "Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle",
       "price": 9.50,
       "tag": "Bestseller"
     },
@@ -24,7 +24,7 @@
     {
       "id": "chili",
       "name": "Chili",
-      "description": "Dubbel premium beef patty, smash patat chili saus, romige relish, sla, jalapeño mix",
+      "description": "Dubbel premium beef patty, SP chipotle saus, romige relish, sla, fermented/candied jalapeño mix",
       "price": 11.00,
       "tag": null
     },
@@ -33,6 +33,13 @@
       "name": "Gorgo",
       "description": "Dubbel premium beef patty, zesty gorgonzola, peer confijt, rucola, tomaat, ui",
       "price": 11.00,
+      "tag": "Special"
+    },
+    {
+      "id": "truffel",
+      "name": "Truffel",
+      "description": "Dubbel premium beef patty, rucola, parmigiano, SP truffel saus, pickled rode ajuin, balsamico glaze",
+      "price": 12.00,
       "tag": "Special"
     }
   ],
@@ -43,10 +50,32 @@
       "price": 3.50
     }
   ],
+  "sauces": [
+    {
+      "id": "mayo-ketchup-mosterd",
+      "name": "Mayo / Ketchup / Mosterd",
+      "price": 0.50
+    },
+    {
+      "id": "sp-burgersaus",
+      "name": "SP Burgersaus",
+      "price": 0.75
+    },
+    {
+      "id": "sp-chipotle",
+      "name": "SP Chipotle Saus",
+      "price": 0.75
+    },
+    {
+      "id": "sp-truffel",
+      "name": "SP Truffel Saus",
+      "price": 1.00
+    }
+  ],
   "drinks": [
     {
       "id": "fris-pils",
-      "name": "Fris/Pils",
+      "name": "Fris / Pils",
       "price": 2.80
     },
     {
@@ -72,8 +101,28 @@
       "price": 1.00
     },
     {
-      "id": "emmental",
-      "name": "Emmental",
+      "id": "jalapeno-hot-honey",
+      "name": "Jalapeño Infused Hot Honey",
+      "price": 1.00
+    },
+    {
+      "id": "oklahoma",
+      "name": "Oklahoma Stijl",
+      "price": 1.50
+    },
+    {
+      "id": "jalapeno-mix",
+      "name": "Jalapeño Mix",
+      "price": 1.00
+    },
+    {
+      "id": "pickled-onion",
+      "name": "Pickled Onion",
+      "price": 1.00
+    },
+    {
+      "id": "ajuin-peer-confijt",
+      "name": "Ajuin Peer Confijt",
       "price": 1.00
     }
   ]
