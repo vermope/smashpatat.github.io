@@ -93,7 +93,7 @@
     {
       "id": "extra-patty",
       "name": "Extra Patty",
-      "price": 2.00
+      "price": 2.50
     },
     {
       "id": "cheddar",
@@ -118,7 +118,7 @@
     {
       "id": "pickled-onion",
       "name": "Pickled Onion",
-      "price": 1.00
+      "price": 0.50
     },
     {
       "id": "ajuin-peer-confijt",
