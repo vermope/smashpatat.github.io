@@ -44,11 +44,16 @@
     {
       "id": "extra-patty",
       "name": "Extra Patty",
-      "price": 2.50
+      "price": 2.00
     },
     {
       "id": "cheddar",
       "name": "Cheddar",
+      "price": 1.00
+    },
+    {
+      "id": "emmental",
+      "name": "Emmental",
       "price": 1.00
     },
     {
