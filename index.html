@@ -16,6 +16,8 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .nav-links { display:flex; gap:2rem; list-style:none; }
 .nav-links a { color:var(--white); text-decoration:none; font-weight:700; font-size:.85rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; }
 .nav-links a:hover { color:var(--red); }
+
+/* Mobile menu */
 .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
 .hamburger span { width:24px; height:2px; background:var(--white); transition:all .3s; display:block; }
 .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
@@ -26,6 +28,7 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .mobile-menu a { color:var(--white); text-decoration:none; font-weight:700; font-size:.9rem; letter-spacing:1px; text-transform:uppercase; padding:.9rem 0; border-bottom:1px solid #222; transition:color .2s; }
 .mobile-menu a:last-child { border-bottom:none; }
 .mobile-menu a:hover { color:var(--red); }
+
 .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden; background:#ffffff; }
 .hero-checker-top { position:absolute; top:64px; left:0; right:0; height:70px; }
 .hero-checker-bottom { position:absolute; bottom:0; left:0; right:0; height:70px; }
@@ -52,25 +55,30 @@ section { padding:80px 5%; }
 .menu-card p { font-size:.85rem; color:#aaa; line-height:1.65; }
 .menu-card .price { margin-top:1.2rem; font-family:'Alfa Slab One',serif; font-size:1.7rem; color:var(--white); }
 .simple-items { display:flex; flex-wrap:wrap; gap:1rem; }
-.simple-item { background:var(--black); border:2px solid #2a2a2a; padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; min-width:200px; transition:border-color .2s; gap:1rem; }
-.simple-item .name { flex:1; }
-.simple-item .price { white-space:nowrap; flex-shrink:0; }
+.simple-item { background:var(--black); border:2px solid #2a2a2a; padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; min-width:200px; transition:border-color .2s; }
 .simple-item:hover { border-color:var(--red); }
 .simple-item .name { font-weight:700; letter-spacing:1px; text-transform:uppercase; font-size:.9rem; }
 .simple-item .price { font-family:'Alfa Slab One',serif; font-size:1.3rem; color:var(--white); margin-left:1.5rem; }
-.customize-hint { margin-top:-1rem; margin-bottom:2.5rem; padding:.9rem 1.4rem; border-left:4px solid var(--red); background:#1a1a1a; font-size:1rem; color:#ccc; letter-spacing:.5px; }
-.customize-hint a { color:var(--red); text-decoration:none; font-weight:700; }
-.customize-hint a:hover { text-decoration:underline; } padding:1.5rem; border:2px dashed #333; display:flex; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; }
-.extras-box h4 { font-family:'Alfa Slab One',serif; font-size:1.5rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:1.5rem; }
+.extras-box { margin-top:2.5rem; padding:1.5rem; border:2px dashed #333; }
+.extras-box h4 { font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.6rem; }
 .extra-item { display:inline-block; margin:.25rem .4rem .25rem 0; padding:.35rem .9rem; border:2px solid #444; font-size:.8rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
 #over { padding:80px 5%; }
 .over-header { margin-bottom:3rem; }
 .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
 .prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:3rem 2rem; display:flex; flex-wrap:wrap; justify-content:center; gap:2.5rem; border:4px solid #333; }
-.pin-foto { position:relative; background:#fff; padding:10px 10px 40px; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transform:rotate(-2deg); transition:transform .2s,box-shadow .2s; cursor:pointer; width:280px; }
+.pin-foto { position:relative; background:#fff; padding:10px 10px 40px; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transform:rotate(-2deg); transition:transform .3s ease, box-shadow .3s ease; cursor:pointer; width:280px; }
 .pin-foto:nth-child(2) { transform:rotate(1.5deg); }
 .pin-foto:nth-child(3) { transform:rotate(-1deg); }
-.pin-foto:hover { transform:rotate(0deg) scale(1.04); box-shadow:8px 8px 20px rgba(0,0,0,.7); z-index:2; }
+.pin-foto:nth-child(4) { transform:rotate(2deg); }
+.pin-foto:nth-child(5) { transform:rotate(-1.5deg); }
+.pin-foto:nth-child(6) { transform:rotate(1deg); }
+.pin-foto:nth-child(7) { transform:rotate(-0.5deg); }
+.pin-foto:hover { transform:rotate(0deg) scale(1.04); box-shadow:8px 8px 20px rgba(0,0,0,.7); z-index:2; animation:shake 0.3s ease; }
+@keyframes shake {
+  0%, 100% { transform:rotate(0deg) scale(1.04); }
+  25% { transform:rotate(-1deg) scale(1.04); }
+  75% { transform:rotate(1deg) scale(1.04); }
+}
 .pin-foto img { width:100%; height:220px; object-fit:cover; display:block; }
 .pin-foto::before { content:''; position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; }
 #locaties { background:#181818; }
@@ -98,7 +106,6 @@ footer { text-align:center; padding:0; }
 </style>
 </head>
 <body>
-
 <nav>
   <div class="nav-logo"><img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat"></div>
   <ul class="nav-links">
@@ -125,7 +132,7 @@ footer { text-align:center; padding:0; }
     <div class="hero-logo-wrap">
       <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat Logo">
     </div>
-    <p class="hero-tagline">Premium Smashed Burgers · Verse Friet · Pure Smaak</p>
+    <p class="hero-tagline">Premium Smashed Burgers · Pure Smaak</p>
     <a href="#menu" class="hero-btn">Bekijk ons menu</a>
   </div>
   <div class="hero-checker-bottom checker"></div>
@@ -134,36 +141,23 @@ footer { text-align:center; padding:0; }
 <section id="menu">
   <div class="sec-title">Ons <span>Menu</span></div>
   <div class="divider"></div>
-
+  
   <div class="menu-section">
     <div class="menu-section-title">Burgers</div>
-    <div class="customize-hint">
-      🍔 Pas je burger zelf aan — bekijk onze <a href="#toppings">extra toppings</a> hieronder!
-    </div>
     <div class="menu-grid" id="burgers-grid"></div>
-
-  <div class="menu-section" id="toppings">
-    <div class="menu-section-title">Extra Toppings</div>
-    <div class="extras-box">
-      <div id="extras-container"></div>
-    </div>
   </div>
 
-  <div class="menu-section">
-    <div class="menu-section-title">Bijgerechten</div>
-    <div class="simple-items" id="sides-container"></div>
-  </div>
-
-  <div class="menu-section">
-    <div class="menu-section-title">Sausen</div>
-    <div class="simple-items" id="sauces-container"></div>
-  </div>
-
-  <div class="menu-section">
+  <div class="menu-section" id="drinks-section">
     <div class="menu-section-title">Dranken</div>
     <div class="simple-items" id="drinks-container"></div>
   </div>
-
+  
+  <div class="extras-box">
+    <div>
+      <h4>Pimp je burger met onze extra toppings</h4>
+      <div id="extras-container"></div>
+    </div>
+  </div>
 </section>
 
 <div class="checker-strip checker"></div>
@@ -174,10 +168,8 @@ footer { text-align:center; padding:0; }
     <div class="divider"></div>
     <p>Wij zijn Smash Patat — een foodtruck met één missie: de beste smashed burger van de streek op jouw bord krijgen. Geen poespas, gewoon eerlijke smaken en ingrediënten die we lokaal selecteren. Kwaliteitsvlees uit de regio, een boterzacht broodje en de perfecte smash. Onze burgers worden ter plekke platgedrukt op een gloeiend hete plancha, waardoor die unieke, gekarameliseerde en krokante korst ontstaat waar je voor terugkomt.</p>
   </div>
-  <div class="prikbord">
-    <div class="pin-foto"><img src="https://vermope.github.io/smashpatat.github.io/sfeer_2.jpg" alt="burger"></div>
-    <div class="pin-foto"><img src="https://vermope.github.io/smashpatat.github.io/sfeer_3.jpg" alt="sfeer"></div>
-    <div class="pin-foto"><img src="https://vermope.github.io/smashpatat.github.io/sfeer_1.jpg" alt="foodtruck"></div>
+  <div class="prikbord" id="foto-grid">
+    <!-- Photos will be loaded dynamically -->
   </div>
 </section>
 
@@ -198,8 +190,7 @@ footer { text-align:center; padding:0; }
   <p style="color:#aaa;max-width:520px;margin:0 auto;line-height:1.75;">Interesse om ons te boeken voor jouw evenement, festival of bedrijfsfeest? Neem gerust contact op!</p>
   <div class="contact-strip">
     <a href="mailto:smashpatat@gmail.com" class="contact-btn primary">✉ smashpatat@gmail.com</a>
-    <a href="https://instagram.com/smash.patat" class="contact-btn">📷 Instagram</a>
-    <a href="https://facebook.com/smash.patat" class="contact-btn">👍 Facebook</a>
+    <a href="https://instagram.com/smashpatat" class="contact-btn">📷 Instagram</a>
   </div>
 </section>
 
@@ -210,75 +201,110 @@ footer { text-align:center; padding:0; }
 
 <script>
 function toggleMenu() {
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('mobileMenu').classList.toggle('open');
+  const h = document.getElementById('hamburger');
+  const m = document.getElementById('mobileMenu');
+  h.classList.toggle('open');
+  m.classList.toggle('open');
 }
 function closeMenu() {
   document.getElementById('hamburger').classList.remove('open');
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
+// Photo URLs from uploaded images
+const photos = [
+  'https://vermope.github.io/smashpatat.github.io/burger_1.jpg',
+  'https://vermope.github.io/smashpatat.github.io/burger_2.jpg',
+  'https://vermope.github.io/smashpatat.github.io/cap.jpg',
+  'https://vermope.github.io/smashpatat.github.io/plants.jpg',
+  'https://vermope.github.io/smashpatat.github.io/burger_hand.jpg',
+  'https://vermope.github.io/smashpatat.github.io/team.jpg',
+  'https://vermope.github.io/smashpatat.github.io/burger_plate.jpg'
+];
+
+// Load photos dynamically
+function loadPhotos() {
+  const fotoGrid = document.getElementById('foto-grid');
+  fotoGrid.innerHTML = photos.map((photo, index) => `
+    <div class="pin-foto">
+      <img src="${photo}" alt="Smash Patat foto ${index + 1}" onerror="this.parentElement.style.display='none'">
+    </div>
+  `).join('');
+}
+
+// Load menu from JSON
 async function loadMenu() {
   try {
-    const res = await fetch('menu.json');
-    const m = await res.json();
-
-    // Burgers
-    document.getElementById('burgers-grid').innerHTML = m.burgers.map(b => {
-      let tag = '';
-      if (b.tag) {
-        const isSpecial = b.tag === 'Special';
-        tag = `<div class="${isSpecial ? 'tag special' : 'tag'}">${isSpecial ? '★ ' : ''}${b.tag}</div>`;
+    const response = await fetch('menu.json');
+    const menuData = await response.json();
+    
+    // Load burgers
+    const burgersGrid = document.getElementById('burgers-grid');
+    burgersGrid.innerHTML = menuData.burgers.map(burger => {
+      let tagHTML = '';
+      if (burger.tag) {
+        const tagClass = burger.tag === 'Special' ? 'tag special' : 'tag';
+        const tagIcon = burger.tag === 'Special' ? '★ ' : '';
+        tagHTML = `<div class="${tagClass}">${tagIcon}${burger.tag}</div>`;
       }
-      return `<div class="menu-card">${tag}<h3>${b.name}</h3><p>${b.description}</p><div class="price">€ ${b.price.toFixed(2).replace('.', ',')}</div></div>`;
+      return `
+        <div class="menu-card">
+          ${tagHTML}
+          <h3>${burger.name}</h3>
+          <p>${burger.description}</p>
+          <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
+        </div>
+      `;
     }).join('');
 
-    // Bijgerechten
-    document.getElementById('sides-container').innerHTML = m.sides.map(s =>
-      `<div class="simple-item"><div class="name">${s.name}</div><div class="price">€ ${s.price.toFixed(2).replace('.', ',')}</div></div>`
-    ).join('');
+    // Load drinks
+    const drinksContainer = document.getElementById('drinks-container');
+    const drinksSection = document.getElementById('drinks-section');
+    if (menuData.drinks && menuData.drinks.length > 0) {
+      drinksContainer.innerHTML = menuData.drinks.map(drink => `
+        <div class="simple-item">
+          <div class="name">${drink.name}</div>
+          <div class="price">€ ${drink.price.toFixed(2).replace('.', ',')}</div>
+        </div>
+      `).join('');
+    } else {
+      drinksSection.style.display = 'none';
+    }
 
-    // Sausen
-    document.getElementById('sauces-container').innerHTML = m.sauces.map(s =>
-      `<div class="simple-item"><div class="name">${s.name}</div><div class="price">€ ${s.price.toFixed(2).replace('.', ',')}</div></div>`
-    ).join('');
-
-    // Dranken
-    document.getElementById('drinks-container').innerHTML = m.drinks.map(d =>
-      `<div class="simple-item"><div class="name">${d.name}</div><div class="price">€ ${d.price.toFixed(2).replace('.', ',')}</div></div>`
-    ).join('');
-
-    // Extra toppings
-    document.getElementById('extras-container').innerHTML = m.extras.map(e =>
-      `<span class="extra-item">+ ${e.name} (€ ${e.price.toFixed(2).replace('.', ',')})</span>`
-    ).join('');
-
-  } catch (err) {
-    console.error('Menu laden mislukt:', err);
+    // Load extras
+    const extrasContainer = document.getElementById('extras-container');
+    extrasContainer.innerHTML = menuData.extras.map(extra => `
+      <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
+    `).join('');
+    
+  } catch (error) {
+    console.error('Error loading menu:', error);
   }
 }
 
+// Load menu and photos on page load
 loadMenu();
+loadPhotos();
 
-// Agenda
-const API_URL = "https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec";
-const DAYS = ['ZO','MA','DI','WO','DO','VR','ZA'];
-const MONTHS = ['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
-function formatDate(d) { return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`; }
-function formatTime(d) { return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0'); }
-function handleEvents(events) {
-  const c = document.getElementById('events-container');
-  if (!events || !events.length) { c.innerHTML = '<p class="event-loading">Geen aankomende evenementen gepland.</p>'; return; }
-  c.innerHTML = events.map(e => {
-    const s = new Date(e.start), en = new Date(e.end);
-    return `<div class="locatie-item"><div class="loc-icon">📍</div><div><h4>${e.title}</h4><p>${formatDate(s)} · ${formatTime(s)} – ${formatTime(en)}${e.location ? ' · ' + e.location : ''}</p></div></div>`;
+// Calendar events
+const API_URL="https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec";
+const DAYS=['ZO','MA','DI','WO','DO','VR','ZA'];
+const MONTHS=['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
+function formatDate(d){return`${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;}
+function formatTime(d){return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}
+function handleEvents(events){
+  const c=document.getElementById('events-container');
+  if(!events||!events.length){c.innerHTML='<p class="event-loading">Geen aankomende evenementen gepland.</p>';return;}
+  c.innerHTML=events.map(e=>{
+    const s=new Date(e.start),en=new Date(e.end);
+    return`<div class="locatie-item"><div class="loc-icon">📍</div><div><h4>${e.title}</h4><p>${formatDate(s)} · ${formatTime(s)} – ${formatTime(en)}${e.location?' · '+e.location:''}</p></div></div>`;
   }).join('');
 }
-fetch(API_URL).then(r => r.json()).then(handleEvents).catch(() => {
-  window._cb = handleEvents;
-  const s = document.createElement('script');
-  s.src = API_URL + '?callback=_cb';
-  s.onerror = () => { document.getElementById('events-container').innerHTML = '<p class="event-loading">Kon evenementen niet laden.</p>'; };
+fetch(API_URL).then(r=>r.json()).then(handleEvents).catch(()=>{
+  window._cb=handleEvents;
+  const s=document.createElement('script');
+  s.src=API_URL+'?callback=_cb';
+  s.onerror=()=>{document.getElementById('events-container').innerHTML='<p class="event-loading">Kon evenementen niet laden.</p>';};
   document.body.appendChild(s);
 });
 </script>
