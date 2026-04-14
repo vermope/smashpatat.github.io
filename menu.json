@@ -1,81 +1,32 @@
 {
   "burgers": [
     {
-      "id": "kids-smash",
-      "name": "Kids Smash",
+      "id": "kids-smash-patat",
+      "name": "Kids Smash Patat",
       "description": "Premium beef patty, saus naar keuze, gefrituurde ajuin",
       "price": 5.50,
       "tag": null
     },
     {
-      "id": "classic",
-      "name": "Classic",
+      "id": "smash-patat-classic",
+      "name": "Smash Patat Classic",
       "description": "Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle",
       "price": 9.50,
       "tag": "Bestseller"
     },
     {
-      "id": "double-cheese",
-      "name": "Double Cheese",
+      "id": "smash-patat-double-cheese",
+      "name": "Smash Patat Double Cheese",
       "description": "Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui",
       "price": 9.50,
       "tag": null
-    },
-    {
-      "id": "chili",
-      "name": "Chili",
-      "description": "Dubbel premium beef patty, SP chipotle saus, romige relish, sla, fermented/candied jalapeño mix",
-      "price": 11.00,
-      "tag": null
-    },
-    {
-      "id": "gorgo",
-      "name": "Gorgo",
-      "description": "Dubbel premium beef patty, zesty gorgonzola, peer confijt, rucola, tomaat, ui",
-      "price": 11.00,
-      "tag": "Special"
-    },
-    {
-      "id": "truffel",
-      "name": "Truffel",
-      "description": "Dubbel premium beef patty, rucola, parmigiano, SP truffel saus, pickled rode ajuin, balsamico glaze",
-      "price": 12.00,
-      "tag": "Special"
     }
   ],
-  "sides": [
-    {
-      "id": "friet",
-      "name": "Friet",
-      "price": 3.50
-    }
-  ],
-  "sauces": [
-    {
-      "id": "mayo-ketchup-mosterd",
-      "name": "Mayo / Ketchup / Mosterd",
-      "price": 0.50
-    },
-    {
-      "id": "sp-burgersaus",
-      "name": "SP Burgersaus",
-      "price": 0.75
-    },
-    {
-      "id": "sp-chipotle",
-      "name": "SP Chipotle Saus",
-      "price": 0.75
-    },
-    {
-      "id": "sp-truffel",
-      "name": "SP Truffel Saus",
-      "price": 1.00
-    }
-  ],
+  "sides": [],
   "drinks": [
     {
       "id": "fris-pils",
-      "name": "Fris / Pils",
+      "name": "Fris/Pils",
       "price": 2.80
     },
     {
@@ -93,7 +44,7 @@
     {
       "id": "extra-patty",
       "name": "Extra Patty",
-      "price": 2.50
+      "price": 2.00
     },
     {
       "id": "cheddar",
@@ -101,29 +52,29 @@
       "price": 1.00
     },
     {
-      "id": "jalapeno-hot-honey",
-      "name": "Jalapeño Infused Hot Honey",
+      "id": "emmental",
+      "name": "Emmental",
       "price": 1.00
     },
     {
-      "id": "oklahoma",
-      "name": "Oklahoma Stijl",
-      "price": 1.50
-    },
-    {
-      "id": "jalapeno-mix",
-      "name": "Jalapeño Mix",
+      "id": "bourbon-bacon-jam",
+      "name": "Bourbon Bacon Jam",
       "price": 1.00
     },
     {
-      "id": "pickled-onion",
-      "name": "Pickled Onion",
+      "id": "rucola",
+      "name": "Rucola",
       "price": 0.50
     },
     {
-      "id": "ajuin-peer-confijt",
-      "name": "Ajuin Peer Confijt",
-      "price": 1.00
+      "id": "parmigiano",
+      "name": "Parmigiano",
+      "price": 0.50
+    },
+    {
+      "id": "balsamico-glaze",
+      "name": "Balsamico Glaze",
+      "price": 0.50
     }
   ]
 }
