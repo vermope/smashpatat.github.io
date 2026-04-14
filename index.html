@@ -147,16 +147,16 @@ footer { text-align:center; padding:0; }
     <div class="menu-grid" id="burgers-grid"></div>
   </div>
 
-  <div class="menu-section" id="drinks-section">
-    <div class="menu-section-title">Dranken</div>
-    <div class="simple-items" id="drinks-container"></div>
-  </div>
-  
   <div class="extras-box">
     <div>
       <h4>Pimp je burger met onze extra toppings</h4>
       <div id="extras-container"></div>
     </div>
+  </div>
+
+  <div class="menu-section" id="drinks-section">
+    <div class="menu-section-title">Dranken</div>
+    <div class="simple-items" id="drinks-container"></div>
   </div>
 </section>
 
@@ -211,15 +211,15 @@ function closeMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
-// Photo URLs from uploaded images
+// Photo URLs - using exact filenames from your GitHub repo
 const photos = [
-  'https://vermope.github.io/smashpatat.github.io/burger_1.jpg',
-  'https://vermope.github.io/smashpatat.github.io/burger_2.jpg',
-  'https://vermope.github.io/smashpatat.github.io/cap.jpg',
-  'https://vermope.github.io/smashpatat.github.io/plants.jpg',
-  'https://vermope.github.io/smashpatat.github.io/burger_hand.jpg',
-  'https://vermope.github.io/smashpatat.github.io/team.jpg',
-  'https://vermope.github.io/smashpatat.github.io/burger_plate.jpg'
+  'https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg',
+  'https://vermope.github.io/smashpatat.github.io/20260312_175913.jpg',
+  'https://vermope.github.io/smashpatat.github.io/20260328_161104.jpg',
+  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0012.jpg',
+  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0016.jpg',
+  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0017.jpg',
+  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0018.jpg'
 ];
 
 // Load photos dynamically
