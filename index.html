@@ -47,8 +47,11 @@ section { padding:80px 5%; }
 .menu-section { margin-bottom:3rem; }
 .menu-section-title { font-family:'Alfa Slab One',serif; font-size:1.5rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:1.5rem; }
 .menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:1.5rem; margin-bottom:2rem; }
-.menu-card { background:var(--black); border:2px solid #2a2a2a; padding:1.8rem 1.5rem 1.5rem; position:relative; transition:transform .2s,border-color .2s; }
+.menu-card { background:var(--black); border:2px solid #2a2a2a; padding:1.8rem 1.5rem 1.5rem; position:relative; transition:transform .2s,border-color .2s; display:flex; align-items:center; gap:1.5rem; }
 .menu-card:hover { transform:translateY(-5px); border-color:var(--red); }
+.menu-card-content { flex:1; }
+.menu-card-image { flex-shrink:0; width:120px; height:120px; border-radius:50%; overflow:hidden; border:3px solid var(--red); box-shadow:0 4px 12px rgba(215,43,43,0.3); }
+.menu-card-image img { width:100%; height:100%; object-fit:cover; }
 .tag { position:absolute; top:-13px; left:1rem; background:var(--red); color:var(--white); font-size:.6rem; font-weight:900; letter-spacing:2px; text-transform:uppercase; padding:4px 10px; }
 .tag.special { background:var(--white); color:var(--black); }
 .menu-card h3 { font-family:'Alfa Slab One',serif; font-size:1.35rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:.6rem; }
@@ -160,6 +163,7 @@ footer { text-align:center; padding:0; }
         <span class="extra-item">+ Pickled Onion (€ 0,50)</span>
         <span class="extra-item">+ Ajuin Peer Confjut (€ 1,00)</span>
         <span class="extra-item">+ Bourbon Bacon Jam (€ 1,00)</span>
+        <span class="extra-item">+ Zesty Gorgo Saus (€ 1,00)</span>
         <span class="extra-item">+ Rucola (€ 0,50)</span>
         <span class="extra-item">+ Parmigiano (€ 0,50)</span>
         <span class="extra-item">+ Balsamico Glaze (€ 0,50)</span>
@@ -270,12 +274,19 @@ async function loadMenu() {
         const tagIcon = burger.tag === 'Special' ? '★ ' : '';
         tagHTML = `<div class="${tagClass}">${tagIcon}${burger.tag}</div>`;
       }
+      // Use burger-specific image if available, otherwise use placeholder
+      const burgerImage = burger.image || 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
       return `
         <div class="menu-card">
           ${tagHTML}
-          <h3>${burger.name}</h3>
-          <p>${burger.description}</p>
-          <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
+          <div class="menu-card-content">
+            <h3>${burger.name}</h3>
+            <p>${burger.description}</p>
+            <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
+          </div>
+          <div class="menu-card-image">
+            <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg'">
+          </div>
         </div>
       `;
     }).join('');
@@ -312,22 +323,40 @@ async function loadMenu() {
 // Fallback menu if JSON doesn't load
 function loadDefaultMenu() {
   const burgersGrid = document.getElementById('burgers-grid');
+  const placeholderImage = 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
+  const fallbackImage = 'https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg';
+  
   burgersGrid.innerHTML = `
     <div class="menu-card">
-      <h3>Kids Smash Patat</h3>
-      <p>Premium beef patty, saus naar keuze, gefrituurde ajuin</p>
-      <div class="price">€ 5,50</div>
+      <div class="menu-card-content">
+        <h3>Kids Smash Patat</h3>
+        <p>Premium beef patty, saus naar keuze, gefrituurde ajuin</p>
+        <div class="price">€ 5,50</div>
+      </div>
+      <div class="menu-card-image">
+        <img src="${placeholderImage}" alt="Kids Smash Patat" onerror="this.src='${fallbackImage}'">
+      </div>
     </div>
     <div class="menu-card">
       <div class="tag">Bestseller</div>
-      <h3>Smash Patat Classic</h3>
-      <p>Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle</p>
-      <div class="price">€ 9,50</div>
+      <div class="menu-card-content">
+        <h3>Smash Patat Classic</h3>
+        <p>Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle</p>
+        <div class="price">€ 9,50</div>
+      </div>
+      <div class="menu-card-image">
+        <img src="${placeholderImage}" alt="Smash Patat Classic" onerror="this.src='${fallbackImage}'">
+      </div>
     </div>
     <div class="menu-card">
-      <h3>Smash Patat Double Cheese</h3>
-      <p>Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui</p>
-      <div class="price">€ 9,50</div>
+      <div class="menu-card-content">
+        <h3>Smash Patat Double Cheese</h3>
+        <p>Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui</p>
+        <div class="price">€ 9,50</div>
+      </div>
+      <div class="menu-card-image">
+        <img src="${placeholderImage}" alt="Smash Patat Double Cheese" onerror="this.src='${fallbackImage}'">
+      </div>
     </div>
   `;
   
@@ -354,6 +383,7 @@ function loadDefaultMenu() {
     <span class="extra-item">+ Pickled Onion (€ 0,50)</span>
     <span class="extra-item">+ Ajuin Peer Confjut (€ 1,00)</span>
     <span class="extra-item">+ Bourbon Bacon Jam (€ 1,00)</span>
+    <span class="extra-item">+ Zesty Gorgo Saus (€ 1,00)</span>
     <span class="extra-item">+ Rucola (€ 0,50)</span>
     <span class="extra-item">+ Parmigiano (€ 0,50)</span>
     <span class="extra-item">+ Balsamico Glaze (€ 0,50)</span>
