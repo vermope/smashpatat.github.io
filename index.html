@@ -150,7 +150,20 @@ footer { text-align:center; padding:0; }
   <div class="extras-box">
     <div>
       <h4>Pimp je burger met onze extra toppings</h4>
-      <div id="extras-container"></div>
+      <div id="extras-container">
+        <span class="extra-item">+ Pancetta (€ 1,00)</span>
+        <span class="extra-item">+ Extra Patty (€ 2,50)</span>
+        <span class="extra-item">+ Cheddar (€ 1,00)</span>
+        <span class="extra-item">+ Jalapeño Infused Hot Honey (€ 1,00)</span>
+        <span class="extra-item">+ Oklahoma Stijl (€ 1,50)</span>
+        <span class="extra-item">+ Jalapeño Mix (€ 1,00)</span>
+        <span class="extra-item">+ Pickled Onion (€ 0,50)</span>
+        <span class="extra-item">+ Ajuin Peer Confjut (€ 1,00)</span>
+        <span class="extra-item">+ Bourbon Bacon Jam (€ 1,00)</span>
+        <span class="extra-item">+ Rucola (€ 0,50)</span>
+        <span class="extra-item">+ Parmigiano (€ 0,50)</span>
+        <span class="extra-item">+ Balsamico Glaze (€ 0,50)</span>
+      </div>
     </div>
   </div>
 
@@ -235,9 +248,18 @@ function loadPhotos() {
 // Load menu from JSON
 async function loadMenu() {
   try {
-    const response = await fetch('https://vermope.github.io/smashpatat.github.io/menu.json');
+    // Try relative path first
+    let response = await fetch('menu.json');
+    
+    // If that fails, try absolute GitHub path
+    if (!response.ok) {
+      response = await fetch('https://vermope.github.io/smashpatat.github.io/menu.json');
+    }
+    
     if (!response.ok) throw new Error('Menu niet gevonden');
+    
     const menuData = await response.json();
+    console.log('Menu loaded successfully:', menuData);
     
     // Load burgers
     const burgersGrid = document.getElementById('burgers-grid');
@@ -278,10 +300,12 @@ async function loadMenu() {
       <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
     `).join('');
     
+    console.log('Menu loaded and displayed successfully!');
+    
   } catch (error) {
     console.error('Error loading menu:', error);
-    // Fallback: load default menu if JSON fails
-    loadDefaultMenu();
+    console.log('Using fallback HTML menu instead');
+    // Fallback is now in HTML directly
   }
 }
 
@@ -322,9 +346,8 @@ function loadDefaultMenu() {
   const extrasContainer = document.getElementById('extras-container');
   extrasContainer.innerHTML = `
     <span class="extra-item">+ Pancetta (€ 1,00)</span>
-    <span class="extra-item">+ Extra Patty (€ 2,00)</span>
+    <span class="extra-item">+ Extra Patty (€ 2,50)</span>
     <span class="extra-item">+ Cheddar (€ 1,00)</span>
-    <span class="extra-item">+ Emmental (€ 1,00)</span>
     <span class="extra-item">+ Jalapeño Infused Hot Honey (€ 1,00)</span>
     <span class="extra-item">+ Oklahoma Stijl (€ 1,50)</span>
     <span class="extra-item">+ Jalapeño Mix (€ 1,00)</span>

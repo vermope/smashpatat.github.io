@@ -44,16 +44,11 @@
     {
       "id": "extra-patty",
       "name": "Extra Patty",
-      "price": 2.00
+      "price": 2.50
     },
     {
       "id": "cheddar",
       "name": "Cheddar",
-      "price": 1.00
-    },
-    {
-      "id": "emmental",
-      "name": "Emmental",
       "price": 1.00
     },
     {
@@ -84,6 +79,11 @@
     {
       "id": "bourbon-bacon-jam",
       "name": "Bourbon Bacon Jam",
+      "price": 1.00
+    },
+    {
+      "id": "zesty-gorgo-saus",
+      "name": "Zesty Gorgo Saus",
       "price": 1.00
     },
     {
