@@ -235,7 +235,8 @@ function loadPhotos() {
 // Load menu from JSON
 async function loadMenu() {
   try {
-    const response = await fetch('menu.json');
+    const response = await fetch('https://vermope.github.io/smashpatat.github.io/menu.json');
+    if (!response.ok) throw new Error('Menu niet gevonden');
     const menuData = await response.json();
     
     // Load burgers
@@ -279,7 +280,60 @@ async function loadMenu() {
     
   } catch (error) {
     console.error('Error loading menu:', error);
+    // Fallback: load default menu if JSON fails
+    loadDefaultMenu();
   }
+}
+
+// Fallback menu if JSON doesn't load
+function loadDefaultMenu() {
+  const burgersGrid = document.getElementById('burgers-grid');
+  burgersGrid.innerHTML = `
+    <div class="menu-card">
+      <h3>Kids Smash Patat</h3>
+      <p>Premium beef patty, saus naar keuze, gefrituurde ajuin</p>
+      <div class="price">€ 5,50</div>
+    </div>
+    <div class="menu-card">
+      <div class="tag">Bestseller</div>
+      <h3>Smash Patat Classic</h3>
+      <p>Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle</p>
+      <div class="price">€ 9,50</div>
+    </div>
+    <div class="menu-card">
+      <h3>Smash Patat Double Cheese</h3>
+      <p>Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui</p>
+      <div class="price">€ 9,50</div>
+    </div>
+  `;
+  
+  const drinksContainer = document.getElementById('drinks-container');
+  drinksContainer.innerHTML = `
+    <div class="simple-item">
+      <div class="name">Fris/Pils</div>
+      <div class="price">€ 2,80</div>
+    </div>
+    <div class="simple-item">
+      <div class="name">Speciaal Bier</div>
+      <div class="price">€ 3,50</div>
+    </div>
+  `;
+  
+  const extrasContainer = document.getElementById('extras-container');
+  extrasContainer.innerHTML = `
+    <span class="extra-item">+ Pancetta (€ 1,00)</span>
+    <span class="extra-item">+ Extra Patty (€ 2,50)</span>
+    <span class="extra-item">+ Cheddar (€ 1,00)</span>
+    <span class="extra-item">+ Jalapeño Infused Hot Honey (€ 1,00)</span>
+    <span class="extra-item">+ Oklahoma Stijl (€ 1,50)</span>
+    <span class="extra-item">+ Jalapeño Mix (€ 1,00)</span>
+    <span class="extra-item">+ Pickled Onion (€ 0,50)</span>
+    <span class="extra-item">+ Ajuin Peer Confjut (€ 1,00)</span>
+    <span class="extra-item">+ Bourbon Bacon Jam (€ 1,00)</span>
+    <span class="extra-item">+ Rucola (€ 0,50)</span>
+    <span class="extra-item">+ Parmigiano (€ 0,50)</span>
+    <span class="extra-item">+ Balsamico Glaze (€ 0,50)</span>
+  `;
 }
 
 // Load menu and photos on page load

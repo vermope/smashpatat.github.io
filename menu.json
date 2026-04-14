@@ -44,7 +44,7 @@
     {
       "id": "extra-patty",
       "name": "Extra Patty",
-      "price": 2.00
+      "price": 2.50
     },
     {
       "id": "cheddar",
@@ -52,8 +52,28 @@
       "price": 1.00
     },
     {
-      "id": "emmental",
-      "name": "Emmental",
+      "id": "jalapeno-infused-hot-honey",
+      "name": "Jalapeño Infused Hot Honey",
+      "price": 1.00
+    },
+    {
+      "id": "oklahoma-stijl",
+      "name": "Oklahoma Stijl",
+      "price": 1.50
+    },
+    {
+      "id": "jalapeno-mix",
+      "name": "Jalapeño Mix",
+      "price": 1.00
+    },
+    {
+      "id": "pickled-onion",
+      "name": "Pickled Onion",
+      "price": 0.50
+    },
+    {
+      "id": "ajuin-peer-confjut",
+      "name": "Ajuin Peer Confjut",
       "price": 1.00
     },
     {
