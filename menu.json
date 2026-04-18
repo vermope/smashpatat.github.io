@@ -72,8 +72,8 @@
       "price": 0.50
     },
     {
-      "id": "ajuin-peer-confijt",
-      "name": "Ajuin Peer Confijt",
+      "id": "ajuin-peer-confjut",
+      "name": "Ajuin Peer Confjut",
       "price": 1.00
     },
     {
@@ -82,9 +82,24 @@
       "price": 1.00
     },
     {
-      "id": "zesty-gorgonzola-cream",
-      "name": "Zesty Gorgonzola Cream",
+      "id": "zesty-gorgo-saus",
+      "name": "Zesty Gorgo Saus",
       "price": 1.00
+    },
+    {
+      "id": "sp-chili-saus",
+      "name": "SP Chili Saus",
+      "price": 0.50
+    },
+    {
+      "id": "sp-burger-saus",
+      "name": "SP Burger Saus",
+      "price": 0.50
+    },
+    {
+      "id": "sp-truffelsaus",
+      "name": "SP Truffelsaus",
+      "price": 0.75
     },
     {
       "id": "rucola",
