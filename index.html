@@ -284,8 +284,15 @@ async function loadMenu() {
     if (menuData.signature_burgers && menuData.signature_burgers.length > 0) {
       signatureGrid.innerHTML = menuData.signature_burgers.map(burger => {
         const burgerImage = burger.image || placeholderImage;
+        let tagHTML = '';
+        if (burger.tag) {
+          const tagClass = burger.tag === 'Special' ? 'tag special' : 'tag';
+          const tagIcon = burger.tag === 'Special' ? '★ ' : '';
+          tagHTML = `<div class="${tagClass}">${tagIcon}${burger.tag}</div>`;
+        }
         return `
           <div class="menu-card">
+            ${tagHTML}
             <div class="menu-card-content">
               <h3>${burger.name}</h3>
               <p>${burger.description}</p>
