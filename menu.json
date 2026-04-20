@@ -22,6 +22,29 @@
       "tag": null
     }
   ],
+  "signature_burgers": [
+    {
+      "id": "gorgo-smash",
+      "name": "Gorgo Smash",
+      "description": "Dubbel premium beef patty, Zesty Gorgonzola crème, peer confijt, pancetta, rucola",
+      "price": 11.00,
+      "tag": null
+    },
+    {
+      "id": "chili-smash",
+      "name": "Chili Smash",
+      "description": "Dubbel premium beef patty, SP Chipotle Saus, Jalapeño mix, cheddar, ijsbergsla, rode ui pickle",
+      "price": 11.00,
+      "tag": null
+    },
+    {
+      "id": "truffel-smash",
+      "name": "Truffel Smash",
+      "description": "Dubbel premium beef patty, SP Truffel saus, rucola, parmigiano, rode ui pickle, balsamico glaze",
+      "price": 11.50,
+      "tag": null
+    }
+  ],
   "sides": [],
   "drinks": [
     {

@@ -295,6 +295,29 @@ async function loadMenu() {
       `;
     }).join('');
 
+    // Load signature burgers
+    const signatureGrid = document.getElementById('signature-grid');
+    const signatureSection = document.getElementById('signature-section');
+    if (menuData.signature_burgers && menuData.signature_burgers.length > 0) {
+      signatureGrid.innerHTML = menuData.signature_burgers.map(burger => {
+        const burgerImage = burger.image || 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
+        return `
+          <div class="menu-card">
+            <div class="menu-card-content">
+              <h3>${burger.name}</h3>
+              <p>${burger.description}</p>
+              <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
+            </div>
+            <div class="menu-card-image">
+              <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg'">
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      signatureSection.style.display = 'none';
+    }
+
     // Load drinks
     const drinksContainer = document.getElementById('drinks-container');
     const drinksSection = document.getElementById('drinks-section');
@@ -335,7 +358,7 @@ function loadDefaultMenu() {
       <div class="menu-card-content">
         <h3>Kids Smash Patat</h3>
         <p>Premium beef patty, saus naar keuze, gefrituurde ajuin</p>
-        <div class="price">€ 5,50</div>
+        <div class="price">€ 6,50</div>
       </div>
       <div class="menu-card-image">
         <img src="${placeholderImage}" alt="Kids Smash Patat" onerror="this.src='${fallbackImage}'">
@@ -360,6 +383,41 @@ function loadDefaultMenu() {
       </div>
       <div class="menu-card-image">
         <img src="${placeholderImage}" alt="Smash Patat Double Cheese" onerror="this.src='${fallbackImage}'">
+      </div>
+    </div>
+  `;
+  
+  // Load signature burgers fallback
+  const signatureGrid = document.getElementById('signature-grid');
+  signatureGrid.innerHTML = `
+    <div class="menu-card">
+      <div class="menu-card-content">
+        <h3>Gorgo Smash</h3>
+        <p>Dubbel premium beef patty, Zesty Gorgonzola crème, peer confijt, pancetta, rucola</p>
+        <div class="price">€ 11,00</div>
+      </div>
+      <div class="menu-card-image">
+        <img src="${placeholderImage}" alt="Gorgo Smash" onerror="this.src='${fallbackImage}'">
+      </div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-card-content">
+        <h3>Chili Smash</h3>
+        <p>Dubbel premium beef patty, SP Chipotle Saus, Jalapeño mix, cheddar, ijsbergsla, rode ui pickle</p>
+        <div class="price">€ 11,00</div>
+      </div>
+      <div class="menu-card-image">
+        <img src="${placeholderImage}" alt="Chili Smash" onerror="this.src='${fallbackImage}'">
+      </div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-card-content">
+        <h3>Truffel Smash</h3>
+        <p>Dubbel premium beef patty, SP Truffel saus, rucola, parmigiano, rode ui pickle, balsamico glaze</p>
+        <div class="price">€ 11,50</div>
+      </div>
+      <div class="menu-card-image">
+        <img src="${placeholderImage}" alt="Truffel Smash" onerror="this.src='${fallbackImage}'">
       </div>
     </div>
   `;
