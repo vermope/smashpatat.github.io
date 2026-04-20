@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allergeneninformatie - Smash Patat</title>
+<link rel="icon" type="image/png" href="https://vermope.github.io/smashpatat.github.io/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --black:#111111; --white:#f5f5f0; --red:#D72B2B; --orange:#FF6B35; }
+body { font-family:'Inter',sans-serif; background:var(--black); color:var(--white); padding:2rem 5%; }
+.header { text-align:center; margin-bottom:3rem; }
+.logo { height:80px; margin-bottom:1rem; }
+.back-btn { display:inline-block; margin-bottom:2rem; padding:.8rem 1.5rem; background:var(--red); color:var(--white); text-decoration:none; font-weight:700; border-radius:4px; transition:background .2s; }
+.back-btn:hover { background:#b82424; }
+.warning-box { background:var(--orange); color:var(--black); padding:1.5rem; border-radius:8px; margin-bottom:2rem; }
+.warning-box h2 { font-family:'Alfa Slab One',serif; font-size:1.5rem; margin-bottom:.5rem; }
+.warning-box p { line-height:1.6; }
+.section-title { font-family:'Alfa Slab One',serif; font-size:1.8rem; color:var(--red); margin:2rem 0 1rem; }
+.table-container { overflow-x:auto; margin-bottom:3rem; }
+table { width:100%; border-collapse:collapse; background:#181818; box-shadow:0 4px 12px rgba(0,0,0,.3); }
+thead { background:var(--orange); color:var(--black); }
+th { padding:1rem; text-align:left; font-weight:900; font-size:.85rem; text-transform:uppercase; letter-spacing:1px; }
+td { padding:1rem; border-bottom:1px solid #2a2a2a; }
+tr:hover { background:#222; }
+.product-name { font-weight:700; }
+.check { color:#4ade80; font-size:1.3rem; }
+.cross { color:#ef4444; font-size:1.3rem; }
+.warning { color:var(--orange); font-size:1.3rem; }
+.legend { background:#181818; padding:1.5rem; border-radius:8px; margin-bottom:2rem; }
+.legend h3 { font-family:'Alfa Slab One',serif; color:var(--orange); margin-bottom:1rem; }
+.legend-item { display:flex; align-items:center; gap:1rem; margin:.5rem 0; }
+.info-boxes { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin:2rem 0; }
+.info-box { background:#181818; padding:1.5rem; border-radius:8px; border-left:4px solid var(--orange); }
+.info-box h3 { color:var(--orange); font-weight:900; margin-bottom:.5rem; }
+.info-box p { color:#ccc; line-height:1.6; font-size:.9rem; }
+.footer-note { text-align:center; padding:2rem; color:#666; font-size:.85rem; margin-top:3rem; border-top:1px solid #2a2a2a; }
+@media(max-width:768px) {
+  table { font-size:.8rem; }
+  th, td { padding:.6rem .4rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat" class="logo">
+  <h1 style="font-family:'Alfa Slab One',serif; font-size:2rem; color:var(--red); margin:1rem 0;">Allergeneninformatie</h1>
+  <a href="index.html" class="back-btn">← Terug naar menu</a>
+</div>
+
+<div class="warning-box">
+  <h2>⚠️ ALLERGENENINFORMATIE 🍔</h2>
+  <p>Beste burger-fan! 🤩 Heb je een allergie of intolerantie? Meld het ons direct! Ondanks onze zorgvuldige werkwijze is kruisbesmetting in onze compacte foodtruck nooit 100% uit te sluiten.</p>
+</div>
+
+<h1 class="section-title">📋 ALLERGENEN OVERZICHT</h1>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>PRODUCT</th>
+        <th>🌾 GLUTEN</th>
+        <th>🥛 MELK</th>
+        <th>🥚 EI</th>
+        <th>🌭 MOSTERD</th>
+        <th>🌰 SESAM</th>
+        <th>🔥 ANDERE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="product-name">🎈 Kids Smash 👶</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Classic Smash 🍔</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Double Cheese 🧀</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Chili Smash 🌶️</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Gorgo Smash 🧀🔵</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>Schimmelkaas</td>
+      </tr>
+      <tr>
+        <td class="product-name">Truffel Smash 🍄</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Pancetta (Extra) 🥓</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Speciaal Bier 🍺</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>Gerst/Gluten</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="legend">
+  <h3>LEGENDA</h3>
+  <div class="legend-item">
+    <span class="check">✓</span>
+    <span>Aanwezig</span>
+  </div>
+  <div class="legend-item">
+    <span class="warning">⚠</span>
+    <span>Kan sporen bevatten (door leverancier of kruisbesmetting)</span>
+  </div>
+  <div class="legend-item">
+    <span class="cross">✗</span>
+    <span>Niet aanwezig</span>
+  </div>
+</div>
+
+<h2 class="section-title">💡 BELANGRIJKE INFO</h2>
+
+<div class="info-boxes">
+  <div class="info-box">
+    <h3>🍞 Onze Broodjes</h3>
+    <p>Onze brioche broodjes bevatten Gluten (tarwe) en Melk. Ze kunnen sporen van Sesam bevatten.</p>
+  </div>
+  
+  <div class="info-box">
+    <h3>🧀 Onze Kazen</h3>
+    <p>Cheddar, Emmental en Gorgonzola bevatten Melk/Lactose.</p>
+  </div>
+  
+  <div class="info-box">
+    <h3>💧 Onze Sauzen</h3>
+    <p>De Smash-saus en Chili-relish bevatten Ei (mayonaisebasis) en Mosterd.</p>
+  </div>
+  
+  <div class="info-box">
+    <h3>🛡️ Kruisbesmetting</h3>
+    <p>In onze gezellige maar kleine truck werken we met veel ingrediënten tegelijk. We kunnen daarom geen 100% garantie geven tegen minieme sporen.</p>
+  </div>
+</div>
+
+<div class="footer-note">
+  <p><strong>Vraag onze crew gerust naar de volledige ingrediëntenlijst op de verpakkingen! ✨</strong></p>
+  <p style="margin-top:1rem;">Laatste update: April 2026</p>
+</div>
+
+</body>
+</html>
