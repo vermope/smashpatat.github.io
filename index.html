@@ -153,28 +153,16 @@ footer { text-align:center; padding:0; }
   <div class="extras-box">
     <div>
       <h4>Pimp je burger met onze extra toppings</h4>
-      <div id="extras-container">
-        <span class="extra-item">+ Pancetta (€ 1,00)</span>
-        <span class="extra-item">+ Extra Patty (€ 2,50)</span>
-        <span class="extra-item">+ Cheddar (€ 1,00)</span>
-        <span class="extra-item">+ Jalapeño Infused Hot Honey (€ 1,00)</span>
-        <span class="extra-item">+ Oklahoma Stijl (€ 1,50)</span>
-        <span class="extra-item">+ Jalapeño Mix (€ 1,00)</span>
-        <span class="extra-item">+ Pickled Onion (€ 0,50)</span>
-        <span class="extra-item">+ Ajuin Peer Confjut (€ 1,00)</span>
-        <span class="extra-item">+ Bourbon Bacon Jam (€ 1,00)</span>
-        <span class="extra-item">+ Zesty Gorgo Saus (€ 1,00)</span>
-        <span class="extra-item">+ SP Chili Saus (€ 0,50)</span>
-        <span class="extra-item">+ SP Burger Saus (€ 0,50)</span>
-        <span class="extra-item">+ SP Truffelsaus (€ 0,75)</span>
-        <span class="extra-item">+ Rucola (€ 0,50)</span>
-        <span class="extra-item">+ Parmigiano (€ 0,50)</span>
-        <span class="extra-item">+ Balsamico Glaze (€ 0,50)</span>
-      </div>
+      <div id="extras-container"></div>
     </div>
   </div>
 
-  <div class="menu-section" id="drinks-section">
+  <div class="menu-section">
+    <div class="menu-section-title">Onze Suggesties</div>
+    <div class="menu-grid" id="signature-grid"></div>
+  </div>
+
+  <div class="menu-section">
     <div class="menu-section-title">Dranken</div>
     <div class="simple-items" id="drinks-container"></div>
   </div>
@@ -188,9 +176,7 @@ footer { text-align:center; padding:0; }
     <div class="divider"></div>
     <p>Wij zijn Smash Patat — een foodtruck met één missie: de beste smashed burger van de streek op jouw bord krijgen. Geen poespas, gewoon eerlijke smaken en ingrediënten die we lokaal selecteren. Kwaliteitsvlees uit de regio, een boterzacht broodje en de perfecte smash. Onze burgers worden ter plekke platgedrukt op een gloeiend hete plancha, waardoor die unieke, gekarameliseerde en krokante korst ontstaat waar je voor terugkomt.</p>
   </div>
-  <div class="prikbord" id="foto-grid">
-    <!-- Photos will be loaded dynamically -->
-  </div>
+  <div class="prikbord" id="foto-grid"></div>
 </section>
 
 <div class="checker-strip checker"></div>
@@ -231,7 +217,7 @@ function closeMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
-// Photo URLs - using exact filenames from your GitHub repo
+// Photo URLs
 const photos = [
   'https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg',
   'https://vermope.github.io/smashpatat.github.io/20260312_175913.jpg',
@@ -243,7 +229,7 @@ const photos = [
   'https://vermope.github.io/smashpatat.github.io/oklahoma.jpg'
 ];
 
-// Load photos dynamically
+// Load photos
 function loadPhotos() {
   const fotoGrid = document.getElementById('foto-grid');
   fotoGrid.innerHTML = photos.map((photo, index) => `
@@ -256,18 +242,17 @@ function loadPhotos() {
 // Load menu from JSON
 async function loadMenu() {
   try {
-    // Try relative path first
     let response = await fetch('menu.json');
-    
-    // If that fails, try absolute GitHub path
     if (!response.ok) {
       response = await fetch('https://vermope.github.io/smashpatat.github.io/menu.json');
     }
-    
     if (!response.ok) throw new Error('Menu niet gevonden');
     
     const menuData = await response.json();
     console.log('Menu loaded successfully:', menuData);
+    
+    const placeholderImage = 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
+    const fallbackImage = 'https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg';
     
     // Load burgers
     const burgersGrid = document.getElementById('burgers-grid');
@@ -278,8 +263,7 @@ async function loadMenu() {
         const tagIcon = burger.tag === 'Special' ? '★ ' : '';
         tagHTML = `<div class="${tagClass}">${tagIcon}${burger.tag}</div>`;
       }
-      // Use burger-specific image if available, otherwise use placeholder
-      const burgerImage = burger.image || 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
+      const burgerImage = burger.image || placeholderImage;
       return `
         <div class="menu-card">
           ${tagHTML}
@@ -289,7 +273,7 @@ async function loadMenu() {
             <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
           </div>
           <div class="menu-card-image">
-            <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg'">
+            <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='${fallbackImage}'">
           </div>
         </div>
       `;
@@ -297,10 +281,9 @@ async function loadMenu() {
 
     // Load signature burgers
     const signatureGrid = document.getElementById('signature-grid');
-    const signatureSection = document.getElementById('signature-section');
     if (menuData.signature_burgers && menuData.signature_burgers.length > 0) {
       signatureGrid.innerHTML = menuData.signature_burgers.map(burger => {
-        const burgerImage = burger.image || 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
+        const burgerImage = burger.image || placeholderImage;
         return `
           <div class="menu-card">
             <div class="menu-card-content">
@@ -309,18 +292,15 @@ async function loadMenu() {
               <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
             </div>
             <div class="menu-card-image">
-              <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg'">
+              <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='${fallbackImage}'">
             </div>
           </div>
         `;
       }).join('');
-    } else {
-      signatureSection.style.display = 'none';
     }
 
     // Load drinks
     const drinksContainer = document.getElementById('drinks-container');
-    const drinksSection = document.getElementById('drinks-section');
     if (menuData.drinks && menuData.drinks.length > 0) {
       drinksContainer.innerHTML = menuData.drinks.map(drink => `
         <div class="simple-item">
@@ -328,8 +308,6 @@ async function loadMenu() {
           <div class="price">€ ${drink.price.toFixed(2).replace('.', ',')}</div>
         </div>
       `).join('');
-    } else {
-      drinksSection.style.display = 'none';
     }
 
     // Load extras
@@ -342,120 +320,10 @@ async function loadMenu() {
     
   } catch (error) {
     console.error('Error loading menu:', error);
-    console.log('Using fallback HTML menu instead');
-    // Fallback is now in HTML directly
   }
 }
 
-// Fallback menu if JSON doesn't load
-function loadDefaultMenu() {
-  const burgersGrid = document.getElementById('burgers-grid');
-  const placeholderImage = 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
-  const fallbackImage = 'https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg';
-  
-  burgersGrid.innerHTML = `
-    <div class="menu-card">
-      <div class="menu-card-content">
-        <h3>Kids Smash Patat</h3>
-        <p>Premium beef patty, saus naar keuze, gefrituurde ajuin</p>
-        <div class="price">€ 6,50</div>
-      </div>
-      <div class="menu-card-image">
-        <img src="${placeholderImage}" alt="Kids Smash Patat" onerror="this.src='${fallbackImage}'">
-      </div>
-    </div>
-    <div class="menu-card">
-      <div class="tag">Bestseller</div>
-      <div class="menu-card-content">
-        <h3>Smash Patat Classic</h3>
-        <p>Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle</p>
-        <div class="price">€ 9,50</div>
-      </div>
-      <div class="menu-card-image">
-        <img src="${placeholderImage}" alt="Smash Patat Classic" onerror="this.src='${fallbackImage}'">
-      </div>
-    </div>
-    <div class="menu-card">
-      <div class="menu-card-content">
-        <h3>Smash Patat Double Cheese</h3>
-        <p>Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui</p>
-        <div class="price">€ 9,50</div>
-      </div>
-      <div class="menu-card-image">
-        <img src="${placeholderImage}" alt="Smash Patat Double Cheese" onerror="this.src='${fallbackImage}'">
-      </div>
-    </div>
-  `;
-  
-  // Load signature burgers fallback
-  const signatureGrid = document.getElementById('signature-grid');
-  signatureGrid.innerHTML = `
-    <div class="menu-card">
-      <div class="menu-card-content">
-        <h3>Gorgo Smash</h3>
-        <p>Dubbel premium beef patty, Zesty Gorgonzola crème, peer confijt, pancetta, rucola</p>
-        <div class="price">€ 11,00</div>
-      </div>
-      <div class="menu-card-image">
-        <img src="${placeholderImage}" alt="Gorgo Smash" onerror="this.src='${fallbackImage}'">
-      </div>
-    </div>
-    <div class="menu-card">
-      <div class="menu-card-content">
-        <h3>Chili Smash</h3>
-        <p>Dubbel premium beef patty, SP Chipotle Saus, Jalapeño mix, cheddar, ijsbergsla, rode ui pickle</p>
-        <div class="price">€ 11,00</div>
-      </div>
-      <div class="menu-card-image">
-        <img src="${placeholderImage}" alt="Chili Smash" onerror="this.src='${fallbackImage}'">
-      </div>
-    </div>
-    <div class="menu-card">
-      <div class="menu-card-content">
-        <h3>Truffel Smash</h3>
-        <p>Dubbel premium beef patty, SP Truffel saus, rucola, parmigiano, rode ui pickle, balsamico glaze</p>
-        <div class="price">€ 11,50</div>
-      </div>
-      <div class="menu-card-image">
-        <img src="${placeholderImage}" alt="Truffel Smash" onerror="this.src='${fallbackImage}'">
-      </div>
-    </div>
-  `;
-  
-  const drinksContainer = document.getElementById('drinks-container');
-  drinksContainer.innerHTML = `
-    <div class="simple-item">
-      <div class="name">Fris/Pils</div>
-      <div class="price">€ 2,80</div>
-    </div>
-    <div class="simple-item">
-      <div class="name">Speciaal Bier</div>
-      <div class="price">€ 3,50</div>
-    </div>
-  `;
-  
-  const extrasContainer = document.getElementById('extras-container');
-  extrasContainer.innerHTML = `
-    <span class="extra-item">+ Pancetta (€ 1,00)</span>
-    <span class="extra-item">+ Extra Patty (€ 2,50)</span>
-    <span class="extra-item">+ Cheddar (€ 1,00)</span>
-    <span class="extra-item">+ Jalapeño Infused Hot Honey (€ 1,00)</span>
-    <span class="extra-item">+ Oklahoma Stijl (€ 1,50)</span>
-    <span class="extra-item">+ Jalapeño Mix (€ 1,00)</span>
-    <span class="extra-item">+ Pickled Onion (€ 0,50)</span>
-    <span class="extra-item">+ Ajuin Peer Confjut (€ 1,00)</span>
-    <span class="extra-item">+ Bourbon Bacon Jam (€ 1,00)</span>
-    <span class="extra-item">+ Zesty Gorgo Saus (€ 1,00)</span>
-    <span class="extra-item">+ SP Chili Saus (€ 0,50)</span>
-    <span class="extra-item">+ SP Burger Saus (€ 0,50)</span>
-    <span class="extra-item">+ SP Truffelsaus (€ 0,75)</span>
-    <span class="extra-item">+ Rucola (€ 0,50)</span>
-    <span class="extra-item">+ Parmigiano (€ 0,50)</span>
-    <span class="extra-item">+ Balsamico Glaze (€ 0,50)</span>
-  `;
-}
-
-// Load menu and photos on page load
+// Load menu and photos
 loadMenu();
 loadPhotos();
 
