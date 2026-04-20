@@ -9,6 +9,7 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root { --black:#111111; --white:#f5f5f0; --red:#D72B2B; --cs:40px; }
+html { scroll-behavior: smooth; }
 body { font-family:'Inter',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
 .checker { background-image:repeating-conic-gradient(var(--black) 0% 25%,var(--white) 0% 50%); background-size:var(--cs) var(--cs); }
 nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 5%; height:64px; background:var(--black); border-bottom:3px solid var(--red); }
@@ -101,6 +102,10 @@ section { padding:80px 5%; }
 .contact-btn.primary:hover { background:transparent; color:var(--white); border-color:var(--white); }
 footer { text-align:center; padding:0; }
 .footer-inner { background:var(--black); padding:2rem; border-top:3px solid var(--red); font-size:.8rem; color:#555; letter-spacing:1px; }
+.back-to-top { position:fixed; bottom:2rem; right:2rem; width:50px; height:50px; background:var(--red); color:var(--white); border:none; border-radius:50%; font-size:1.5rem; cursor:pointer; display:none; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(215,43,43,0.4); transition:transform .2s,opacity .2s; z-index:1000; }
+.back-to-top:hover { transform:translateY(-3px); }
+.back-to-top.show { display:flex; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @media(max-width:700px) {
   .pin-foto { width:85vw; }
   .nav-links { display:none; }
@@ -210,6 +215,8 @@ footer { text-align:center; padding:0; }
   <div class="footer-inner">© 2026 Smash Patat · Alle rechten voorbehouden · smashpatat@gmail.com · <a href="privacy.html" style="color:var(--red);text-decoration:none;">Privacybeleid</a></div>
 </footer>
 
+<button class="back-to-top" id="backToTop" aria-label="Terug naar boven">↑</button>
+
 <script>
 function toggleMenu() {
   const h = document.getElementById('hamburger');
@@ -234,12 +241,12 @@ const photos = [
   'https://vermope.github.io/smashpatat.github.io/oklahoma.jpg'
 ];
 
-// Load photos
+// Load photos with lazy loading
 function loadPhotos() {
   const fotoGrid = document.getElementById('foto-grid');
   fotoGrid.innerHTML = photos.map((photo, index) => `
     <div class="pin-foto">
-      <img src="${photo}" alt="Smash Patat foto ${index + 1}" onerror="this.parentElement.style.display='none'">
+      <img src="${photo}" alt="Smash Patat foto ${index + 1}" loading="lazy" onerror="this.parentElement.style.display='none'">
     </div>
   `).join('');
 }
@@ -338,6 +345,21 @@ async function loadMenu() {
 // Load menu and photos
 loadMenu();
 loadPhotos();
+
+// Back to top button
+const backToTopBtn = document.getElementById('backToTop');
+
+window.addEventListener('scroll', () => {
+  if (window.pageYOffset > 300) {
+    backToTopBtn.classList.add('show');
+  } else {
+    backToTopBtn.classList.remove('show');
+  }
+});
+
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 // Calendar events
 const API_URL="https://script.google.com/macros/s/AKfycbzcmNvWJE-kzNoYDrvGPgRWTe3XNtyaWNenhKjtkaCbZVaV17nHjsJjRF5H3WjahbJWWQ/exec";
