@@ -69,22 +69,22 @@ section { padding:80px 5%; }
 #over { padding:80px 5%; }
 .over-header { margin-bottom:3rem; }
 .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
-.prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:3rem 2rem; display:flex; flex-wrap:wrap; justify-content:center; gap:2.5rem; border:4px solid #333; }
-.pin-foto { position:relative; background:#fff; padding:10px 10px 40px; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transform:rotate(-2deg); transition:transform .3s ease, box-shadow .3s ease; cursor:pointer; width:280px; }
-.pin-foto:nth-child(2) { transform:rotate(1.5deg); }
-.pin-foto:nth-child(3) { transform:rotate(-1deg); }
-.pin-foto:nth-child(4) { transform:rotate(2deg); }
-.pin-foto:nth-child(5) { transform:rotate(-1.5deg); }
-.pin-foto:nth-child(6) { transform:rotate(1deg); }
-.pin-foto:nth-child(7) { transform:rotate(-0.5deg); }
-.pin-foto:hover { transform:rotate(0deg) scale(1.04); box-shadow:8px 8px 20px rgba(0,0,0,.7); z-index:2; animation:shake 0.3s ease; }
-@keyframes shake {
-  0%, 100% { transform:rotate(0deg) scale(1.04); }
-  25% { transform:rotate(-1deg) scale(1.04); }
-  75% { transform:rotate(1deg) scale(1.04); }
-}
-.pin-foto img { width:100%; height:220px; object-fit:cover; display:block; }
+.prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:3rem 2rem; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:1.5rem; border:4px solid #333; position:relative; min-height:600px; }
+.pin-foto { position:absolute; background:#fff; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transition:transform .3s ease, box-shadow .3s ease, z-index .3s; cursor:pointer; }
+.pin-foto:hover { transform:scale(1.05) rotate(0deg) !important; box-shadow:8px 8px 20px rgba(0,0,0,.8); z-index:100 !important; }
+.pin-foto img { width:100%; height:100%; object-fit:cover; display:block; }
 .pin-foto::before { content:''; position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; }
+.pin-foto.small { width:180px; padding:8px 8px 30px; }
+.pin-foto.small img { height:140px; }
+.pin-foto.medium { width:240px; padding:10px 10px 35px; }
+.pin-foto.medium img { height:180px; }
+.pin-foto.large { width:320px; padding:12px 12px 40px; }
+.pin-foto.large img { height:240px; }
+.lightbox { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; padding:2rem; }
+.lightbox.active { display:flex; animation:fadeIn .3s ease; }
+.lightbox img { max-width:90%; max-height:90vh; object-fit:contain; box-shadow:0 0 50px rgba(255,255,255,0.2); }
+.lightbox-close { position:absolute; top:2rem; right:2rem; font-size:3rem; color:var(--white); cursor:pointer; background:none; border:none; width:50px; height:50px; display:flex; align-items:center; justify-content:center; transition:transform .2s; }
+.lightbox-close:hover { transform:scale(1.2); }
 #locaties { background:#181818; }
 .locatie-item { display:flex; align-items:center; gap:1.5rem; padding:1.2rem 1.5rem; border:2px solid #2a2a2a; transition:border-color .2s; margin-bottom:1rem; max-width:720px; }
 .locatie-item:hover { border-color:var(--red); }
@@ -189,6 +189,11 @@ footer { text-align:center; padding:0; }
   <div class="prikbord" id="foto-grid"></div>
 </section>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">×</button>
+  <img id="lightbox-img" src="" alt="Vergrote foto">
+</div>
+
 <div class="checker-strip checker"></div>
 
 <section id="locaties">
@@ -229,27 +234,98 @@ function closeMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
-// Photo URLs
+// Photo URLs - nieuwe lijst
 const photos = [
-  'https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg',
-  'https://vermope.github.io/smashpatat.github.io/20260312_175913.jpg',
-  'https://vermope.github.io/smashpatat.github.io/20260328_161104.jpg',
-  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0012.jpg',
-  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0016.jpg',
-  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0017.jpg',
-  'https://vermope.github.io/smashpatat.github.io/IMG-20260325-WA0018.jpg',
-  'https://vermope.github.io/smashpatat.github.io/oklahoma.jpg'
+  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_4.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_5.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_other.png',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_food.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_people.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_people_2.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_burger.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_2.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_food_2.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_food_3.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_food_4.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_homemade.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_other_2.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_people_3.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_3.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_food_5.jpg',
+  'https://vermope.github.io/smashpatat.github.io/sfeer_people_4.jpg'
 ];
 
-// Load photos with lazy loading
+// Sizes and positions for natural moodboard layout
+const photoSizes = ['small', 'medium', 'large', 'medium', 'small', 'large', 'medium', 'small', 'medium', 'large', 'small', 'medium', 'large', 'small', 'medium', 'small', 'large'];
+const rotations = [-4, 3, -2, 5, -3, 2, -5, 4, -1, 3, -4, 2, -3, 5, -2, 4, -1];
+const positions = [
+  {top: '5%', left: '8%'},
+  {top: '2%', left: '28%'},
+  {top: '8%', left: '52%'},
+  {top: '3%', left: '75%'},
+  {top: '25%', left: '5%'},
+  {top: '22%', left: '22%'},
+  {top: '28%', left: '48%'},
+  {top: '30%', left: '72%'},
+  {top: '45%', left: '3%'},
+  {top: '48%', left: '25%'},
+  {top: '42%', left: '55%'},
+  {top: '50%', left: '78%'},
+  {top: '68%', left: '8%'},
+  {top: '70%', left: '32%'},
+  {top: '65%', left: '58%'},
+  {top: '72%', left: '80%'},
+  {top: '88%', left: '15%'}
+];
+
+// Load photos with natural moodboard layout
 function loadPhotos() {
   const fotoGrid = document.getElementById('foto-grid');
-  fotoGrid.innerHTML = photos.map((photo, index) => `
-    <div class="pin-foto">
-      <img src="${photo}" alt="Smash Patat foto ${index + 1}" loading="lazy" onerror="this.parentElement.style.display='none'">
-    </div>
-  `).join('');
+  fotoGrid.innerHTML = photos.map((photo, index) => {
+    const size = photoSizes[index % photoSizes.length];
+    const rotation = rotations[index % rotations.length];
+    const position = positions[index % positions.length];
+    const zIndex = index + 1;
+    
+    return `
+      <div class="pin-foto ${size}" 
+           style="transform:rotate(${rotation}deg); top:${position.top}; left:${position.left}; z-index:${zIndex};"
+           onclick="openLightbox('${photo}')">
+        <img src="${photo}" alt="Smash Patat sfeer ${index + 1}" loading="lazy" onerror="this.parentElement.style.display='none'">
+      </div>
+    `;
+  }).join('');
 }
+
+// Lightbox functionality
+function openLightbox(imageSrc) {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  lightboxImg.src = imageSrc;
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close lightbox on click
+document.addEventListener('DOMContentLoaded', () => {
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightbox = document.getElementById('lightbox');
+  
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+});
 
 // Load menu from JSON
 async function loadMenu() {
