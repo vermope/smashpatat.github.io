@@ -2,24 +2,27 @@
   "burgers": [
     {
       "id": "kids-smash-patat",
-      "name": "Kids Smash Patat",
-      "description": "Premium beef patty, saus naar keuze, gefrituurde ajuin 🎈",
+      "name": "Kids Smash Patat 🎈🎈",
+      "description": "Premium beef patty, tomaat, ijsbergsla, saus naar keuze, gefrituurde ajuin",
       "price": 6.50,
-      "tag": null
+      "tag": null,
+      "image": "https://vermope.github.io/smashpatat.github.io/kids-smash.jpg"
     },
     {
       "id": "smash-patat-classic",
       "name": "Smash Patat Classic",
       "description": "Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle",
       "price": 9.50,
-      "tag": "Bestseller"
+      "tag": "Bestseller",
+      "image": "https://vermope.github.io/smashpatat.github.io/classic-smash.jpg"
     },
     {
       "id": "smash-patat-double-cheese",
       "name": "Smash Patat Double Cheese",
       "description": "Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui",
       "price": 9.50,
-      "tag": null
+      "tag": null,
+      "image": "https://vermope.github.io/smashpatat.github.io/cheese-smash.jpg"
     }
   ],
   "signature_burgers": [
@@ -32,7 +35,7 @@
     },
     {
       "id": "chili-smash",
-      "name": "Chili Smash",
+      "name": "Chili Smash 🌶️🌶️",
       "description": "Dubbel premium beef patty, SP Chipotle Saus, Jalapeño mix, cheddar, ijsbergsla, rode ui pickle",
       "price": 11.00,
       "tag": "Special"
