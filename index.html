@@ -77,8 +77,8 @@ section { padding:80px 5%; }
 .pin-foto { background:#fff; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transition:transform .3s ease, box-shadow .3s ease; cursor:pointer; position:relative; overflow:hidden; aspect-ratio: auto; }
 .pin-foto:hover { transform:scale(1.04) rotate(0deg) !important; box-shadow:8px 8px 20px rgba(0,0,0,.9); z-index:50 !important; }
 .pin-foto::before { content:''; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; pointer-events:none; }
-.foto-inner { width:100%; height:100%; min-height:120px; padding:5px 5px 18px; box-sizing:border-box; }
-.foto-inner img { width:100%; height:100%; object-fit:cover; display:block; min-height:115px; }
+.foto-inner { width:100%; height:100%; padding:5px 5px 18px; box-sizing:border-box; background:#1a1a1a; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.foto-inner img { width:100%; height:100%; object-fit:contain; object-position:center; display:block; }
 .carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); background:var(--red); color:var(--white); border:none; width:50px; height:50px; border-radius:50%; font-size:1.8rem; cursor:pointer; z-index:2000; transition:all .2s; box-shadow:0 4px 12px rgba(215,43,43,0.5); display:flex; align-items:center; justify-content:center; pointer-events:auto; }
 .carousel-arrow:hover { background:#b82424; transform:translateY(-50%) scale(1.1); }
 .carousel-arrow:active { transform:translateY(-50%) scale(0.95); }
@@ -277,26 +277,26 @@ let totalSlides = 1;
 // Rij 1 kolommen moeten optellen tot 12, rij 2 ook, enz.
 const mosaicLayouts = [
   [
-    [5, 300, -2],
+    [5, 340, -2],
+    [4, 340,  1],
+    [3, 340, -1],
+    [4, 360,  2],
+    [4, 360, -1],
+    [4, 360,  1],
+    [4, 300,  2],
+    [4, 300, -2],
     [4, 300,  1],
-    [3, 300, -1],
-    [3, 220,  2],
-    [3, 220, -1],
-    [3, 220,  1],
-    [3, 220, -2],
-    [4, 240,  2],
-    [5, 240, -1],
   ],
   [
+    [4, 340,  2],
+    [5, 340, -1],
+    [3, 340,  1],
+    [4, 360, -2],
+    [4, 360,  1],
+    [4, 360, -1],
     [4, 300,  2],
-    [5, 300, -1],
-    [3, 300,  1],
-    [4, 220, -2],
-    [4, 220,  1],
-    [4, 220, -1],
-    [3, 240,  2],
-    [5, 240, -2],
-    [4, 240,  1],
+    [4, 300, -2],
+    [4, 300,  1],
   ]
 ];
 
