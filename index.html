@@ -115,10 +115,15 @@ footer { text-align:center; padding:0; }
 .back-to-top.show { display:flex; animation:fadeIn .3s ease; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @media(max-width:700px) {
-  .mosaic { grid-template-columns:repeat(6, 1fr); grid-auto-rows:70px; gap:5px; }
   .nav-links { display:none; }
   .hamburger { display:flex; }
+  .mosaic { display:none; }
+  .mobile-foto-single { display:flex !important; }
 }
+.mobile-foto-single { display:none; width:100%; position:relative; }
+.mobile-foto-single .foto-inner { min-height:280px; padding:8px 8px 28px; background:#1a1a1a; }
+.mobile-foto-single .foto-inner img { width:100%; height:260px; object-fit:contain; object-position:center; display:block; }
+.mobile-foto-single::before { content:''; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -300,6 +305,9 @@ const mosaicLayouts = [
   ]
 ];
 
+let mobilePhotoIndex = 0;
+let mobileAutoTimer = null;
+
 function loadPhotos() {
   const fotoGrid = document.getElementById('foto-grid');
   const photosPerSlide = 9;
@@ -309,23 +317,67 @@ function loadPhotos() {
   for (let s = 0; s < totalSlides; s++) {
     const slidePhotos = photos.slice(s * photosPerSlide, (s + 1) * photosPerSlide);
     const pattern = mosaicLayouts[s % mosaicLayouts.length];
-    let mosaicHTML = '<div class="mosaic">';
 
+    // Desktop mosaic
+    let mosaicHTML = '<div class="mosaic">';
     slidePhotos.forEach((photo, idx) => {
       const [cols, h, rot] = pattern[idx] || [3, 280, 0];
       mosaicHTML += `<div class="pin-foto" style="grid-column:span ${cols};height:${h}px;transform:rotate(${rot}deg);z-index:${idx+1};" onclick="openLightbox('${photo}')"><div class="foto-inner"><img src="${photo}" alt="Smash Patat sfeer" loading="lazy" onerror="this.closest('.pin-foto').style.visibility='hidden'"></div></div>`;
     });
-
     mosaicHTML += '</div>';
+
     slidesHTML += `<div class="prikbord-slide">${mosaicHTML}</div>`;
   }
 
   fotoGrid.innerHTML = slidesHTML;
 
+  // Mobile single photo (apart element, buiten slides)
+  updateMobilePhoto();
+
   const dotsContainer = document.getElementById('carousel-dots');
   dotsContainer.innerHTML = Array.from({length: totalSlides}, (_, i) =>
     `<div class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`
   ).join('');
+
+  startMobileAuto();
+}
+
+function updateMobilePhoto() {
+  let el = document.getElementById('mobile-single');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'mobile-single';
+    el.className = 'pin-foto mobile-foto-single';
+    el.innerHTML = `<div class="foto-inner"><img id="mobile-single-img" src="" alt="Smash Patat sfeer"></div>`;
+    el.onclick = () => openLightbox(photos[mobilePhotoIndex]);
+    document.getElementById('foto-grid').parentElement.appendChild(el);
+  }
+  const rot = [-3, 2, -1, 3, -2, 1, -3, 2, 0][mobilePhotoIndex % 9];
+  el.style.transform = `rotate(${rot}deg)`;
+  document.getElementById('mobile-single-img').src = photos[mobilePhotoIndex];
+}
+
+function nextMobilePhoto() {
+  mobilePhotoIndex = (mobilePhotoIndex + 1) % photos.length;
+  updateMobilePhoto();
+  resetMobileAuto();
+}
+
+function prevMobilePhoto() {
+  mobilePhotoIndex = (mobilePhotoIndex - 1 + photos.length) % photos.length;
+  updateMobilePhoto();
+  resetMobileAuto();
+}
+
+function startMobileAuto() {
+  mobileAutoTimer = setInterval(() => {
+    if (window.innerWidth <= 700) nextMobilePhoto();
+  }, 3500);
+}
+
+function resetMobileAuto() {
+  clearInterval(mobileAutoTimer);
+  startMobileAuto();
 }
 
 // Carousel navigation
@@ -368,8 +420,14 @@ function closeLightbox() {
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
   // Carousel arrows
-  document.getElementById('carousel-prev').addEventListener('click', prevSlide);
-  document.getElementById('carousel-next').addEventListener('click', nextSlide);
+  document.getElementById('carousel-prev').addEventListener('click', () => {
+    if (window.innerWidth <= 700) prevMobilePhoto();
+    else prevSlide();
+  });
+  document.getElementById('carousel-next').addEventListener('click', () => {
+    if (window.innerWidth <= 700) nextMobilePhoto();
+    else nextSlide();
+  });
   
   // Lightbox
   const lightboxClose = document.getElementById('lightbox-close');
