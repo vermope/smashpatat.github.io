@@ -69,7 +69,10 @@ section { padding:80px 5%; }
 #over { padding:80px 5%; }
 .over-header { margin-bottom:3rem; }
 .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
-.prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:3rem 2rem; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:1.5rem; border:4px solid #333; position:relative; min-height:600px; }
+.prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:3rem 2rem; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:1.5rem; border:4px solid #333; position:relative; min-height:600px; overflow:hidden; }
+.prikbord-container { position:relative; width:100%; }
+.prikbord-slides { display:flex; transition:transform .6s ease; }
+.prikbord-slide { min-width:100%; position:relative; min-height:600px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; }
 .pin-foto { position:absolute; background:#fff; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transition:transform .3s ease, box-shadow .3s ease, z-index .3s; cursor:pointer; }
 .pin-foto:hover { transform:scale(1.05) rotate(0deg) !important; box-shadow:8px 8px 20px rgba(0,0,0,.8); z-index:100 !important; }
 .pin-foto img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -80,6 +83,13 @@ section { padding:80px 5%; }
 .pin-foto.medium img { height:180px; }
 .pin-foto.large { width:320px; padding:12px 12px 40px; }
 .pin-foto.large img { height:240px; }
+.carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); background:var(--red); color:var(--white); border:none; width:60px; height:60px; border-radius:50%; font-size:2rem; cursor:pointer; z-index:1000; transition:all .2s; box-shadow:0 4px 12px rgba(215,43,43,0.5); display:flex; align-items:center; justify-content:center; }
+.carousel-arrow:hover { background:#b82424; transform:translateY(-50%) scale(1.1); box-shadow:0 6px 16px rgba(215,43,43,0.7); }
+.carousel-arrow.prev { left:1rem; }
+.carousel-arrow.next { right:1rem; }
+.carousel-dots { position:absolute; bottom:1rem; left:50%; transform:translateX(-50%); display:flex; gap:0.5rem; z-index:1000; }
+.carousel-dot { width:12px; height:12px; border-radius:50%; background:#666; border:2px solid var(--white); cursor:pointer; transition:all .2s; }
+.carousel-dot.active { background:var(--red); transform:scale(1.3); }
 .lightbox { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; padding:2rem; }
 .lightbox.active { display:flex; animation:fadeIn .3s ease; }
 .lightbox img { max-width:90%; max-height:90vh; object-fit:contain; box-shadow:0 0 50px rgba(255,255,255,0.2); }
@@ -186,7 +196,14 @@ footer { text-align:center; padding:0; }
     <div class="divider"></div>
     <p>Wij zijn Smash Patat — een foodtruck met één missie: de beste smashed burger van de streek op jouw bord krijgen. Geen poespas, gewoon eerlijke smaken en ingrediënten die we lokaal selecteren. Kwaliteitsvlees uit de regio, een boterzacht broodje en de perfecte smash. Onze burgers worden ter plekke platgedrukt op een gloeiend hete plancha, waardoor die unieke, gekarameliseerde en krokante korst ontstaat waar je voor terugkomt.</p>
   </div>
-  <div class="prikbord" id="foto-grid"></div>
+  <div class="prikbord-container">
+    <div class="prikbord">
+      <div class="prikbord-slides" id="foto-grid"></div>
+    </div>
+    <button class="carousel-arrow prev" id="carousel-prev">‹</button>
+    <button class="carousel-arrow next" id="carousel-next">›</button>
+    <div class="carousel-dots" id="carousel-dots"></div>
+  </div>
 </section>
 
 <div class="lightbox" id="lightbox">
@@ -255,46 +272,86 @@ const photos = [
   'https://vermope.github.io/smashpatat.github.io/sfeer_people_4.jpg'
 ];
 
-// Sizes and positions for natural moodboard layout
-const photoSizes = ['small', 'medium', 'large', 'medium', 'small', 'large', 'medium', 'small', 'medium', 'large', 'small', 'medium', 'large', 'small', 'medium', 'small', 'large'];
-const rotations = [-4, 3, -2, 5, -3, 2, -5, 4, -1, 3, -4, 2, -3, 5, -2, 4, -1];
-const positions = [
-  {top: '5%', left: '8%'},
-  {top: '2%', left: '28%'},
-  {top: '8%', left: '52%'},
-  {top: '3%', left: '75%'},
-  {top: '25%', left: '5%'},
-  {top: '22%', left: '22%'},
-  {top: '28%', left: '48%'},
-  {top: '30%', left: '72%'},
-  {top: '45%', left: '3%'},
-  {top: '48%', left: '25%'},
-  {top: '42%', left: '55%'},
-  {top: '50%', left: '78%'},
-  {top: '68%', left: '8%'},
-  {top: '70%', left: '32%'},
-  {top: '65%', left: '58%'},
-  {top: '72%', left: '80%'},
-  {top: '88%', left: '15%'}
+// 8-9 foto's per scherm
+const photosPerSlide = 9;
+const totalSlides = Math.ceil(photos.length / photosPerSlide);
+let currentSlide = 0;
+
+// Sizes and rotations for natural moodboard layout
+const photoSizes = ['small', 'medium', 'large', 'medium', 'small', 'large', 'medium', 'small', 'medium'];
+const rotations = [-4, 3, -2, 5, -3, 2, -5, 4, -1];
+const positionsPerSlide = [
+  {top: '8%', left: '8%'},
+  {top: '5%', left: '35%'},
+  {top: '10%', left: '65%'},
+  {top: '35%', left: '5%'},
+  {top: '32%', left: '40%'},
+  {top: '38%', left: '72%'},
+  {top: '65%', left: '10%'},
+  {top: '62%', left: '42%'},
+  {top: '68%', left: '75%'}
 ];
 
-// Load photos with natural moodboard layout
+// Load photos with carousel
 function loadPhotos() {
   const fotoGrid = document.getElementById('foto-grid');
-  fotoGrid.innerHTML = photos.map((photo, index) => {
-    const size = photoSizes[index % photoSizes.length];
-    const rotation = rotations[index % rotations.length];
-    const position = positions[index % positions.length];
-    const zIndex = index + 1;
+  let slidesHTML = '';
+  
+  for (let slideIndex = 0; slideIndex < totalSlides; slideIndex++) {
+    const startIdx = slideIndex * photosPerSlide;
+    const endIdx = Math.min(startIdx + photosPerSlide, photos.length);
+    const slidePhotos = photos.slice(startIdx, endIdx);
     
-    return `
-      <div class="pin-foto ${size}" 
-           style="transform:rotate(${rotation}deg); top:${position.top}; left:${position.left}; z-index:${zIndex};"
-           onclick="openLightbox('${photo}')">
-        <img src="${photo}" alt="Smash Patat sfeer ${index + 1}" loading="lazy" onerror="this.parentElement.style.display='none'">
-      </div>
-    `;
-  }).join('');
+    let slideContent = '<div class="prikbord-slide">';
+    
+    slidePhotos.forEach((photo, idx) => {
+      const size = photoSizes[idx % photoSizes.length];
+      const rotation = rotations[idx % rotations.length];
+      const position = positionsPerSlide[idx % positionsPerSlide.length];
+      const zIndex = idx + 1;
+      
+      slideContent += `
+        <div class="pin-foto ${size}" 
+             style="transform:rotate(${rotation}deg); top:${position.top}; left:${position.left}; z-index:${zIndex};"
+             onclick="openLightbox('${photo}')">
+          <img src="${photo}" alt="Smash Patat sfeer" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </div>
+      `;
+    });
+    
+    slideContent += '</div>';
+    slidesHTML += slideContent;
+  }
+  
+  fotoGrid.innerHTML = slidesHTML;
+  
+  // Create dots
+  const dotsContainer = document.getElementById('carousel-dots');
+  dotsContainer.innerHTML = Array.from({length: totalSlides}, (_, i) => 
+    `<div class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`
+  ).join('');
+}
+
+// Carousel navigation
+function goToSlide(index) {
+  currentSlide = index;
+  const slides = document.getElementById('foto-grid');
+  slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+  
+  // Update dots
+  document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === currentSlide);
+  });
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % totalSlides;
+  goToSlide(currentSlide);
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+  goToSlide(currentSlide);
 }
 
 // Lightbox functionality
@@ -312,8 +369,13 @@ function closeLightbox() {
   document.body.style.overflow = '';
 }
 
-// Close lightbox on click
+// Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+  // Carousel arrows
+  document.getElementById('carousel-prev').addEventListener('click', prevSlide);
+  document.getElementById('carousel-next').addEventListener('click', nextSlide);
+  
+  // Lightbox
   const lightboxClose = document.getElementById('lightbox-close');
   const lightbox = document.getElementById('lightbox');
   
@@ -322,8 +384,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === lightbox) closeLightbox();
   });
   
+  // Keyboard navigation
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'ArrowRight') nextSlide();
   });
 });
 
