@@ -70,26 +70,23 @@ section { padding:80px 5%; }
 .over-header { margin-bottom:3rem; }
 .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
 .prikbord-container { position:relative; width:100%; }
-.prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:3rem 2rem; border:4px solid #333; position:relative; min-height:600px; overflow:hidden; }
+.prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:1.5rem; border:4px solid #333; overflow:hidden; }
 .prikbord-slides { display:flex; transition:transform .6s ease; }
-.prikbord-slide { min-width:100%; position:relative; min-height:600px; }
-.pin-foto { position:absolute; background:#fff; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transition:transform .3s ease, box-shadow .3s ease; cursor:pointer; }
-.pin-foto:hover { transform:scale(1.05) rotate(0deg) !important; box-shadow:8px 8px 20px rgba(0,0,0,.8); z-index:100 !important; }
+.prikbord-slide { min-width:100%; }
+.mosaic { display:grid; grid-template-columns:repeat(12, 1fr); grid-auto-rows:80px; gap:8px; }
+.pin-foto { background:#fff; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transition:transform .3s ease, box-shadow .3s ease, z-index .1s; cursor:pointer; position:relative; overflow:visible; }
+.pin-foto:hover { transform:scale(1.04) rotate(0deg) !important; box-shadow:8px 8px 20px rgba(0,0,0,.9); z-index:50 !important; }
 .pin-foto img { width:100%; height:100%; object-fit:cover; display:block; }
-.pin-foto::before { content:''; position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; }
-.pin-foto.small { width:180px; padding:8px 8px 30px; }
-.pin-foto.small img { height:140px; }
-.pin-foto.medium { width:240px; padding:10px 10px 35px; }
-.pin-foto.medium img { height:180px; }
-.pin-foto.large { width:320px; padding:12px 12px 40px; }
-.pin-foto.large img { height:240px; }
-.carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); background:var(--red); color:var(--white); border:none; width:60px; height:60px; border-radius:50%; font-size:2rem; cursor:pointer; z-index:2000; transition:all .2s; box-shadow:0 4px 12px rgba(215,43,43,0.5); display:flex; align-items:center; justify-content:center; pointer-events:auto; }
-.carousel-arrow:hover { background:#b82424; transform:translateY(-50%) scale(1.1); box-shadow:0 6px 16px rgba(215,43,43,0.7); }
+.pin-foto::before { content:''; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; }
+.pin-foto .foto-inner { width:100%; height:100%; padding:7px 7px 24px; box-sizing:border-box; }
+.pin-foto .foto-inner img { width:100%; height:100%; object-fit:cover; display:block; }
+.carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); background:var(--red); color:var(--white); border:none; width:50px; height:50px; border-radius:50%; font-size:1.8rem; cursor:pointer; z-index:2000; transition:all .2s; box-shadow:0 4px 12px rgba(215,43,43,0.5); display:flex; align-items:center; justify-content:center; pointer-events:auto; }
+.carousel-arrow:hover { background:#b82424; transform:translateY(-50%) scale(1.1); }
 .carousel-arrow:active { transform:translateY(-50%) scale(0.95); }
-.carousel-arrow.prev { left:1rem; }
-.carousel-arrow.next { right:1rem; }
-.carousel-dots { position:absolute; bottom:1rem; left:50%; transform:translateX(-50%); display:flex; gap:0.5rem; z-index:2000; pointer-events:auto; }
-.carousel-dot { width:12px; height:12px; border-radius:50%; background:#666; border:2px solid var(--white); cursor:pointer; transition:all .2s; }
+.carousel-arrow.prev { left:0.5rem; }
+.carousel-arrow.next { right:0.5rem; }
+.carousel-dots { position:absolute; bottom:0.6rem; left:50%; transform:translateX(-50%); display:flex; gap:0.5rem; z-index:2000; pointer-events:auto; }
+.carousel-dot { width:10px; height:10px; border-radius:50%; background:#666; border:2px solid var(--white); cursor:pointer; transition:all .2s; }
 .carousel-dot.active { background:var(--red); transform:scale(1.3); }
 .carousel-dot:hover { background:#999; }
 .lightbox { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; padding:2rem; }
@@ -119,7 +116,7 @@ footer { text-align:center; padding:0; }
 .back-to-top.show { display:flex; animation:fadeIn .3s ease; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @media(max-width:700px) {
-  .pin-foto { width:85vw; }
+  .mosaic { grid-template-columns:repeat(6, 1fr); grid-auto-rows:70px; gap:5px; }
   .nav-links { display:none; }
   .hamburger { display:flex; }
 }
@@ -274,62 +271,66 @@ const photos = [
   'https://vermope.github.io/smashpatat.github.io/sfeer_people_4.jpg'
 ];
 
-// 8-9 foto's per scherm
-const photosPerSlide = 9;
-const totalSlides = Math.ceil(photos.length / photosPerSlide);
 let currentSlide = 0;
 
-// Sizes and rotations for natural moodboard layout
-const photoSizes = ['small', 'medium', 'large', 'medium', 'small', 'large', 'medium', 'small', 'medium'];
-const rotations = [-4, 3, -2, 5, -3, 2, -5, 4, -1];
-const positionsPerSlide = [
-  {top: '8%', left: '8%'},
-  {top: '5%', left: '35%'},
-  {top: '10%', left: '65%'},
-  {top: '35%', left: '5%'},
-  {top: '32%', left: '40%'},
-  {top: '38%', left: '72%'},
-  {top: '65%', left: '10%'},
-  {top: '62%', left: '42%'},
-  {top: '68%', left: '75%'}
+// Mosaic layout patterns — each entry: [colSpan, rowSpan, rotation]
+// 9 foto's per slide, patroon vult 12-kolommen grid compact
+const mosaicLayouts = [
+  // slide patroon A (foto 1-9)
+  [
+    [3, 3, -3],  // groot landschap
+    [2, 2,  2],  // medium portret
+    [2, 2, -1],  // medium portret
+    [2, 2,  3],  // medium portret
+    [3, 2, -2],  // breed medium
+    [2, 2,  1],  // medium
+    [2, 3, -2],  // hoog portret
+    [3, 3,  2],  // groot
+    [2, 2, -1],  // small
+  ],
+  // slide patroon B (foto 10-17, minder foto's)
+  [
+    [4, 3,  2],
+    [2, 2, -2],
+    [3, 2,  1],
+    [3, 2, -1],
+    [2, 3,  3],
+    [4, 2, -3],
+    [3, 3,  1],
+    [2, 2, -2],
+    [3, 2,  2],
+  ]
 ];
 
-// Load photos with carousel
 function loadPhotos() {
   const fotoGrid = document.getElementById('foto-grid');
+  const photosPerSlide = 9;
+  const totalSlides = Math.ceil(photos.length / photosPerSlide);
   let slidesHTML = '';
-  
-  for (let slideIndex = 0; slideIndex < totalSlides; slideIndex++) {
-    const startIdx = slideIndex * photosPerSlide;
-    const endIdx = Math.min(startIdx + photosPerSlide, photos.length);
-    const slidePhotos = photos.slice(startIdx, endIdx);
-    
-    let slideContent = '<div class="prikbord-slide">';
-    
+
+  for (let s = 0; s < totalSlides; s++) {
+    const slidePhotos = photos.slice(s * photosPerSlide, (s + 1) * photosPerSlide);
+    const pattern = mosaicLayouts[s % mosaicLayouts.length];
+    let mosaicHTML = '<div class="mosaic">';
+
     slidePhotos.forEach((photo, idx) => {
-      const size = photoSizes[idx % photoSizes.length];
-      const rotation = rotations[idx % rotations.length];
-      const position = positionsPerSlide[idx % positionsPerSlide.length];
-      const zIndex = idx + 1;
-      
-      slideContent += `
-        <div class="pin-foto ${size}" 
-             style="transform:rotate(${rotation}deg); top:${position.top}; left:${position.left}; z-index:${zIndex};"
-             onclick="openLightbox('${photo}')">
-          <img src="${photo}" alt="Smash Patat sfeer" loading="lazy" onerror="this.parentElement.style.display='none'">
-        </div>
-      `;
+      const [cols, rows, rot] = pattern[idx] || [2, 2, 0];
+      mosaicHTML += `
+        <div class="pin-foto" style="grid-column:span ${cols}; grid-row:span ${rows}; transform:rotate(${rot}deg); z-index:${idx+1};" onclick="openLightbox('${photo}')">
+          <div class="foto-inner">
+            <img src="${photo}" alt="Smash Patat sfeer" loading="lazy" onerror="this.parentElement.parentElement.style.visibility='hidden'">
+          </div>
+        </div>`;
     });
-    
-    slideContent += '</div>';
-    slidesHTML += slideContent;
+
+    mosaicHTML += '</div>';
+    slidesHTML += `<div class="prikbord-slide">${mosaicHTML}</div>`;
   }
-  
+
   fotoGrid.innerHTML = slidesHTML;
-  
-  // Create dots
+
   const dotsContainer = document.getElementById('carousel-dots');
-  dotsContainer.innerHTML = Array.from({length: totalSlides}, (_, i) => 
+  dotsContainer.innerHTML = Array.from({length: totalSlides}, (_, i) =>
     `<div class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`
   ).join('');
 }
