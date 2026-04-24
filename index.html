@@ -55,7 +55,7 @@ section { padding:80px 5%; }
 .menu-card-image img { width:100%; height:100%; object-fit:cover; }
 .tag { position:absolute; top:-13px; left:1rem; background:var(--red); color:var(--white); font-size:.6rem; font-weight:900; letter-spacing:2px; text-transform:uppercase; padding:4px 10px; }
 .tag.special { background:var(--white); color:var(--black); }
-.menu-card h3 { font-family:'Alfa Slab One',serif; font-size:1.35rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:.6rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.menu-card h3 { font-family:'Alfa Slab One',serif; font-size:1.35rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:.6rem; }
 .menu-card p { font-size:.85rem; color:#aaa; line-height:1.65; }
 .menu-card .price { margin-top:1.2rem; font-family:'Alfa Slab One',serif; font-size:1.7rem; color:var(--white); }
 .simple-items { display:flex; flex-wrap:wrap; gap:1rem; }
@@ -320,7 +320,10 @@ const mosaicLayouts = [
 let mobilePhotoIndex = 0;
 let mobileAutoTimer = null;
 
-function loadPhotos() {
+function wrapEmojis(name) {
+  // Wrap trailing emoji clusters in a nowrap span so they never break alone to next line
+  return name.replace(/([\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F\u20E3]?(\s*[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F\u20E3]?)*)\s*$/u, '<span style="white-space:nowrap">$1</span>');
+}
   const fotoGrid = document.getElementById('foto-grid');
   const photosPerSlide = 9;
   totalSlides = Math.ceil(photos.length / photosPerSlide);
@@ -487,7 +490,7 @@ async function loadMenu() {
         <div class="menu-card">
           ${tagHTML}
           <div class="menu-card-content">
-            <h3>${burger.name}</h3>
+            <h3>${wrapEmojis(burger.name)}</h3>
             <p>${burger.description}</p>
             <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
           </div>
@@ -513,7 +516,7 @@ async function loadMenu() {
           <div class="menu-card">
             ${tagHTML}
             <div class="menu-card-content">
-              <h3>${burger.name}</h3>
+              <h3>${wrapEmojis(burger.name)}</h3>
               <p>${burger.description}</p>
               <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
             </div>
