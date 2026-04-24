@@ -1,0 +1,45 @@
+name: Update photos.json
+
+on:
+  push:
+    paths:
+      - 'fotos/**'
+
+jobs:
+  update-photos:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate photos.json
+        run: |
+          BASE_URL="https://vermope.github.io/smashpatat.github.io/fotos"
+          FILES=$(find fotos -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | sort)
+          
+          echo "[" > photos.json
+          FIRST=true
+          while IFS= read -r file; do
+            FILENAME=$(basename "$file")
+            if [ "$FIRST" = true ]; then
+              echo "  \"${BASE_URL}/${FILENAME}\"" >> photos.json
+              FIRST=false
+            else
+              echo "  ,\"${BASE_URL}/${FILENAME}\"" >> photos.json
+            fi
+          done <<< "$FILES"
+          echo "]" >> photos.json
+          
+          echo "Generated photos.json:"
+          cat photos.json
+
+      - name: Commit photos.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add photos.json
+          git diff --staged --quiet || git commit -m "Auto-update photos.json"
+          git push
