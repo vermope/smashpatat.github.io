@@ -321,9 +321,10 @@ let mobilePhotoIndex = 0;
 let mobileAutoTimer = null;
 
 function wrapEmojis(name) {
-  // Wrap trailing emoji clusters in a nowrap span so they never break alone to next line
   return name.replace(/([\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F\u20E3]?(\s*[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F\u20E3]?)*)\s*$/u, '<span style="white-space:nowrap">$1</span>');
 }
+
+function loadPhotos() {
   const fotoGrid = document.getElementById('foto-grid');
   const photosPerSlide = 9;
   totalSlides = Math.ceil(photos.length / photosPerSlide);
