@@ -254,26 +254,38 @@ function closeMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
-// Photo URLs - nieuwe lijst
-const photos = [
-  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_4.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_5.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_other.png',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_food.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_people.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_people_2.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_burger.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_2.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_food_2.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_food_3.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_food_4.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_homemade.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_other_2.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_people_3.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_burger_3.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_food_5.jpg',
-  'https://vermope.github.io/smashpatat.github.io/sfeer_people_4.jpg'
-];
+// Foto's worden automatisch geladen vanuit photos.json
+let photos = [];
+
+async function fetchPhotos() {
+  try {
+    const res = await fetch('photos.json');
+    if (!res.ok) throw new Error();
+    photos = await res.json();
+  } catch {
+    // Fallback: oude hardcoded lijst
+    photos = [
+      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_4.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_5.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_other.png',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_food.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_people.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_people_2.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_burger.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_2.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_food_2.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_food_3.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_food_4.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_homemade.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_other_2.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_people_3.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_3.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_food_5.jpg',
+      'https://vermope.github.io/smashpatat.github.io/sfeer_people_4.jpg'
+    ];
+  }
+  loadPhotos();
+}
 
 let currentSlide = 0;
 let totalSlides = 1;
@@ -539,7 +551,7 @@ async function loadMenu() {
 
 // Load menu and photos
 loadMenu();
-loadPhotos();
+fetchPhotos();
 
 // Back to top button
 const backToTopBtn = document.getElementById('backToTop');
