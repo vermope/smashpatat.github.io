@@ -172,7 +172,7 @@ footer { text-align:center; padding:0; }
 </head>
 <body>
 <nav>
-  <div class="nav-logo"><img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat"></div>
+  <div class="nav-logo"><img src="logo.png" alt="Smash Patat logo" width="42" height="42"></div>
   <ul class="nav-links">
     <li><a href="#menu">Menu</a></li>
     <li><a href="#over">Over ons</a></li>
@@ -195,7 +195,7 @@ footer { text-align:center; padding:0; }
   <div class="hero-checker-top checker"></div>
   <div class="hero-content">
     <div class="hero-logo-wrap">
-      <img src="https://vermope.github.io/smashpatat.github.io/logo.png" alt="Smash Patat Logo">
+      <img src="logo.png" alt="Smash Patat – Premium Smashburgers Foodtruck" fetchpriority="high">
     </div>
     <p class="hero-tagline">Premium Smashed Burgers · Pure Smaak</p>
     <a href="#menu" class="hero-btn">Bekijk ons menu</a>
@@ -387,7 +387,7 @@ function loadPhotos() {
     let mosaicHTML = '<div class="mosaic">';
     slidePhotos.forEach((photo, idx) => {
       const [cols, h, rot] = pattern[idx] || [3, 280, 0];
-      mosaicHTML += `<div class="pin-foto" style="grid-column:span ${cols};height:${h}px;transform:rotate(${rot}deg);z-index:${idx+1};" onclick="openLightbox('${photo}')"><div class="foto-inner"><img src="${photo}" alt="Smash Patat sfeer" loading="lazy" onerror="this.closest('.pin-foto').style.visibility='hidden'"></div></div>`;
+      mosaicHTML += `<div class="pin-foto" style="grid-column:span ${cols};height:${h}px;transform:rotate(${rot}deg);z-index:${idx+1};" onclick="openLightbox('${photo}')"><div class="foto-inner"><img src="${photo}" alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" loading="lazy" onerror="this.closest('.pin-foto').style.visibility='hidden'"></div></div>`;
     });
     mosaicHTML += '</div>';
 
@@ -545,7 +545,7 @@ async function loadMenu() {
             <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
           </div>
           <div class="menu-card-image">
-            <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='${fallbackImage}'">
+            <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" onerror="this.src='${fallbackImage}'">
           </div>
         </div>
       `;
@@ -571,7 +571,7 @@ async function loadMenu() {
               <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
             </div>
             <div class="menu-card-image">
-              <img src="${burgerImage}" alt="${burger.name}" onerror="this.src='${fallbackImage}'">
+              <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" onerror="this.src='${fallbackImage}'">
             </div>
           </div>
         `;
