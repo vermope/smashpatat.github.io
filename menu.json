@@ -120,8 +120,8 @@
         }
       ]
     },
-    "confijt": {
-      "label": "Confijt",
+    "extra-karakter": {
+      "label": "Extra Karakter",
       "items": [
         {
           "id": "ajuin-peer-confijt",
@@ -156,11 +156,6 @@
           "id": "sp-chili-saus",
           "name": "SP Chili Saus",
           "description": "Pittige saus op basis van Chili pepers met toetsen van limoen",
-          "price": 0.50
-        },
-        {
-          "id": "parmigiano",
-          "name": "Parmigiano",
           "price": 0.50
         }
       ]
