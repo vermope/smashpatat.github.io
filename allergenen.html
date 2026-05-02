@@ -35,6 +35,7 @@ tr:hover { background:#222; }
 .info-box { background:#181818; padding:1.5rem; border-radius:8px; border-left:4px solid var(--orange); }
 .info-box h3 { color:var(--orange); font-weight:900; margin-bottom:.5rem; }
 .info-box p { color:#ccc; line-height:1.6; font-size:.9rem; }
+.sub-header { font-family:'Alfa Slab One',serif; font-size:1.2rem; color:var(--orange); margin:2rem 0 .75rem; }
 .footer-note { text-align:center; padding:2rem; color:#666; font-size:.85rem; margin-top:3rem; border-top:1px solid #2a2a2a; }
 @media(max-width:768px) {
   table { font-size:.8rem; }
@@ -55,8 +56,8 @@ tr:hover { background:#222; }
   <p>Beste burger-fan! 🤩 Heb je een allergie of intolerantie? Meld het ons direct! Ondanks onze zorgvuldige werkwijze is kruisbesmetting in onze compacte foodtruck nooit 100% uit te sluiten.</p>
 </div>
 
-<h1 class="section-title">📋 ALLERGENEN OVERZICHT</h1>
-
+<!-- BURGERS -->
+<h1 class="section-title">📋 BURGERS</h1>
 <div class="table-container">
   <table>
     <thead>
@@ -72,7 +73,7 @@ tr:hover { background:#222; }
     </thead>
     <tbody>
       <tr>
-        <td class="product-name">🎈 Kids Smash 👶</td>
+        <td class="product-name">Kids Smash Patat 🎈</td>
         <td><span class="check">✓</span></td>
         <td><span class="cross">✗</span></td>
         <td><span class="check">✓</span></td>
@@ -81,7 +82,7 @@ tr:hover { background:#222; }
         <td>-</td>
       </tr>
       <tr>
-        <td class="product-name">Classic Smash 🍔</td>
+        <td class="product-name">Smash Patat Classic</td>
         <td><span class="check">✓</span></td>
         <td><span class="check">✓</span></td>
         <td><span class="check">✓</span></td>
@@ -90,7 +91,7 @@ tr:hover { background:#222; }
         <td>-</td>
       </tr>
       <tr>
-        <td class="product-name">Double Cheese 🧀</td>
+        <td class="product-name">Smash Patat Double Cheese</td>
         <td><span class="check">✓</span></td>
         <td><span class="check">✓</span></td>
         <td><span class="check">✓</span></td>
@@ -98,15 +99,26 @@ tr:hover { background:#222; }
         <td><span class="warning">⚠</span></td>
         <td>-</td>
       </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SPECIALS -->
+<h1 class="section-title">⭐ SPECIALS</h1>
+<div class="table-container">
+  <table>
+    <thead>
       <tr>
-        <td class="product-name">Chili Smash 🌶️</td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="warning">⚠</span></td>
-        <td>-</td>
+        <th>PRODUCT</th>
+        <th>🌾 GLUTEN</th>
+        <th>🥛 MELK</th>
+        <th>🥚 EI</th>
+        <th>🌭 MOSTERD</th>
+        <th>🌰 SESAM</th>
+        <th>🔥 ANDERE</th>
       </tr>
+    </thead>
+    <tbody>
       <tr>
         <td class="product-name">Gorgo Smash 🧀🔵</td>
         <td><span class="check">✓</span></td>
@@ -117,16 +129,173 @@ tr:hover { background:#222; }
         <td>Schimmelkaas</td>
       </tr>
       <tr>
-        <td class="product-name">Truffel Smash 🍄</td>
+        <td class="product-name">Chili Smash 🌶️</td>
         <td><span class="check">✓</span></td>
         <td><span class="check">✓</span></td>
         <td><span class="check">✓</span></td>
-        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
         <td><span class="warning">⚠</span></td>
         <td>-</td>
       </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXTRAS -->
+<h1 class="section-title">➕ EXTRA TOPPINGS</h1>
+<div class="table-container">
+  <table>
+    <thead>
       <tr>
-        <td class="product-name">Pancetta (Extra) 🥓</td>
+        <th>PRODUCT</th>
+        <th>🌾 GLUTEN</th>
+        <th>🥛 MELK</th>
+        <th>🥚 EI</th>
+        <th>🌭 MOSTERD</th>
+        <th>🌰 SESAM</th>
+        <th>🔥 ANDERE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="product-name">Pancetta 🥓</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Extra Patty 🥩</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Cheddar 🧀</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Zesty Gorgo Saus 🧀🔵</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>Schimmelkaas</td>
+      </tr>
+      <tr>
+        <td class="product-name">Jalapeño Mix 🌶️</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Rucola 🥗</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Pickled Onion 🧅</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Oklahoma Stijl 🧅</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Ajuin Peer Confijt 🍐</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Bourbon Bacon Jam 🥃</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Balsamico Glaze 🍶</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">SP Burger Saus 🍔</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">SP Chili Saus 🌶️</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DRANKEN -->
+<h1 class="section-title">🍺 DRANKEN</h1>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>PRODUCT</th>
+        <th>🌾 GLUTEN</th>
+        <th>🥛 MELK</th>
+        <th>🥚 EI</th>
+        <th>🌭 MOSTERD</th>
+        <th>🌰 SESAM</th>
+        <th>🔥 ANDERE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="product-name">Fris / Pils 🥤</td>
         <td><span class="cross">✗</span></td>
         <td><span class="cross">✗</span></td>
         <td><span class="cross">✗</span></td>
@@ -170,17 +339,14 @@ tr:hover { background:#222; }
     <h3>🍞 Onze Broodjes</h3>
     <p>Onze brioche broodjes bevatten Gluten (tarwe) en Melk. Ze kunnen sporen van Sesam bevatten.</p>
   </div>
-  
   <div class="info-box">
     <h3>🧀 Onze Kazen</h3>
-    <p>Cheddar, Emmental en Gorgonzola bevatten Melk/Lactose.</p>
+    <p>Cheddar en Zesty Gorgo Saus bevatten Melk/Lactose. De Gorgonzola is een schimmelkaas.</p>
   </div>
-  
   <div class="info-box">
     <h3>💧 Onze Sauzen</h3>
-    <p>De Smash-saus en Chili-relish bevatten Ei (mayonaisebasis) en Mosterd.</p>
+    <p>SP Burger Saus en SP Chili Saus bevatten Ei (mayonaisebasis) en Mosterd.</p>
   </div>
-  
   <div class="info-box">
     <h3>🛡️ Kruisbesmetting</h3>
     <p>In onze gezellige maar kleine truck werken we met veel ingrediënten tegelijk. We kunnen daarom geen 100% garantie geven tegen minieme sporen.</p>
@@ -189,7 +355,7 @@ tr:hover { background:#222; }
 
 <div class="footer-note">
   <p><strong>Vraag onze crew gerust naar de volledige ingrediëntenlijst op de verpakkingen! ✨</strong></p>
-  <p style="margin-top:1rem;">Laatste update: April 2026</p>
+  <p style="margin-top:1rem;">Laatste update: Mei 2026</p>
 </div>
 
 </body>
