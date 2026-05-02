@@ -25,7 +25,7 @@
       "image": "https://vermope.github.io/smashpatat.github.io/cheese-smash.jpg"
     }
   ],
-  "signature_burgers": [
+  "specials": [
     {
       "id": "gorgo-smash",
       "name": "Gorgo Smash",
@@ -39,14 +39,6 @@
       "name": "Chili Smash 🌶️🌶️",
       "description": "Dubbel premium beef patty, SP Chipotle Saus, Jalapeño mix, cheddar, ijsbergsla, rode ui pickle",
       "price": 11.00,
-      "tag": "Special",
-      "image": "https://vermope.github.io/smashpatat.github.io/logo_special.png"
-    },
-    {
-      "id": "truffel-smash",
-      "name": "Truffel Smash",
-      "description": "Dubbel premium beef patty, SP Truffel saus, rucola, parmigiano, rode ui pickle, balsamico glaze",
-      "price": 11.50,
       "tag": "Special",
       "image": "https://vermope.github.io/smashpatat.github.io/logo_special.png"
     }
@@ -64,86 +56,114 @@
       "price": 3.50
     }
   ],
-  "extras": [
-    {
-      "id": "pancetta",
-      "name": "Pancetta",
-      "price": 1.00
+  "extras": {
+    "meer-vlees": {
+      "label": "Meer Vlees",
+      "items": [
+        {
+          "id": "pancetta",
+          "name": "Pancetta",
+          "description": "Italiaans buikspek, zeg maar spek met streken",
+          "price": 1.00
+        },
+        {
+          "id": "extra-patty",
+          "name": "Extra Patty",
+          "description": "Meer vlees, meer power!",
+          "price": 2.50
+        }
+      ]
     },
-    {
-      "id": "extra-patty",
-      "name": "Extra Patty",
-      "price": 2.50
+    "cheeseum": {
+      "label": "Chees'um",
+      "items": [
+        {
+          "id": "cheddar",
+          "name": "Cheddar",
+          "description": "De standaard voor een echte American burger",
+          "price": 1.00
+        },
+        {
+          "id": "zesty-gorgo-saus",
+          "name": "Zesty Gorgo Saus",
+          "description": "Een romige Gorgonzola saus met een frisse citrus punch. Gorgo-geous!",
+          "price": 1.00
+        }
+      ]
     },
-    {
-      "id": "cheddar",
-      "name": "Cheddar",
-      "price": 1.00
+    "veggies": {
+      "label": "Veggies",
+      "items": [
+        {
+          "id": "jalapeno-mix",
+          "name": "Jalapeño Mix",
+          "description": "Een pittige kick van Jalapeño pepers",
+          "price": 1.00
+        },
+        {
+          "id": "rucola",
+          "name": "Rucola",
+          "description": "Kruidige groene, frisse sla met nootachtige toetsen",
+          "price": 0.50
+        },
+        {
+          "id": "pickled-onion",
+          "name": "Pickled Onion",
+          "description": "Zoetzure rode ajuin met karakter",
+          "price": 0.50
+        },
+        {
+          "id": "oklahoma-stijl",
+          "name": "Oklahoma Stijl",
+          "description": "Flinterdunne zoete ui, wordt ge-smashed en gekarmeliseerd in de patty",
+          "price": 1.50
+        }
+      ]
     },
-    {
-      "id": "jalapeno-infused-hot-honey",
-      "name": "Jalapeño Infused Hot Honey",
-      "price": 1.00
+    "confijt": {
+      "label": "Confijt",
+      "items": [
+        {
+          "id": "ajuin-peer-confijt",
+          "name": "Ajuin Peer Confijt",
+          "description": "Peer-fecte combinatie van zoet en hartig, afgewerkt met cognac touch. Extra lekker in combinatie met onze Gorgo saus!",
+          "price": 1.00
+        },
+        {
+          "id": "bourbon-bacon-jam",
+          "name": "Bourbon Bacon Jam",
+          "description": "Sticky jam van gerookt spek, koffie shot, maple syrup en Bourbon",
+          "price": 1.00
+        },
+        {
+          "id": "balsamico-glaze",
+          "name": "Balsamico Glaze",
+          "description": "Ingedikte Balsamico azijn, een zoetje, een zuurtje, tilt de smaak van je burger naar een hoger niveau",
+          "price": 0.50
+        }
+      ]
     },
-    {
-      "id": "oklahoma-stijl",
-      "name": "Oklahoma Stijl",
-      "price": 1.50
-    },
-    {
-      "id": "jalapeno-mix",
-      "name": "Jalapeño Mix",
-      "price": 1.00
-    },
-    {
-      "id": "pickled-onion",
-      "name": "Pickled Onion",
-      "price": 0.50
-    },
-    {
-      "id": "ajuin-peer-confjut",
-      "name": "Ajuin Peer Confjut",
-      "price": 1.00
-    },
-    {
-      "id": "bourbon-bacon-jam",
-      "name": "Bourbon Bacon Jam",
-      "price": 1.00
-    },
-    {
-      "id": "zesty-gorgo-saus",
-      "name": "Zesty Gorgo Saus",
-      "price": 1.00
-    },
-    {
-      "id": "sp-chili-saus",
-      "name": "SP Chili Saus",
-      "price": 0.50
-    },
-    {
-      "id": "sp-burger-saus",
-      "name": "SP Burger Saus",
-      "price": 0.50
-    },
-    {
-      "id": "sp-truffelsaus",
-      "name": "SP Truffelsaus",
-      "price": 0.75
-    },
-    {
-      "id": "rucola",
-      "name": "Rucola",
-      "price": 0.50
-    },
-    {
-      "id": "parmigiano",
-      "name": "Parmigiano",
-      "price": 0.50
-    },
-    {
-      "id": "balsamico-glaze",
-      "name": "Balsamico Glaze",
-      "price": 0.50
+    "saus": {
+      "label": "Saus",
+      "items": [
+        {
+          "id": "sp-burger-saus",
+          "name": "SP Burger Saus",
+          "description": "Onze interpretatie van de klassieke burger saus",
+          "price": 0.50
+        },
+        {
+          "id": "sp-chili-saus",
+          "name": "SP Chili Saus",
+          "description": "Pittige saus op basis van Chili pepers met toetsen van limoen",
+          "price": 0.50
+        },
+        {
+          "id": "parmigiano",
+          "name": "Parmigiano",
+          "price": 0.50
+        }
+      ]
     }
-  ]
+  }
 }
