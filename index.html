@@ -49,9 +49,28 @@
 </script>
 
 <link rel="icon" type="image/png" href="logo.png">
+<!-- Preconnect voor snellere externe verbindingen -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://vermope.github.io">
+<link rel="dns-prefetch" href="https://smashpatat.be">
+<!-- Fonts met display=swap zodat tekst meteen zichtbaar is -->
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<!-- Preload kritieke afbeeldingen bovenaan de pagina -->
+<link rel="preload" as="image" href="logo.png" fetchpriority="high">
+<link rel="preload" as="image" href="https://vermope.github.io/smashpatat.github.io/classic-smash.jpg">
+<link rel="preload" as="image" href="https://vermope.github.io/smashpatat.github.io/kids-smash.jpg">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Zorg dat fallback fonts meteen getoond worden tijdens laden */
+@font-face {
+  font-family: 'Alfa Slab One';
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-display: swap;
+}
 :root { --black:#111111; --white:#f5f5f0; --red:#D72B2B; --cs:40px; }
 html { scroll-behavior: smooth; }
 body { font-family:'Inter',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
@@ -84,6 +103,7 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .hero-btn { display:inline-block; margin-top:2.5rem; padding:1rem 2.8rem; background:var(--red); color:var(--white); font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:3px solid var(--black); box-shadow:5px 5px 0 var(--black); transition:transform .15s,box-shadow .15s; }
 .hero-btn:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--black); }
 section { padding:80px 5%; }
+section:not(.hero) { content-visibility:auto; contain-intrinsic-size:0 500px; }
 .sec-title { font-family:'Alfa Slab One',serif; font-size:clamp(2rem,5vw,3.8rem); letter-spacing:2px; text-transform:uppercase; margin-bottom:.4rem; }
 .sec-title span { color:var(--red); }
 .divider { width:55px; height:5px; background:var(--red); margin-bottom:2.5rem; }
@@ -108,8 +128,16 @@ section { padding:80px 5%; }
 .simple-item .name { font-weight:700; letter-spacing:1px; text-transform:uppercase; font-size:.9rem; }
 .simple-item .price { font-family:'Alfa Slab One',serif; font-size:1.3rem; color:var(--white); margin-left:1.5rem; }
 .extras-box { margin-top:2.5rem; padding:1.5rem; border:2px dashed #333; }
-.extras-box h4 { font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.6rem; }
-.extra-item { display:inline-block; margin:.25rem .4rem .25rem 0; padding:.35rem .9rem; border:2px solid #444; font-size:.8rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+.extras-box > h4 { font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:1.2rem; }
+.extras-groups { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; }
+.extras-group { background:#111; border:2px solid #2a2a2a; padding:1.2rem 1.2rem 1rem; }
+.extras-group-title { font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.9rem; padding-bottom:.5rem; border-bottom:1px solid #2a2a2a; }
+.extra-item { display:flex; justify-content:space-between; align-items:flex-start; gap:.8rem; padding:.5rem 0; border-bottom:1px solid #1e1e1e; }
+.extra-item:last-child { border-bottom:none; }
+.extra-item-left { flex:1; }
+.extra-item-name { font-weight:700; letter-spacing:.5px; text-transform:uppercase; font-size:.8rem; color:var(--white); }
+.extra-item-desc { font-size:.75rem; color:#777; line-height:1.5; margin-top:.2rem; }
+.extra-item-price { font-family:'Alfa Slab One',serif; font-size:1rem; color:var(--white); flex-shrink:0; }
 #over { padding:80px 5%; }
 .over-header { margin-bottom:3rem; }
 .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
@@ -149,7 +177,7 @@ section { padding:80px 5%; }
 #contact { text-align:center; }
 .contact-strip { margin-top:2rem; display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
 .contact-btn { display:inline-flex; align-items:center; gap:.6rem; padding:.8rem 2rem; font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:3px solid var(--white); color:var(--white); transition:background .2s,color .2s; }
-.contact-btn img { height:.85rem; width:auto; display:inline-block; vertical-align:middle; }
+.contact-btn img { height:.85rem; width:auto; display:inline-block; }
 .contact-btn:hover { background:var(--white); color:var(--black); }
 .contact-btn.primary { background:var(--red); border-color:var(--red); }
 .contact-btn.primary:hover { background:transparent; color:var(--white); border-color:var(--white); }
@@ -173,7 +201,7 @@ footer { text-align:center; padding:0; }
 </head>
 <body>
 <nav>
-  <div class="nav-logo"><img src="logo.png" alt="Smash Patat logo" width="42" height="42"></div>
+  <div class="nav-logo"><img src="logo.png" alt="Smash Patat logo" width="42" height="42" decoding="async"></div>
   <ul class="nav-links">
     <li><a href="#menu">Menu</a></li>
     <li><a href="#over">Over ons</a></li>
@@ -196,7 +224,7 @@ footer { text-align:center; padding:0; }
   <div class="hero-checker-top checker"></div>
   <div class="hero-content">
     <div class="hero-logo-wrap">
-      <img src="logo.png" alt="Smash Patat – Premium Smashburgers Foodtruck" fetchpriority="high">
+      <img src="logo.png" alt="Smash Patat – Premium Smashburgers Foodtruck" fetchpriority="high" decoding="async" width="480" height="480">
     </div>
     <p class="hero-tagline">Premium Smashed Burgers · Pure Smaak</p>
     <a href="#menu" class="hero-btn">Bekijk ons menu</a>
@@ -214,10 +242,8 @@ footer { text-align:center; padding:0; }
   </div>
 
   <div class="extras-box">
-    <div>
-      <h4>Pimp je burger met onze extra toppings</h4>
-      <div id="extras-container"></div>
-    </div>
+    <h4>Pimp je burger met onze extra toppings</h4>
+    <div class="extras-groups" id="extras-container"></div>
   </div>
 
   <div class="menu-section">
@@ -388,7 +414,7 @@ function loadPhotos() {
     let mosaicHTML = '<div class="mosaic">';
     slidePhotos.forEach((photo, idx) => {
       const [cols, h, rot] = pattern[idx] || [3, 280, 0];
-      mosaicHTML += `<div class="pin-foto" style="grid-column:span ${cols};height:${h}px;transform:rotate(${rot}deg);z-index:${idx+1};" onclick="openLightbox('${photo}')"><div class="foto-inner"><img src="${photo}" alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" loading="lazy" onerror="this.closest('.pin-foto').style.visibility='hidden'"></div></div>`;
+      mosaicHTML += `<div class="pin-foto" style="grid-column:span ${cols};height:${h}px;transform:rotate(${rot}deg);z-index:${idx+1};" onclick="openLightbox('${photo}')"><div class="foto-inner"><img src="${photo}" alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" loading="lazy" decoding="async" onerror="this.closest('.pin-foto').style.visibility='hidden'"></div></div>`;
     });
     mosaicHTML += '</div>';
 
@@ -546,16 +572,17 @@ async function loadMenu() {
             <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
           </div>
           <div class="menu-card-image">
-            <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" onerror="this.src='${fallbackImage}'">
+            <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" decoding="async" onerror="this.src='${fallbackImage}'">
           </div>
         </div>
       `;
     }).join('');
 
-    // Load signature burgers
+    // Load specials
     const signatureGrid = document.getElementById('signature-grid');
-    if (menuData.signature_burgers && menuData.signature_burgers.length > 0) {
-      signatureGrid.innerHTML = menuData.signature_burgers.map(burger => {
+    const specials = menuData.specials || menuData.signature_burgers || [];
+    if (specials.length > 0) {
+      signatureGrid.innerHTML = specials.map(burger => {
         const burgerImage = burger.image || placeholderImage;
         let tagHTML = '';
         if (burger.tag) {
@@ -572,7 +599,7 @@ async function loadMenu() {
               <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
             </div>
             <div class="menu-card-image">
-              <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" onerror="this.src='${fallbackImage}'">
+              <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" decoding="async" onerror="this.src='${fallbackImage}'">
             </div>
           </div>
         `;
@@ -590,11 +617,28 @@ async function loadMenu() {
       `).join('');
     }
 
-    // Load extras
+    // Load extras (grouped)
     const extrasContainer = document.getElementById('extras-container');
-    extrasContainer.innerHTML = menuData.extras.map(extra => `
-      <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
-    `).join('');
+    if (menuData.extras && !Array.isArray(menuData.extras)) {
+      extrasContainer.innerHTML = Object.values(menuData.extras).map(group => `
+        <div class="extras-group">
+          <div class="extras-group-title">${group.label}</div>
+          ${group.items.map(item => `
+            <div class="extra-item">
+              <div class="extra-item-left">
+                <div class="extra-item-name">${item.name}</div>
+                ${item.description ? `<div class="extra-item-desc">${item.description}</div>` : ''}
+              </div>
+              <div class="extra-item-price">+€ ${item.price.toFixed(2).replace('.', ',')}</div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+    } else if (Array.isArray(menuData.extras)) {
+      extrasContainer.innerHTML = menuData.extras.map(extra => `
+        <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
+      `).join('');
+    }
     
     console.log('Menu loaded and displayed successfully!');
     
