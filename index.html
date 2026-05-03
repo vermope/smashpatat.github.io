@@ -108,16 +108,8 @@ section { padding:80px 5%; }
 .simple-item .name { font-weight:700; letter-spacing:1px; text-transform:uppercase; font-size:.9rem; }
 .simple-item .price { font-family:'Alfa Slab One',serif; font-size:1.3rem; color:var(--white); margin-left:1.5rem; }
 .extras-box { margin-top:2.5rem; padding:1.5rem; border:2px dashed #333; }
-.extras-box > h4 { font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:1.2rem; }
-.extras-groups { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; }
-.extras-group { background:#111; border:2px solid #2a2a2a; padding:1.2rem 1.2rem 1rem; }
-.extras-group-title { font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.9rem; padding-bottom:.5rem; border-bottom:1px solid #2a2a2a; }
-.extra-item { display:flex; justify-content:space-between; align-items:flex-start; gap:.8rem; padding:.5rem 0; border-bottom:1px solid #1e1e1e; }
-.extra-item:last-child { border-bottom:none; }
-.extra-item-left { flex:1; }
-.extra-item-name { font-weight:700; letter-spacing:.5px; text-transform:uppercase; font-size:.8rem; color:var(--white); }
-.extra-item-desc { font-size:.75rem; color:#777; line-height:1.5; margin-top:.2rem; }
-.extra-item-price { font-family:'Alfa Slab One',serif; font-size:1rem; color:var(--white); flex-shrink:0; }
+.extras-box h4 { font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.6rem; }
+.extra-item { display:inline-block; margin:.25rem .4rem .25rem 0; padding:.35rem .9rem; border:2px solid #444; font-size:.8rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
 #over { padding:80px 5%; }
 .over-header { margin-bottom:3rem; }
 .over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
@@ -156,7 +148,8 @@ section { padding:80px 5%; }
 .cal-note a { color:var(--red); }
 #contact { text-align:center; }
 .contact-strip { margin-top:2rem; display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
-.contact-btn { padding:.8rem 2rem; font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:3px solid var(--white); color:var(--white); transition:background .2s,color .2s; }
+.contact-btn { display:inline-flex; align-items:center; gap:.6rem; padding:.8rem 2rem; font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:3px solid var(--white); color:var(--white); transition:background .2s,color .2s; }
+.contact-btn img { height:.85rem; width:auto; display:inline-block; vertical-align:middle; }
 .contact-btn:hover { background:var(--white); color:var(--black); }
 .contact-btn.primary { background:var(--red); border-color:var(--red); }
 .contact-btn.primary:hover { background:transparent; color:var(--white); border-color:var(--white); }
@@ -221,8 +214,10 @@ footer { text-align:center; padding:0; }
   </div>
 
   <div class="extras-box">
-    <h4>Pimp je burger met onze extra toppings</h4>
-    <div class="extras-groups" id="extras-container"></div>
+    <div>
+      <h4>Pimp je burger met onze extra toppings</h4>
+      <div id="extras-container"></div>
+    </div>
   </div>
 
   <div class="menu-section">
@@ -280,8 +275,8 @@ footer { text-align:center; padding:0; }
   <div class="divider" style="margin:0 auto 2rem;"></div>
   <p style="color:#aaa;max-width:520px;margin:0 auto;line-height:1.75;">Interesse om ons te boeken voor jouw evenement, festival of bedrijfsfeest? Neem gerust contact op!</p>
   <div class="contact-strip">
-    <a href="mailto:smashpatat@gmail.com" class="contact-btn primary">✉ smashpatat@gmail.com</a>
-    <a href="https://www.instagram.com/smash.patat" class="contact-btn">📷 Instagram</a>
+    <a href="mailto:smashpatat@gmail.com" class="contact-btn primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="height:.85rem;width:auto;flex-shrink:0;"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> smashpatat@gmail.com</a>
+    <a href="https://www.instagram.com/smash.patat" class="contact-btn"><img src="https://vermope.github.io/smashpatat.github.io/insta.png" alt="Instagram"> Instagram</a>
   </div>
 </section>
 
@@ -557,11 +552,10 @@ async function loadMenu() {
       `;
     }).join('');
 
-    // Load specials
+    // Load signature burgers
     const signatureGrid = document.getElementById('signature-grid');
-    const specials = menuData.specials || menuData.signature_burgers || [];
-    if (specials.length > 0) {
-      signatureGrid.innerHTML = specials.map(burger => {
+    if (menuData.signature_burgers && menuData.signature_burgers.length > 0) {
+      signatureGrid.innerHTML = menuData.signature_burgers.map(burger => {
         const burgerImage = burger.image || placeholderImage;
         let tagHTML = '';
         if (burger.tag) {
@@ -596,28 +590,11 @@ async function loadMenu() {
       `).join('');
     }
 
-    // Load extras (grouped object format)
+    // Load extras
     const extrasContainer = document.getElementById('extras-container');
-    if (menuData.extras && !Array.isArray(menuData.extras)) {
-      extrasContainer.innerHTML = Object.values(menuData.extras).map(group => `
-        <div class="extras-group">
-          <div class="extras-group-title">${group.label}</div>
-          ${group.items.map(item => `
-            <div class="extra-item">
-              <div class="extra-item-left">
-                <div class="extra-item-name">${item.name}</div>
-                ${item.description ? `<div class="extra-item-desc">${item.description}</div>` : ''}
-              </div>
-              <div class="extra-item-price">+€ ${item.price.toFixed(2).replace('.', ',')}</div>
-            </div>
-          `).join('')}
-        </div>
-      `).join('');
-    } else if (Array.isArray(menuData.extras)) {
-      extrasContainer.innerHTML = menuData.extras.map(extra => `
-        <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
-      `).join('');
-    }
+    extrasContainer.innerHTML = menuData.extras.map(extra => `
+      <span class="extra-item">+ ${extra.name} (€ ${extra.price.toFixed(2).replace('.', ',')})</span>
+    `).join('');
     
     console.log('Menu loaded and displayed successfully!');
     
