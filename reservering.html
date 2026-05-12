@@ -131,7 +131,35 @@ textarea { resize:vertical; min-height:100px; }
 .contact-btn { display:inline-flex; align-items:center; gap:.6rem; padding:.8rem 2rem; font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:3px solid var(--white); color:var(--white); transition:background .2s,color .2s; margin-top:1rem; }
 .contact-btn:hover { background:var(--white); color:var(--black); }
 
-/* SUCCESS */
+/* KALENDER */
+#beschikbaarheid { padding:80px 5%; background:#181818; }
+.kalender-wrap { max-width:860px; margin:0 auto; }
+.kalender-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+.kalender-nav button { background:none; border:2px solid #2a2a2a; color:var(--white); font-family:'Alfa Slab One',serif; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; padding:.5rem 1.2rem; cursor:pointer; transition:border-color .2s,color .2s; }
+.kalender-nav button:hover { border-color:var(--red); color:var(--red); }
+.kalender-maand { font-family:'Alfa Slab One',serif; font-size:1.2rem; letter-spacing:2px; text-transform:uppercase; }
+.kalender-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.kalender-dag-naam { font-size:.65rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#555; text-align:center; padding:.4rem 0; }
+.kalender-dag { aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; border:2px solid transparent; position:relative; cursor:default; transition:border-color .15s; }
+.kalender-dag.leeg { background:none; }
+.kalender-dag.vrij { background:#1a1a1a; color:#aaa; }
+.kalender-dag.vrij:hover { border-color:#333; }
+.kalender-dag.verleden { background:none; color:#333; }
+.kalender-dag.vandaag { border-color:var(--white) !important; color:var(--white); }
+.kalender-dag.bezet { background:#2a0a0a; color:var(--red); border-color:#3a0f0f; }
+.kalender-dag.aanvraag { background:#1a1500; color:#c8a200; border-color:#2a2200; }
+.kalender-dag .dag-dot { width:5px; height:5px; border-radius:50%; position:absolute; bottom:4px; }
+.kalender-dag.bezet .dag-dot { background:var(--red); }
+.kalender-dag.aanvraag .dag-dot { background:#c8a200; }
+.kalender-legende { display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:1.2rem; }
+.legende-item { display:flex; align-items:center; gap:.5rem; font-size:.75rem; letter-spacing:1px; text-transform:uppercase; color:#aaa; }
+.legende-kleur { width:14px; height:14px; border:2px solid; flex-shrink:0; }
+.legende-kleur.vrij { background:#1a1a1a; border-color:#333; }
+.legende-kleur.bezet { background:#2a0a0a; border-color:#3a0f0f; }
+.legende-kleur.aanvraag { background:#1a1500; border-color:#2a2200; }
+.kalender-loading { text-align:center; padding:2rem; color:#555; font-size:.85rem; letter-spacing:1px; text-transform:uppercase; }
+
+
 .success-msg { display:none; text-align:center; padding:3rem 1rem; }
 .success-msg .big { font-size:60px; margin-bottom:1rem; }
 .success-msg h2 { font-family:'Alfa Slab One',serif; font-size:2rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:.75rem; }
@@ -206,7 +234,7 @@ footer { text-align:center; padding:0; }
           </div>
           <div class="type-option">
             <input type="radio" name="type" id="type-stand" value="Stand">
-            <label for="type-stand"><span class="icon">🍽️</span>Stand</label>
+            <label for="type-stand"><span class="icon">⛺</span>Stand</label>
           </div>
           <div class="type-option">
             <input type="radio" name="type" id="type-andere" value="Andere vraag">
@@ -293,7 +321,7 @@ footer { text-align:center; padding:0; }
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">Stuur aanvraag 🍔🍔</button>
+        <button type="submit" class="submit-btn">Stuur aanvraag 🍟</button>
         <p class="fine-print">Geen spam. We contacteren je binnen 2 werkdagen.</p>
       </form>
 
@@ -312,7 +340,7 @@ footer { text-align:center; padding:0; }
         <p>Onze foodtruck komt naar jouw locatie. Volledig zelfstandig, geen extra stroomaansluiting nodig. Ideaal voor festivals, bedrijfsfeesten en buitenevenementen.</p>
       </div>
       <div class="info-block">
-        <span class="info-icon">🍽️</span>
+        <span class="info-icon">⛺</span>
         <h3>Onze <span>Stand</span></h3>
         <p>Liever een compactere opstelling? Onze stand past overal: binnen of buiten, op kleine pleinen of in tenten. Perfect voor markten en private events.</p>
       </div>
@@ -330,10 +358,35 @@ footer { text-align:center; padding:0; }
         <h3>Liever direct <span>contact?</span></h3>
         <p>Stuur ons een mailtje of volg ons op Instagram.</p>
         <a href="mailto:smashpatat@gmail.com" class="contact-btn">✉ smashpatat@gmail.com</a>
-        <a href="https://www.instagram.com/smash.patat" target="_blank" rel="noopener" class="contact-btn" style="margin-top:.75rem;">📷 @smash.patat</a>
       </div>
     </div>
 
+  </div>
+</section>
+
+<div class="checker-strip checker"></div>
+
+<section id="beschikbaarheid">
+  <div class="kalender-wrap">
+    <div class="sec-title">Beschik<span>baarheid</span></div>
+    <div class="divider"></div>
+    <p style="color:#aaa;font-size:.9rem;line-height:1.7;margin-bottom:2rem;max-width:560px;">Bekijk onze beschikbaarheid hieronder. Vrije dagen kan je aanvragen via het formulier hierboven.</p>
+
+    <div class="kalender-nav">
+      <button id="kal-prev">← Vorige</button>
+      <div class="kalender-maand" id="kal-titel">—</div>
+      <button id="kal-next">Volgende →</button>
+    </div>
+
+    <div class="kalender-grid" id="kal-grid">
+      <div class="kalender-loading">Kalender laden...</div>
+    </div>
+
+    <div class="kalender-legende">
+      <div class="legende-item"><div class="legende-kleur vrij"></div> Vrij</div>
+      <div class="legende-item"><div class="legende-kleur aanvraag"></div> In aanvraag</div>
+      <div class="legende-item"><div class="legende-kleur bezet"></div> Bezet</div>
+    </div>
   </div>
 </section>
 
@@ -424,12 +477,12 @@ form.addEventListener('submit', async (e) => {
       success.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       alert('Er ging iets mis. Probeer opnieuw of stuur een mail naar smashpatat@gmail.com');
-      btn.textContent = 'Stuur aanvraag 🍔🍔';
+      btn.textContent = 'Stuur aanvraag 🍟';
       btn.disabled = false;
     }
   } catch {
     alert('Geen verbinding. Probeer later opnieuw.');
-    btn.textContent = 'Stuur aanvraag 🍔🍔';
+    btn.textContent = 'Stuur aanvraag 🍟';
     btn.disabled = false;
   }
 });
@@ -458,6 +511,116 @@ window.addEventListener('scroll', () => {
 backToTopBtn.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+// ── BESCHIKBAARHEIDSKALENDER ──────────────────────────────────────────────
+// Vervang deze URL door jouw gepubliceerde Google Apps Script URL
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytkPIteLWBg5Iz0hL0U-wAnE-LFPqsEV7q63583pKvmPhmgMjbZHpBKgBPTz_sXvBoiw/exec';
+
+let bezetteDagen = {}; // { 'YYYY-MM-DD': { status, label } }
+let huidigJaar, huidigMaand;
+
+const MAANDEN = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+const DAGEN = ['Ma','Di','Wo','Do','Vr','Za','Zo'];
+
+async function laadKalenderData() {
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    bezetteDagen = {};
+    data.forEach(item => {
+      bezetteDagen[item.date] = { status: item.status, label: item.label };
+    });
+  } catch (e) {
+    console.warn('Kalender kon niet geladen worden:', e);
+  }
+  toonMaand(huidigJaar, huidigMaand);
+}
+
+function toonMaand(jaar, maand) {
+  huidigJaar = jaar;
+  huidigMaand = maand;
+
+  document.getElementById('kal-titel').textContent = MAANDEN[maand] + ' ' + jaar;
+
+  const grid = document.getElementById('kal-grid');
+  grid.innerHTML = '';
+
+  // Dagnamen header
+  DAGEN.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'kalender-dag-naam';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const eerstedag = new Date(jaar, maand, 1);
+  // Maandag = 0, zondag = 6
+  let startOffset = (eerstedag.getDay() + 6) % 7;
+  const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
+  const vandaag = new Date();
+  vandaag.setHours(0,0,0,0);
+
+  // Lege cellen vóór de eerste dag
+  for (let i = 0; i < startOffset; i++) {
+    const leeg = document.createElement('div');
+    leeg.className = 'kalender-dag leeg';
+    grid.appendChild(leeg);
+  }
+
+  for (let dag = 1; dag <= aantalDagen; dag++) {
+    const datum = new Date(jaar, maand, dag);
+    const datumStr = datum.toISOString().split('T')[0];
+    const info = bezetteDagen[datumStr];
+
+    const el = document.createElement('div');
+    let klasse = 'kalender-dag';
+
+    if (datum < vandaag) {
+      klasse += ' verleden';
+    } else if (info) {
+      klasse += ' ' + info.status;
+    } else {
+      klasse += ' vrij';
+    }
+
+    if (datum.toDateString() === vandaag.toDateString()) klasse += ' vandaag';
+
+    el.className = klasse;
+    el.textContent = dag;
+
+    if (info) {
+      const dot = document.createElement('div');
+      dot.className = 'dag-dot';
+      el.appendChild(dot);
+      el.title = info.label;
+    }
+
+    grid.appendChild(el);
+  }
+}
+
+// Init kalender
+const nu = new Date();
+huidigJaar = nu.getFullYear();
+huidigMaand = nu.getMonth();
+
+document.getElementById('kal-prev').addEventListener('click', () => {
+  huidigMaand--;
+  if (huidigMaand < 0) { huidigMaand = 11; huidigJaar--; }
+  toonMaand(huidigJaar, huidigMaand);
+});
+document.getElementById('kal-next').addEventListener('click', () => {
+  huidigMaand++;
+  if (huidigMaand > 11) { huidigMaand = 0; huidigJaar++; }
+  toonMaand(huidigJaar, huidigMaand);
+});
+
+// Laad data als SCRIPT_URL ingesteld is, anders toon lege kalender
+if (SCRIPT_URL !== 'JOUW_APPS_SCRIPT_URL') {
+  laadKalenderData();
+} else {
+  toonMaand(huidigJaar, huidigMaand);
+}
 </script>
 </body>
 </html>
