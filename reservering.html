@@ -206,7 +206,7 @@ footer { text-align:center; padding:0; }
           </div>
           <div class="type-option">
             <input type="radio" name="type" id="type-stand" value="Stand">
-            <label for="type-stand"><span class="icon">⛺</span>Stand</label>
+            <label for="type-stand"><span class="icon">🍽️</span>Stand</label>
           </div>
           <div class="type-option">
             <input type="radio" name="type" id="type-andere" value="Andere vraag">
@@ -293,7 +293,7 @@ footer { text-align:center; padding:0; }
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">Stuur aanvraag 🍟</button>
+        <button type="submit" class="submit-btn">Stuur aanvraag 🍔🍔</button>
         <p class="fine-print">Geen spam. We contacteren je binnen 2 werkdagen.</p>
       </form>
 
@@ -312,7 +312,7 @@ footer { text-align:center; padding:0; }
         <p>Onze foodtruck komt naar jouw locatie. Volledig zelfstandig, geen extra stroomaansluiting nodig. Ideaal voor festivals, bedrijfsfeesten en buitenevenementen.</p>
       </div>
       <div class="info-block">
-        <span class="info-icon">⛺</span>
+        <span class="info-icon">🍽️</span>
         <h3>Onze <span>Stand</span></h3>
         <p>Liever een compactere opstelling? Onze stand past overal: binnen of buiten, op kleine pleinen of in tenten. Perfect voor markten en private events.</p>
       </div>
@@ -330,6 +330,7 @@ footer { text-align:center; padding:0; }
         <h3>Liever direct <span>contact?</span></h3>
         <p>Stuur ons een mailtje of volg ons op Instagram.</p>
         <a href="mailto:smashpatat@gmail.com" class="contact-btn">✉ smashpatat@gmail.com</a>
+        <a href="https://www.instagram.com/smash.patat" target="_blank" rel="noopener" class="contact-btn" style="margin-top:.75rem;">📷 @smash.patat</a>
       </div>
     </div>
 
@@ -423,12 +424,12 @@ form.addEventListener('submit', async (e) => {
       success.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       alert('Er ging iets mis. Probeer opnieuw of stuur een mail naar smashpatat@gmail.com');
-      btn.textContent = 'Stuur aanvraag 🍟';
+      btn.textContent = 'Stuur aanvraag 🍔🍔';
       btn.disabled = false;
     }
   } catch {
     alert('Geen verbinding. Probeer later opnieuw.');
-    btn.textContent = 'Stuur aanvraag 🍟';
+    btn.textContent = 'Stuur aanvraag 🍔🍔';
     btn.disabled = false;
   }
 });
