@@ -167,7 +167,7 @@ footer { text-align:center; padding:0; }
       <div class="divider"></div>
 
       <!-- Vervang YOUR_FORM_ID met jouw Formspree ID -->
-      <form id="reservationForm" action="https://formspree.io/f/mbdwwyao" method="POST">
+      <form id="reservationForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
 
         <div class="form-section-label">Wat zoek je?</div>
         <div class="type-grid">
@@ -221,7 +221,7 @@ footer { text-align:center; padding:0; }
         <div class="field-row">
           <div class="field">
             <label class="field-label" for="personen">Verwacht aantal personen</label>
-            <select id="personen" name="personen">
+            <select id="personen" name="personen" onchange="document.getElementById('personen-detail').style.display=this.value?'grid':'none'">
               <option value="">Kies een optie</option>
               <option>Minder dan 50</option>
               <option>50 – 150</option>
@@ -239,6 +239,16 @@ footer { text-align:center; padding:0; }
               <option>Buurtfeest</option>
               <option>Andere</option>
             </select>
+          </div>
+        </div>
+        <div class="field-row" id="personen-detail" style="display:none;">
+          <div class="field">
+            <label class="field-label" for="volwassenen">Waarvan volwassenen</label>
+            <input type="number" id="volwassenen" name="volwassenen" placeholder="bv. 80" min="0">
+          </div>
+          <div class="field">
+            <label class="field-label" for="kinderen">Waarvan kinderen (&lt;12 jaar)</label>
+            <input type="number" id="kinderen" name="kinderen" placeholder="bv. 20" min="0">
           </div>
         </div>
         <div class="field-row full">
