@@ -53,12 +53,13 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .form-layout { display:grid; grid-template-columns:1fr 1fr; gap:3rem; max-width:1100px; margin:0 auto; align-items:start; }
 
 /* TYPE SELECTOR */
-.type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:2rem; }
+.type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:.5rem; }
 .type-option input { display:none; }
 .type-option label { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:1.2rem 8px; background:#1a1a1a; border:2px solid #2a2a2a; cursor:pointer; text-align:center; font-size:.75rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#aaa; transition:all .15s; }
 .type-option label .icon { font-size:28px; line-height:1; }
 .type-option input:checked + label { border-color:var(--red); background:#1f0f0f; color:var(--white); box-shadow:4px 4px 0 var(--red); }
 .type-option label:hover { border-color:#555; color:var(--white); }
+.type-grid.error-border .type-option label { border-color: var(--red); }
 
 /* FORM ELEMENTS */
 .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
@@ -77,10 +78,39 @@ select { cursor:pointer; }
 select option { background:#1a1a1a; }
 textarea { resize:vertical; min-height:100px; }
 
+/* VALIDATIE */
+.field-error {
+  color: var(--red);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  margin-top: 4px;
+  display: block;
+  animation: fadeIn .2s ease;
+}
+.type-error {
+  color: var(--red);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  margin-top: 6px;
+  margin-bottom: 1.5rem;
+  display: block;
+  animation: fadeIn .2s ease;
+}
+.input-error {
+  border-color: var(--red) !important;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* SUBMIT BTN */
 .submit-btn { display:inline-block; margin-top:1.5rem; padding:1rem 2.8rem; background:var(--red); color:var(--white); font-family:'Alfa Slab One',serif; font-size:1rem; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:3px solid var(--white); box-shadow:5px 5px 0 var(--white); transition:transform .15s,box-shadow .15s; cursor:pointer; width:100%; text-align:center; }
 .submit-btn:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--white); }
 .submit-btn:active { transform:translate(0,0); box-shadow:2px 2px 0 var(--white); }
+.submit-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; box-shadow:5px 5px 0 var(--white); }
 
 .fine-print { font-size:.75rem; color:#555; letter-spacing:1px; margin-top:1rem; text-align:center; }
 
@@ -166,13 +196,12 @@ footer { text-align:center; padding:0; }
       <div class="sec-title">Jouw <span>Aanvraag</span></div>
       <div class="divider"></div>
 
-      <!-- Vervang YOUR_FORM_ID met jouw Formspree ID -->
-      <form id="reservationForm" action="https://formspree.io/f/mbdwwyao" method="POST">
+      <form id="reservationForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
 
         <div class="form-section-label">Wat zoek je?</div>
-        <div class="type-grid">
+        <div class="type-grid" id="typeGrid">
           <div class="type-option">
-            <input type="radio" name="type" id="type-foodtruck" value="Foodtruck" required>
+            <input type="radio" name="type" id="type-foodtruck" value="Foodtruck">
             <label for="type-foodtruck"><span class="icon">🚚</span>Foodtruck</label>
           </div>
           <div class="type-option">
@@ -189,17 +218,17 @@ footer { text-align:center; padding:0; }
         <div class="field-row">
           <div class="field">
             <label class="field-label" for="voornaam">Voornaam</label>
-            <input type="text" id="voornaam" name="voornaam" placeholder="Jana" required>
+            <input type="text" id="voornaam" name="voornaam" placeholder="Jana">
           </div>
           <div class="field">
             <label class="field-label" for="achternaam">Achternaam</label>
-            <input type="text" id="achternaam" name="achternaam" placeholder="Pieters" required>
+            <input type="text" id="achternaam" name="achternaam" placeholder="Pieters">
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <label class="field-label" for="email">E-mailadres</label>
-            <input type="email" id="email" name="email" placeholder="jana@voorbeeld.be" required>
+            <input type="email" id="email" name="email" placeholder="jana@voorbeeld.be">
           </div>
           <div class="field">
             <label class="field-label" for="telefoon">Telefoonnummer</label>
@@ -330,9 +359,58 @@ const success = document.getElementById('successMsg');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  // Verwijder oude fouten
+  document.querySelectorAll('.field-error, .type-error').forEach(el => el.remove());
+  document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+
+  let hasError = false;
+
+  function showError(inputEl, message) {
+    inputEl.classList.add('input-error');
+    const err = document.createElement('span');
+    err.className = 'field-error';
+    err.textContent = '⚠ ' + message;
+    inputEl.parentNode.appendChild(err);
+    hasError = true;
+  }
+
+  // Type check (radio)
+  if (!form.querySelector('input[name="type"]:checked')) {
+    const typeGrid = document.getElementById('typeGrid');
+    const err = document.createElement('span');
+    err.className = 'type-error';
+    err.textContent = '⚠ Kies een type aanvraag (Foodtruck, Stand of Andere vraag)';
+    typeGrid.after(err);
+    hasError = true;
+  }
+
+  // Voornaam
+  const voornaam = document.getElementById('voornaam');
+  if (!voornaam.value.trim()) showError(voornaam, 'Voornaam is verplicht');
+
+  // Achternaam
+  const achternaam = document.getElementById('achternaam');
+  if (!achternaam.value.trim()) showError(achternaam, 'Achternaam is verplicht');
+
+  // Email
+  const email = document.getElementById('email');
+  if (!email.value.trim()) {
+    showError(email, 'E-mailadres is verplicht');
+  } else if (!/\S+@\S+\.\S+/.test(email.value)) {
+    showError(email, 'Vul een geldig e-mailadres in');
+  }
+
+  if (hasError) {
+    document.querySelector('.field-error, .type-error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Verstuur
   const btn = form.querySelector('.submit-btn');
   btn.textContent = 'Versturen...';
   btn.disabled = true;
+
   try {
     const res = await fetch(form.action, {
       method: 'POST',
@@ -342,6 +420,7 @@ form.addEventListener('submit', async (e) => {
     if (res.ok) {
       form.style.display = 'none';
       success.style.display = 'block';
+      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       alert('Er ging iets mis. Probeer opnieuw of stuur een mail naar smashpatat@gmail.com');
       btn.textContent = 'Stuur aanvraag 🍟';
@@ -352,6 +431,23 @@ form.addEventListener('submit', async (e) => {
     btn.textContent = 'Stuur aanvraag 🍟';
     btn.disabled = false;
   }
+});
+
+// Verwijder fout zodra gebruiker begint te typen
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', () => {
+    el.classList.remove('input-error');
+    const err = el.parentNode.querySelector('.field-error');
+    if (err) err.remove();
+  });
+});
+
+// Verwijder type-fout zodra een optie gekozen wordt
+document.querySelectorAll('input[name="type"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    const err = document.querySelector('.type-error');
+    if (err) err.remove();
+  });
 });
 
 const backToTopBtn = document.getElementById('backToTop');
