@@ -211,7 +211,7 @@ footer { text-align:center; padding:0; }
   <div class="hero-checker-top checker"></div>
   <div class="hero-inner">
     <h1>Boek <span>Smash Patat</span></h1>
-    <p>Foodtruck of stand — wij komen naar jouw event, festival of bedrijfsfeest. Vul het formulier in en we contacteren je binnen 2 werkdagen.</p>
+    <p>Foodtruck of stand — wij komen naar jouw event, festival of bedrijfsfeest. Vul het formulier in en we contacteren je zo snel mogelijk.</p>
   </div>
   <div class="hero-checker-bottom checker"></div>
 </div>
@@ -234,7 +234,7 @@ footer { text-align:center; padding:0; }
           </div>
           <div class="type-option">
             <input type="radio" name="type" id="type-stand" value="Stand">
-            <label for="type-stand"><span class="icon">⛺</span>Stand</label>
+            <label for="type-stand"><span class="icon">🍽️</span>Stand</label>
           </div>
           <div class="type-option">
             <input type="radio" name="type" id="type-andere" value="Andere vraag">
@@ -321,8 +321,8 @@ footer { text-align:center; padding:0; }
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">Stuur aanvraag 🍟</button>
-        <p class="fine-print">Geen spam. We contacteren je binnen 2 werkdagen.</p>
+        <button type="submit" class="submit-btn">Stuur aanvraag 🍔🍔</button>
+        <p class="fine-print">Geen spam. We contacteren je zo snel mogelijk.</p>
       </form>
 
       <div class="success-msg" id="successMsg">
@@ -340,7 +340,7 @@ footer { text-align:center; padding:0; }
         <p>Onze foodtruck komt naar jouw locatie. Volledig zelfstandig, geen extra stroomaansluiting nodig. Ideaal voor festivals, bedrijfsfeesten en buitenevenementen.</p>
       </div>
       <div class="info-block">
-        <span class="info-icon">⛺</span>
+        <span class="info-icon">🍽️</span>
         <h3>Onze <span>Stand</span></h3>
         <p>Liever een compactere opstelling? Onze stand past overal: binnen of buiten, op kleine pleinen of in tenten. Perfect voor markten en private events.</p>
       </div>
@@ -348,16 +348,19 @@ footer { text-align:center; padding:0; }
         <span class="info-icon">📅</span>
         <h3>Hoe het <span>werkt</span></h3>
         <ul>
+          <li>Check de beschikbaarheid hieronder</li>
           <li>Vul het formulier in</li>
-          <li>Wij contacteren je binnen 2 werkdagen</li>
+          <li>Wij contacteren je zo snel mogelijk</li>
           <li>Samen bespreken we de details</li>
           <li>Smash time! 🔥</li>
         </ul>
+        <a href="#beschikbaarheid" style="display:block;padding:.75rem 1rem;background:var(--red);color:var(--white);font-family:'Alfa Slab One',serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border:3px solid var(--white);box-shadow:4px 4px 0 var(--white);transition:transform .15s,box-shadow .15s;text-align:center;margin-top:1rem;" onmouseover="this.style.transform='translate(-3px,-3px)';this.style.boxShadow='7px 7px 0 var(--white)'" onmouseout="this.style.transform='';this.style.boxShadow='4px 4px 0 var(--white)'">Bekijk beschikbaarheid ↓</a>
       </div>
       <div class="info-block">
         <h3>Liever direct <span>contact?</span></h3>
         <p>Stuur ons een mailtje of volg ons op Instagram.</p>
         <a href="mailto:smashpatat@gmail.com" class="contact-btn">✉ smashpatat@gmail.com</a>
+        <a href="https://www.instagram.com/smash.patat" target="_blank" rel="noopener" class="contact-btn" style="margin-top:.75rem;">📷 @smash.patat</a>
       </div>
     </div>
 
@@ -477,12 +480,12 @@ form.addEventListener('submit', async (e) => {
       success.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       alert('Er ging iets mis. Probeer opnieuw of stuur een mail naar smashpatat@gmail.com');
-      btn.textContent = 'Stuur aanvraag 🍟';
+      btn.textContent = 'Stuur aanvraag 🍔🍔';
       btn.disabled = false;
     }
   } catch {
     alert('Geen verbinding. Probeer later opnieuw.');
-    btn.textContent = 'Stuur aanvraag 🍟';
+    btn.textContent = 'Stuur aanvraag 🍔🍔';
     btn.disabled = false;
   }
 });
@@ -513,10 +516,9 @@ backToTopBtn.addEventListener('click', () => {
 });
 
 // ── BESCHIKBAARHEIDSKALENDER ──────────────────────────────────────────────
-// Vervang deze URL door jouw gepubliceerde Google Apps Script URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytkPIteLWBg5Iz0hL0U-wAnE-LFPqsEV7q63583pKvmPhmgMjbZHpBKgBPTz_sXvBoiw/exec';
 
-let bezetteDagen = {}; // { 'YYYY-MM-DD': { status, label } }
+let bezetteDagen = {}; // { 'YYYY-MM-DD': 'bezet' | 'aanvraag' }
 let huidigJaar, huidigMaand;
 
 const MAANDEN = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
@@ -528,7 +530,8 @@ async function laadKalenderData() {
     const data = await res.json();
     bezetteDagen = {};
     data.forEach(item => {
-      bezetteDagen[item.date] = { status: item.status, label: item.label };
+      // Sla enkel status op, geen labels
+      bezetteDagen[item.date] = item.status;
     });
   } catch (e) {
     console.warn('Kalender kon niet geladen worden:', e);
@@ -554,11 +557,10 @@ function toonMaand(jaar, maand) {
   });
 
   const eerstedag = new Date(jaar, maand, 1);
-  // Maandag = 0, zondag = 6
-  let startOffset = (eerstedag.getDay() + 6) % 7;
+  let startOffset = (eerstedag.getDay() + 6) % 7; // Ma=0 ... Zo=6
   const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
   const vandaag = new Date();
-  vandaag.setHours(0,0,0,0);
+  vandaag.setHours(0, 0, 0, 0);
 
   // Lege cellen vóór de eerste dag
   for (let i = 0; i < startOffset; i++) {
@@ -568,17 +570,21 @@ function toonMaand(jaar, maand) {
   }
 
   for (let dag = 1; dag <= aantalDagen; dag++) {
+    // Gebruik lokale datum string om tijdzone-issues te vermijden
+    const mm = String(maand + 1).padStart(2, '0');
+    const dd = String(dag).padStart(2, '0');
+    const datumStr = `${jaar}-${mm}-${dd}`;
     const datum = new Date(jaar, maand, dag);
-    const datumStr = datum.toISOString().split('T')[0];
-    const info = bezetteDagen[datumStr];
+
+    const status = bezetteDagen[datumStr];
 
     const el = document.createElement('div');
     let klasse = 'kalender-dag';
 
     if (datum < vandaag) {
       klasse += ' verleden';
-    } else if (info) {
-      klasse += ' ' + info.status;
+    } else if (status) {
+      klasse += ' ' + status;
     } else {
       klasse += ' vrij';
     }
@@ -588,18 +594,18 @@ function toonMaand(jaar, maand) {
     el.className = klasse;
     el.textContent = dag;
 
-    if (info) {
+    // Toon een dot voor bezet/aanvraag
+    if (status && datum >= vandaag) {
       const dot = document.createElement('div');
       dot.className = 'dag-dot';
       el.appendChild(dot);
-      el.title = info.label;
     }
 
     grid.appendChild(el);
   }
 }
 
-// Init kalender
+// Init
 const nu = new Date();
 huidigJaar = nu.getFullYear();
 huidigMaand = nu.getMonth();
@@ -615,12 +621,7 @@ document.getElementById('kal-next').addEventListener('click', () => {
   toonMaand(huidigJaar, huidigMaand);
 });
 
-// Laad data als SCRIPT_URL ingesteld is, anders toon lege kalender
-if (SCRIPT_URL !== 'JOUW_APPS_SCRIPT_URL') {
-  laadKalenderData();
-} else {
-  toonMaand(huidigJaar, huidigMaand);
-}
+laadKalenderData();
 </script>
 </body>
 </html>
