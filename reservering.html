@@ -134,10 +134,17 @@ textarea { resize:vertical; min-height:100px; }
 /* KALENDER */
 #beschikbaarheid { padding:80px 5%; background:#181818; }
 .kalender-wrap { max-width:860px; margin:0 auto; }
-.kalender-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+.kalender-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; gap:.5rem; }
 .kalender-nav button { background:none; border:2px solid #2a2a2a; color:var(--white); font-family:'Alfa Slab One',serif; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; padding:.5rem 1.2rem; cursor:pointer; transition:border-color .2s,color .2s; }
 .kalender-nav button:hover { border-color:var(--red); color:var(--red); }
-.kalender-maand { font-family:'Alfa Slab One',serif; font-size:1.2rem; letter-spacing:2px; text-transform:uppercase; }
+.kalender-maand { font-family:'Alfa Slab One',serif; font-size:1.2rem; letter-spacing:2px; text-transform:uppercase; text-align:center; }
+@media(max-width:480px) {
+  .kalender-nav button { font-size:.6rem; letter-spacing:1px; padding:.4rem .7rem; }
+  .kalender-maand { font-size:.9rem; }
+  .kalender-dag { font-size:.7rem; }
+  .kalender-dag-naam { font-size:.55rem; }
+}
+.kalender-maand { font-family:'Alfa Slab One',serif; font-size:1.2rem; letter-spacing:2px; text-transform:uppercase; text-align:center; }
 .kalender-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
 .kalender-dag-naam { font-size:.65rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#555; text-align:center; padding:.4rem 0; }
 .kalender-dag { aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; border:2px solid transparent; position:relative; cursor:default; transition:border-color .15s; }
