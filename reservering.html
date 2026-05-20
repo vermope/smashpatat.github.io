@@ -274,8 +274,24 @@ footer { text-align:center; padding:0; }
         <div class="form-section-label">Over het event</div>
         <div class="field-row">
           <div class="field">
-            <label class="field-label" for="datum">Datum</label>
-            <input type="date" id="datum" name="datum">
+            <label class="field-label" for="datum-display">Datum</label>
+            <div style="position:relative;">
+              <input type="text" id="datum-display" placeholder="Kies een datum" readonly style="cursor:pointer;background:#1a1a1a;" onclick="toggleDatepicker()">
+              <input type="hidden" id="datum" name="datum">
+              <div id="custom-datepicker" style="display:none;position:absolute;top:100%;left:0;z-index:200;background:#1a1a1a;border:2px solid var(--red);padding:1rem;min-width:300px;box-shadow:6px 6px 0 #000;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+                  <button type="button" onclick="dpPrev()" style="background:none;border:2px solid #2a2a2a;color:var(--white);font-family:'Alfa Slab One',serif;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;padding:.3rem .6rem;cursor:pointer;">←</button>
+                  <span id="dp-titel" style="font-family:'Alfa Slab One',serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;"></span>
+                  <button type="button" onclick="dpNext()" style="background:none;border:2px solid #2a2a2a;color:var(--white);font-family:'Alfa Slab One',serif;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;padding:.3rem .6rem;cursor:pointer;">→</button>
+                </div>
+                <div id="dp-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+                <div style="display:flex;gap:1rem;margin-top:.8rem;flex-wrap:wrap;">
+                  <div style="display:flex;align-items:center;gap:.4rem;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:#aaa;"><div style="width:10px;height:10px;background:#1a1a1a;border:1px solid #333;"></div>Vrij</div>
+                  <div style="display:flex;align-items:center;gap:.4rem;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:#aaa;"><div style="width:10px;height:10px;background:#1a1500;border:1px solid #2a2200;"></div>Aanvraag</div>
+                  <div style="display:flex;align-items:center;gap:.4rem;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:#aaa;"><div style="width:10px;height:10px;background:#2a0a0a;border:1px solid #3a0f0f;"></div>Bezet</div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="field">
             <label class="field-label" for="tijdstip">Tijdstip (van – tot)</label>
@@ -629,6 +645,99 @@ document.getElementById('kal-next').addEventListener('click', () => {
 });
 
 laadKalenderData();
+
+// ── CUSTOM DATEPICKER ─────────────────────────────────────────────────────
+const MAANDEN_DP = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+const DAGEN_DP = ['Ma','Di','Wo','Do','Vr','Za','Zo'];
+let dpJaar, dpMaand;
+
+function toggleDatepicker() {
+  const dp = document.getElementById('custom-datepicker');
+  if (dp.style.display === 'none') {
+    const nu = new Date();
+    dpJaar = dpJaar || nu.getFullYear();
+    dpMaand = dpMaand !== undefined ? dpMaand : nu.getMonth();
+    renderDp();
+    dp.style.display = 'block';
+  } else {
+    dp.style.display = 'none';
+  }
+}
+
+function dpPrev() { dpMaand--; if (dpMaand < 0) { dpMaand = 11; dpJaar--; } renderDp(); }
+function dpNext() { dpMaand++; if (dpMaand > 11) { dpMaand = 0; dpJaar++; } renderDp(); }
+
+function renderDp() {
+  document.getElementById('dp-titel').textContent = MAANDEN_DP[dpMaand] + ' ' + dpJaar;
+  const grid = document.getElementById('dp-grid');
+  grid.innerHTML = '';
+
+  // Dagnamen
+  DAGEN_DP.forEach(d => {
+    const el = document.createElement('div');
+    el.style.cssText = 'font-size:.55rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#555;text-align:center;padding:2px 0;';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const eerstedag = new Date(dpJaar, dpMaand, 1);
+  const offset = (eerstedag.getDay() + 6) % 7;
+  const aantalDagen = new Date(dpJaar, dpMaand + 1, 0).getDate();
+  const vandaag = new Date(); vandaag.setHours(0,0,0,0);
+  const geselecteerd = document.getElementById('datum').value;
+
+  for (let i = 0; i < offset; i++) {
+    grid.appendChild(Object.assign(document.createElement('div'), {}));
+  }
+
+  for (let dag = 1; dag <= aantalDagen; dag++) {
+    const mm = String(dpMaand + 1).padStart(2, '0');
+    const dd = String(dag).padStart(2, '0');
+    const datumStr = `${dpJaar}-${mm}-${dd}`;
+    const datum = new Date(dpJaar, dpMaand, dag);
+    const status = bezetteDagen[datumStr];
+    const isVerleden = datum < vandaag;
+    const isGeselecteerd = datumStr === geselecteerd;
+
+    const el = document.createElement('div');
+    el.textContent = dag;
+    el.style.cssText = `
+      text-align:center;padding:5px 2px;font-size:.75rem;font-weight:700;
+      cursor:${isVerleden || status === 'bezet' ? 'not-allowed' : 'pointer'};
+      opacity:${isVerleden ? '.25' : '1'};
+      background:${isGeselecteerd ? 'var(--red)' : status === 'bezet' ? '#2a0a0a' : status === 'aanvraag' ? '#1a1500' : 'transparent'};
+      color:${isGeselecteerd ? 'var(--white)' : status === 'bezet' ? '#c0392b' : status === 'aanvraag' ? '#c8a200' : 'var(--white)'};
+      border:1px solid ${isGeselecteerd ? 'var(--red)' : status === 'bezet' ? '#3a0f0f' : status === 'aanvraag' ? '#2a2200' : 'transparent'};
+      transition:background .1s;
+    `;
+
+    if (!isVerleden && status !== 'bezet') {
+      el.addEventListener('click', () => kiesDatum(datumStr, dag));
+      el.addEventListener('mouseover', () => { if (datumStr !== geselecteerd) el.style.background = '#333'; });
+      el.addEventListener('mouseout', () => { if (datumStr !== geselecteerd) el.style.background = status === 'aanvraag' ? '#1a1500' : 'transparent'; });
+    }
+
+    grid.appendChild(el);
+  }
+}
+
+function kiesDatum(datumStr, dag) {
+  document.getElementById('datum').value = datumStr;
+  // Toon als DD/MM/YYYY
+  const [j, m, d] = datumStr.split('-');
+  document.getElementById('datum-display').value = `${d}/${m}/${j}`;
+  document.getElementById('custom-datepicker').style.display = 'none';
+  renderDp(); // herrender zodat selectie zichtbaar is
+}
+
+// Sluit datepicker bij klik buiten
+document.addEventListener('click', (e) => {
+  const dp = document.getElementById('custom-datepicker');
+  const trigger = document.getElementById('datum-display');
+  if (dp && !dp.contains(e.target) && e.target !== trigger) {
+    dp.style.display = 'none';
+  }
+});
 </script>
 </body>
 </html>
