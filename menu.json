@@ -6,7 +6,7 @@
       "description": "Premium beef patty, tomaat, ijsbergsla, saus naar keuze, gefrituurde ajuin",
       "price": 6.50,
       "tag": null,
-      "image": "https://vermope.github.io/smashpatat.github.io/kids-smash.jpg"
+      "image": "https://vermope.github.io/smashpatat.github.io/kids-smash.png"
     },
     {
       "id": "smash-patat-classic",
@@ -14,7 +14,7 @@
       "description": "Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle",
       "price": 9.50,
       "tag": "Bestseller",
-      "image": "https://vermope.github.io/smashpatat.github.io/classic-smash.jpg"
+      "image": "https://vermope.github.io/smashpatat.github.io/classic-smash.png"
     },
     {
       "id": "smash-patat-double-cheese",
@@ -22,7 +22,7 @@
       "description": "Dubbel premium beef patty, cheddar, pickle, ketchup, mosterd, ui",
       "price": 9.50,
       "tag": null,
-      "image": "https://vermope.github.io/smashpatat.github.io/cheese-smash.jpg"
+      "image": "https://vermope.github.io/smashpatat.github.io/cheese-smash.png"
     }
   ],
   "specials": [
