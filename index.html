@@ -148,8 +148,10 @@ section:not(.hero) { content-visibility:auto; contain-intrinsic-size:0 500px; }
 .allergenen-btn { display:inline-block; padding:1rem 2.4rem; background:var(--red); color:var(--white); font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; text-decoration:none; border:3px solid var(--white); box-shadow:5px 5px 0 var(--white); transition:transform .15s,box-shadow .15s; }
 .allergenen-btn:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--white); }
 #over { padding:80px 5%; }
-.over-header { margin-bottom:0; }
-.over-header p { color:#ccc; line-height:1.85; font-size:.95rem; max-width:680px; margin-top:1rem; }
+.over-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; max-width:1100px; }
+.over-text p { color:#ccc; line-height:1.85; font-size:.95rem; margin-top:1rem; }
+.over-foto { position:relative; width:100%; aspect-ratio:4/3; border:3px solid var(--red); box-shadow:8px 8px 0 var(--black); overflow:hidden; background:#1a1a1a; }
+.over-foto img { width:100%; height:100%; object-fit:cover; display:block; }
 #prikbord { padding:80px 5%; }
 .prikbord-container { position:relative; width:100%; }
 .prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:1.5rem 1.5rem 2.5rem; border:4px solid #333; overflow:hidden; }
@@ -197,6 +199,10 @@ footer { text-align:center; padding:0; }
 .back-to-top:hover { transform:translateY(-3px); }
 .back-to-top.show { display:flex; animation:fadeIn .3s ease; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@media(max-width:800px) {
+  .over-grid { grid-template-columns:1fr; gap:2rem; }
+  .over-foto { box-shadow:5px 5px 0 var(--black); }
+}
 @media(max-width:700px) {
   .nav-links { display:none; }
   .hamburger { display:flex; }
@@ -251,10 +257,15 @@ footer { text-align:center; padding:0; }
 </section>
 
 <section id="over">
-  <div class="over-header">
-    <div class="sec-title">Over <span>Ons</span></div>
-    <div class="divider"></div>
-    <p>Wij zijn Smash Patat — Pee, Vinnie en een foodtruck. Op missie om de beste smashed burger van de streek op jouw bord te krijgen.<br><br>Geen poespas. Gewoon eerlijke smaken, vlees uit de regio en een broodje dat smelt op je tong. We drukken elke burger ter plekke plat op een gloeiend hete plancha — zo krijg je die gekarameliseerde, krokante korst waar je voor terugkomt. En toch blijft ie juicy. Altijd.<br><br>Vlees uit de streek, groenten zoveel mogelijk uit eigen kweek, gerecycleerde verpakkingen. Zo weinig mogelijk voetafdruk, zo veel mogelijk smaak.</p>
+  <div class="sec-title">Over <span>Ons</span></div>
+  <div class="divider"></div>
+  <div class="over-grid">
+    <div class="over-text">
+      <p>Wij zijn Smash Patat — Pee, Vinnie en een foodtruck. Op missie om de beste smashed burger van de streek op jouw bord te krijgen.<br><br>Geen poespas. Gewoon eerlijke smaken, vlees uit de regio en een broodje dat smelt op je tong. We drukken elke burger ter plekke plat op een gloeiend hete plancha — zo krijg je die gekarameliseerde, krokante korst waar je voor terugkomt. En toch blijft ie juicy. Altijd.<br><br>Vlees uit de streek, groenten zoveel mogelijk uit eigen kweek, gerecycleerde verpakkingen. Zo weinig mogelijk voetafdruk, zo veel mogelijk smaak.</p>
+    </div>
+    <div class="over-foto">
+      <img id="over-foto-img" src="over_ons.jpg" alt="Smash Patat foodtruck in actie" loading="lazy" decoding="async">
+    </div>
   </div>
 </section>
 
@@ -375,6 +386,14 @@ function closeMenu() {
   document.getElementById('hamburger').classList.remove('open');
   document.getElementById('mobileMenu').classList.remove('open');
 }
+
+// Over ons foto: 's avonds de night-versie
+(function setOverFoto() {
+  const img = document.getElementById('over-foto-img');
+  if (!img) return;
+  const h = new Date().getHours();
+  img.src = (h >= 19 || h < 7) ? 'over_ons_night.jpg' : 'over_ons.jpg';
+})();
 
 // Foto's worden automatisch geladen vanuit photos.json
 let photos = [];
