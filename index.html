@@ -94,10 +94,18 @@ nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:
 .mobile-menu a:hover { color:var(--red); }
 
 .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden; background:#ffffff; }
-.hero-checker-top { position:absolute; top:64px; left:0; right:0; height:70px; }
+
+/* Doorlopende banner (ticker) over volle breedte */
+.hero-banner { position:absolute; top:64px; left:0; right:0; height:46px; background:var(--red); border-top:3px solid var(--black); border-bottom:3px solid var(--black); overflow:hidden; z-index:4; display:flex; align-items:center; }
+.hero-banner-track { display:inline-flex; align-items:center; white-space:nowrap; will-change:transform; animation:marquee 35s linear infinite; }
+.hero-banner:hover .hero-banner-track { animation-play-state:paused; }
+.banner-item { font-family:'Alfa Slab One',serif; color:var(--white); font-size:.82rem; letter-spacing:2px; text-transform:uppercase; padding:0 1.4rem; }
+.banner-sep { color:var(--black); font-size:.7rem; }
+@keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+.hero-checker-top { position:absolute; top:110px; left:0; right:0; height:70px; }
 .hero-checker-bottom { position:absolute; bottom:0; left:0; right:0; height:70px; }
 .hero-content { position:relative; z-index:2; padding:clamp(80px, 15vw, 150px) 5% clamp(70px, 12vw, 120px); display:flex; flex-direction:column; align-items:center; }
-.hero-badge { display:inline-flex; align-items:center; gap:.5rem; background:var(--red); color:var(--white); font-family:'Alfa Slab One',serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; padding:7px 16px; border:2px solid var(--black); box-shadow:4px 4px 0 var(--black); margin-bottom:1.6rem; }
 .hero-logo-wrap { display:block; width:min(480px, 90vw); margin:0 auto 1.5rem; }
 .hero-logo-wrap img { width:100%; height:auto; display:block; mix-blend-mode:multiply; }
 .hero-tagline { font-size:clamp(.85rem,2vw,1rem); font-weight:700; letter-spacing:4px; text-transform:uppercase; color:#555; margin-top:.5rem; }
@@ -211,7 +219,7 @@ footer { text-align:center; padding:0; }
   .mobile-foto-single { display:flex !important; }
   .hero-logo-wrap { width:min(340px, 86vw); }
   .hero-tagline { font-size:.75rem; letter-spacing:2px; }
-  .hero-badge { font-size:.62rem; padding:6px 12px; }
+  .banner-item { font-size:.72rem; letter-spacing:1.5px; padding:0 1rem; }
 }
 .mobile-foto-single { display:none; width:100%; position:relative; }
 .mobile-foto-single .foto-inner { min-height:280px; padding:8px 8px 28px; background:#1a1a1a; }
@@ -241,9 +249,13 @@ footer { text-align:center; padding:0; }
 </div>
 
 <section class="hero">
+  <div class="hero-banner">
+    <div class="hero-banner-track" id="hero-banner-track">
+      <span class="banner-item">🚚 Foodtruck · Boek ons voor jouw event</span>
+    </div>
+  </div>
   <div class="hero-checker-top checker"></div>
   <div class="hero-content">
-    <div class="hero-badge">🚚 Foodtruck · Boek ons voor jouw event</div>
     <div class="hero-logo-wrap">
       <img src="logo.png" alt="Smash Patat – Premium Smashburgers Foodtruck" fetchpriority="high" decoding="async" width="480" height="480">
     </div>
@@ -740,7 +752,33 @@ const DAYS=['ZO','MA','DI','WO','DO','VR','ZA'];
 const MONTHS=['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
 function formatDate(d){return`${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;}
 function formatTime(d){return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}
+
+// Banner-ticker bovenaan vullen met vaste tekst + agenda-events
+function buildBanner(events){
+  const track=document.getElementById('hero-banner-track');
+  if(!track) return;
+  const items=['🚚 Foodtruck · Boek ons voor jouw event'];
+  if(events&&events.length){
+    events.forEach(e=>{
+      const s=new Date(e.start),en=new Date(e.end);
+      let t='📍 '+e.title+' · '+formatDate(s)+' · '+formatTime(s)+'–'+formatTime(en);
+      if(e.location) t+=' · '+e.location;
+      items.push(t);
+    });
+  }
+  const sep='<span class="banner-sep">✦</span>';
+  const set=items.map(t=>'<span class="banner-item">'+t+'</span>').join(sep);
+  // Inhoud verdubbelen voor naadloze loop (animatie loopt tot -50%)
+  track.innerHTML=set+sep+set+sep;
+  // Snelheid constant houden (±70px/s), ongeacht aantal events
+  requestAnimationFrame(()=>{
+    const oneSet=track.scrollWidth/2;
+    if(oneSet>0) track.style.animationDuration=Math.max(20,Math.round(oneSet/70))+'s';
+  });
+}
+
 function handleEvents(events){
+  buildBanner(events);
   const c=document.getElementById('events-container');
   if(!events||!events.length){c.innerHTML='<p class="event-loading">Geen aankomende evenementen gepland.</p>';return;}
   c.innerHTML=events.map(e=>{
@@ -748,6 +786,10 @@ function handleEvents(events){
     return`<div class="locatie-item"><div class="loc-icon">📍</div><div><h4>${e.title}</h4><p>${formatDate(s)} · ${formatTime(s)} – ${formatTime(en)}${e.location?' · '+e.location:''}</p></div></div>`;
   }).join('');
 }
+
+// Banner alvast met vaste tekst vullen (loopt al voor events binnen zijn)
+buildBanner([]);
+
 fetch(API_URL).then(r=>r.json()).then(handleEvents).catch(()=>{
   window._cb=handleEvents;
   const s=document.createElement('script');
