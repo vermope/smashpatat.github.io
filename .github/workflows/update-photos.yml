@@ -32,11 +32,11 @@ jobs:
             dims=$(identify -format "%wx%h" "$f[0]" 2>/dev/null || echo "?")
             case "${f,,}" in
               *.png)
-                mogrify -resize "1600x1600>" -strip "$f"
+                mogrify -auto-orient -resize "1600x1600>" -strip "$f"
                 pngquant --quality=75-95 --skip-if-larger --strip --force --output "$f" "$f" || true
                 ;;
               *)
-                mogrify -resize "1600x1600>" -strip -interlace Plane -quality 82 "$f"
+                mogrify -auto-orient -resize "1600x1600>" -strip -interlace Plane -quality 82 "$f"
                 ;;
             esac
             after=$(stat -c%s "$f")
@@ -61,11 +61,11 @@ jobs:
             dims=$(identify -format "%wx%h" "$f[0]" 2>/dev/null || echo "?")
             case "${f,,}" in
               *.png)
-                mogrify -resize "960x960>" -strip "$f"
+                mogrify -auto-orient -resize "960x960>" -strip "$f"
                 pngquant --quality=80-96 --skip-if-larger --strip --force --output "$f" "$f" || true
                 ;;
               *)
-                mogrify -resize "960x960>" -strip -interlace Plane -quality 85 "$f"
+                mogrify -auto-orient -resize "960x960>" -strip -interlace Plane -quality 85 "$f"
                 ;;
             esac
             after=$(stat -c%s "$f")
