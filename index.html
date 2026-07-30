@@ -52,14 +52,13 @@
 <!-- Preconnect voor snellere externe verbindingen -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://vermope.github.io">
 <link rel="dns-prefetch" href="https://smashpatat.be">
 <!-- Fonts met display=swap zodat tekst meteen zichtbaar is -->
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 <!-- Preload kritieke afbeeldingen bovenaan de pagina -->
 <link rel="preload" as="image" href="logo.png" fetchpriority="high">
-<link rel="preload" as="image" href="https://vermope.github.io/smashpatat.github.io/classic-smash.png">
-<link rel="preload" as="image" href="https://vermope.github.io/smashpatat.github.io/kids-smash.png">
+<link rel="preload" as="image" href="classic-smash.png">
+<link rel="preload" as="image" href="kids-smash.png">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 /* Zorg dat fallback fonts meteen getoond worden tijdens laden */
@@ -396,6 +395,13 @@ function closeMenu() {
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
+// Beelden uit deze repo altijd relatief opvragen: scheelt een tweede host
+// (DNS + TLS) en werkt ook rechtstreeks op smashpatat.be.
+function localAsset(url) {
+  if (!url) return url;
+  return url.replace(/^https?:\/\/vermope\.github\.io\/smashpatat\.github\.io\//, '');
+}
+
 // Foto's worden automatisch geladen vanuit photos.json
 let photos = [];
 
@@ -403,27 +409,27 @@ async function fetchPhotos() {
   try {
     const res = await fetch('photos.json');
     if (!res.ok) throw new Error();
-    photos = await res.json();
+    photos = (await res.json()).map(localAsset);
   } catch {
     // Fallback: oude hardcoded lijst
     photos = [
-      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_4.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_5.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_other.png',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_food.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_people.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_people_2.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_burger.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_2.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_food_2.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_food_3.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_food_4.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_homemade.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_other_2.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_people_3.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_burger_3.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_food_5.jpg',
-      'https://vermope.github.io/smashpatat.github.io/sfeer_people_4.jpg'
+      'sfeer_burger_4.jpg',
+      'sfeer_burger_5.jpg',
+      'sfeer_other.png',
+      'sfeer_food.jpg',
+      'sfeer_people.jpg',
+      'sfeer_people_2.jpg',
+      'sfeer_burger.jpg',
+      'sfeer_burger_2.jpg',
+      'sfeer_food_2.jpg',
+      'sfeer_food_3.jpg',
+      'sfeer_food_4.jpg',
+      'sfeer_homemade.jpg',
+      'sfeer_other_2.jpg',
+      'sfeer_people_3.jpg',
+      'sfeer_burger_3.jpg',
+      'sfeer_food_5.jpg',
+      'sfeer_people_4.jpg'
     ];
   }
   // Willekeurige volgorde bij elke paginabezoek
@@ -444,10 +450,39 @@ function isMobileBand() {
 }
 
 function bandCell(photo, eager) {
+  const attrs = eager
+    ? 'src="' + photo + '" fetchpriority="high"'
+    : 'data-src="' + photo + '" fetchpriority="low"';
   return '<div class="marquee-foto" onclick="openLightbox(\'' + photo + '\')">' +
-    '<img src="' + photo + '" alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" ' +
-    (eager ? '' : 'loading="lazy" ') + 'decoding="async" ' +
+    '<img ' + attrs + ' alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" decoding="async" ' +
     'onerror="this.parentElement.style.display=\'none\'"></div>';
+}
+
+// Eigen lazy loader. Native loading="lazy" is onbetrouwbaar in Firefox voor beelden
+// die na het laden via innerHTML worden ingevoegd of in een schuivende container staan.
+const lazyImgObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const img = entry.target;
+        if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+        obs.unobserve(img);
+      });
+    }, { rootMargin: '600px 800px' })
+  : null;
+
+function hydrateLazyImages(root) {
+  const scope = root || document;
+  scope.querySelectorAll('img[data-src]').forEach((img) => {
+    if (lazyImgObserver) lazyImgObserver.observe(img);
+    else { img.src = img.dataset.src; delete img.dataset.src; }
+  });
+  setTimeout(() => {
+    scope.querySelectorAll('img[data-src]').forEach((img) => {
+      img.src = img.dataset.src;
+      delete img.dataset.src;
+    });
+  }, 3000);
 }
 
 function renderMarquee() {
@@ -460,6 +495,7 @@ function renderMarquee() {
     band.dataset.mode = 'mobile';
     band.innerHTML = '<div class="marquee-row a">' +
       photos.map((p, i) => bandCell(p, i < 3)).join('') + '</div>';
+    hydrateLazyImages(band);
     return;
   }
 
@@ -470,6 +506,7 @@ function renderMarquee() {
     const cells = set.concat(set).map((p, idx) => bandCell(p, idx < 4)).join('');
     return '<div class="marquee-row ' + (i === 0 ? 'a' : 'b') + '">' + cells + '</div>';
   }).join('');
+  hydrateLazyImages(band);
 }
 
 // Wisselt van variant zodra de breakpoint wordt overgestoken (rotatie, resize)
@@ -521,15 +558,15 @@ async function loadMenu() {
   try {
     let response = await fetch('menu.json');
     if (!response.ok) {
-      response = await fetch('https://vermope.github.io/smashpatat.github.io/menu.json');
+      response = await fetch('menu.json');
     }
     if (!response.ok) throw new Error('Menu niet gevonden');
 
     const menuData = await response.json();
     console.log('Menu loaded successfully:', menuData);
 
-    const placeholderImage = 'https://vermope.github.io/smashpatat.github.io/burger_placeholder.jpg';
-    const fallbackImage = 'https://vermope.github.io/smashpatat.github.io/20250615_180154.jpg';
+    const placeholderImage = localAsset('burger_placeholder.jpg');
+    const fallbackImage = localAsset('20250615_180154.jpg');
 
     // Load burgers
     const burgersGrid = document.getElementById('burgers-grid');
@@ -540,7 +577,7 @@ async function loadMenu() {
         const tagIcon = burger.tag === 'Special' ? '★ ' : '';
         tagHTML = `<div class="${tagClass}">${tagIcon}${burger.tag}</div>`;
       }
-      const burgerImage = burger.image || placeholderImage;
+      const burgerImage = localAsset(burger.image) || placeholderImage;
       return `
         <div class="menu-card">
           ${tagHTML}
@@ -550,18 +587,20 @@ async function loadMenu() {
             <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
           </div>
           <div class="menu-card-image">
-            <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" decoding="async" onerror="this.src='${fallbackImage}'">
+            <img data-src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" decoding="async" fetchpriority="low" onerror="this.src='${fallbackImage}'">
           </div>
         </div>
       `;
     }).join('');
+
+    hydrateLazyImages(burgersGrid);
 
     // Load specials
     const signatureGrid = document.getElementById('signature-grid');
     const specials = menuData.specials || menuData.signature_burgers || [];
     if (specials.length > 0) {
       signatureGrid.innerHTML = specials.map(burger => {
-        const burgerImage = burger.image || placeholderImage;
+        const burgerImage = localAsset(burger.image) || placeholderImage;
         let tagHTML = '';
         if (burger.tag) {
           const tagClass = burger.tag === 'Special' ? 'tag special' : 'tag';
@@ -577,12 +616,14 @@ async function loadMenu() {
               <div class="price">€ ${burger.price.toFixed(2).replace('.', ',')}</div>
             </div>
             <div class="menu-card-image">
-              <img src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" loading="lazy" decoding="async" onerror="this.src='${fallbackImage}'">
+              <img data-src="${burgerImage}" alt="${burger.name} smashburger bij Smash Patat" decoding="async" fetchpriority="low" onerror="this.src='${fallbackImage}'">
             </div>
           </div>
         `;
       }).join('');
     }
+
+    hydrateLazyImages(signatureGrid);
 
     // Load drinks
     const drinksContainer = document.getElementById('drinks-container');
@@ -678,7 +719,7 @@ function buildBanner(events){
 function handleEvents(events){
   buildBanner(events);
   const c=document.getElementById('events-container');
-  if(!events||!events.length){c.innerHTML='<p class="event-loading">Geen aankomende evenementen gepland.</p>';return;}
+  if(!events||!events.length){c.innerHTML='<p class="event-loading">Geen aankomende publieke evenementen gepland.</p>';return;}
   c.innerHTML=events.map(e=>{
     const s=new Date(e.start),en=new Date(e.end);
     return`<div class="locatie-item"><div class="loc-icon">📍</div><div><h4>${e.title}</h4><p>${formatDate(s)} · ${formatTime(s)} – ${formatTime(en)}${e.location?' · '+e.location:''}</p></div></div>`;
