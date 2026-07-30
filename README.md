@@ -1,6 +1,6 @@
 # 🍔 Smash Patat – Website Documentatie
 
-**Live website:** https://vermope.github.io/smashpatat.github.io/
+**Live website:** https://smashpatat.be
 
 ---
 
@@ -9,19 +9,26 @@
 ```
 smashpatat.github.io/
 ├── index.html                        → De volledige hoofdpagina
+├── reservering.html                  → Boekingsformulier + agenda
+├── allergenen.html                   → Allergeneninformatie
 ├── privacy.html                      → Privacybeleid (GDPR-verplicht)
-├── menu.json                         → Menu database (burgers, dranken, bijgerechten, extras)
+├── menu.json                         → Menu database (burgers, dranken, extra's)
 ├── photos.json                       → Automatisch gegenereerde fotolijst (niet handmatig aanpassen!)
 ├── logo.png                          → Zwart/wit logo (witte achtergrond) + favicon
 ├── logo_no_txt.png                   → Logo zonder tekst
 ├── logo_special.png                  → Foto voor de specials burgers
-├── fotos/                            → Map met alle sfeerfoto's voor het prikbord
+├── classic-smash.png / cheese-smash.png / kids-smash.png / oklahoma.jpg
+│                                     → Foto's van de menukaart
+├── checker.png / insta.png           → Tegelpatroon en icoon (worden nooit herschaald)
+├── over_ons.jpg / over_ons_night.jpg → Foto's bij "Over ons"
+├── fotos/                            → Map met alle sfeerfoto's voor de fotoband
 │   ├── sfeer_burger_1.jpg
 │   ├── sfeer_burger_2.jpg
 │   └── ...
+├── sitemap.xml / robots.txt / BingSiteAuth.xml
 ├── .github/
 │   └── workflows/
-│       └── update-photos.yml         → GitHub Action: genereert photos.json automatisch
+│       └── update-photos.yml         → GitHub Action: optimaliseert beelden + genereert photos.json
 └── README.md                         → Deze documentatie
 ```
 
@@ -38,9 +45,24 @@ smashpatat.github.io/
 
 ---
 
-## 🖼️ Sfeerfoto's beheren (prikbord)
+## ⚠️ Belangrijk: altijd relatieve paden
 
-Het prikbord op de website laadt automatisch alle foto's uit de `fotos/` map. Je hoeft nooit code aan te passen.
+Verwijs **nooit** naar `https://vermope.github.io/smashpatat.github.io/...`. Dat pad bestaat niet meer sinds de site op `smashpatat.be` draait — afbeeldingen laden dan niet (het logo op de privacy-pagina viel hierdoor weg).
+
+Schrijf altijd het pad zonder domein:
+
+```html
+<img src="logo.png">
+<img src="fotos/sfeer_burger.jpg">
+```
+
+`index.html` vangt oude absolute URL's uit `menu.json` en `photos.json` nog automatisch op, maar nieuwe verwijzingen doe je relatief.
+
+---
+
+## 🖼️ Sfeerfoto's beheren (fotoband "Smash Patat in Beeld")
+
+De fotoband laadt automatisch alle foto's uit de `fotos/` map. Je hoeft nooit code aan te passen.
 
 ### Foto's toevoegen:
 
@@ -50,8 +72,8 @@ Het prikbord op de website laadt automatisch alle foto's uit de `fotos/` map. Je
 4. Sleep je foto's erin (JPG, PNG of WEBP)
 5. Klik **"Commit changes"**
 
-✅ GitHub start automatisch een actie die `photos.json` hergenereert.
-Na ongeveer 1 minuut verschijnen de nieuwe foto's op de website.
+✅ GitHub start automatisch een actie die de foto's optimaliseert en `photos.json` hergenereert.
+Na ongeveer 1-2 minuten verschijnen de nieuwe foto's op de website.
 
 ### Foto's verwijderen:
 
@@ -60,25 +82,42 @@ Na ongeveer 1 minuut verschijnen de nieuwe foto's op de website.
 3. Klik het **prullenbak-icoontje** rechtsboven
 4. Commit — `photos.json` wordt automatisch bijgewerkt
 
-### Foto volgorde aanpassen:
+### Volgorde:
 
-Foto's verschijnen in **alfabetische volgorde** op bestandsnaam.
-Wil je een specifieke volgorde? Geef foto's een naam als:
-- `01_burger.jpg`
-- `02_team.jpg`
-- `03_truck.jpg`
+De volgorde wordt **bij elk paginabezoek willekeurig geschud**. Bestandsnamen bepalen dus niets — elke bezoeker ziet een andere verdeling over de twee rijen.
 
-### Prikbord layout:
+### Layout van de band:
 
-- **Desktop:** mozaïek van 9 foto's per pagina in wisselende groottes, met punaises en lichte rotatie
-- **Mobiel:** 1 foto tegelijk met automatische rotatie elke 3,5 seconden, ook te bedienen met pijltjes
-- Meer dan 9 foto's? Er wordt automatisch een nieuwe pagina aangemaakt (pijltjes + bolletjes onderaan)
+- **Desktop:** twee rijen die tegen elkaar in schuiven (bovenste naar links, onderste naar rechts). Zet je de cursor op de band, dan pauzeert hij.
+- **Mobiel:** één veegbare strip, één foto per veeg (snap).
+- **Klikken** op een foto opent hem groot in een lightbox (sluiten met × of Escape).
+- Bezoekers met "verminderde beweging" aan in hun systeeminstellingen krijgen een stilstaande, scrollbare band.
 
 ### Problemen?
 
 - **Foto's verschijnen niet?** Wacht 1-2 minuten en ververs de pagina (Ctrl+F5)
 - **GitHub Action mislukt?** Ga naar het tabblad "Actions" in je repo voor details
 - **Oude foto's nog zichtbaar?** Browser cache — open in incognito venster
+- **Foto ligt op zijn kant?** Zie hieronder bij de Action
+
+---
+
+## ⚙️ De GitHub Action: `update-photos.yml`
+
+Draait automatisch bij elke push naar `fotos/**` of naar een afbeelding in de root, en handmatig via **Actions → Run workflow**.
+
+Wat hij doet:
+
+1. **Sfeerfoto's** (`fotos/`): rechtzetten volgens EXIF (`-auto-orient`), verkleinen naar max 1600px, EXIF strippen, JPEG progressive op kwaliteit 82.
+2. **Beelden in de root** (logo, menufoto's): max 960px — dubbel wat de site toont, dus scherp op retina. PNG's door pngquant (80–96%). `checker.png` en `insta.png` worden overgeslagen, net als alles onder 150KB.
+3. **`photos.json`** genereren met relatieve paden (`fotos/naam.jpg`).
+4. Alles terugcommitten.
+
+⚠️ De Action **herschrijft je originelen in de repo**. Bewaar de camerabestanden dus ergens buiten de repo.
+
+⚠️ Vereist **Settings → Actions → General → Workflow permissions → Read and write permissions**, anders kan de Action niet terugcommitten.
+
+**Foto op zijn kant?** Dat komt van EXIF-rotatie die verloren ging. Sinds `-auto-orient` in de Action zit, gebeurt dat niet meer bij nieuwe uploads. Een foto die al fout in de repo staat, moet je zelf gedraaid opnieuw uploaden.
 
 ---
 
@@ -102,7 +141,7 @@ Het menu wordt automatisch geladen uit `menu.json`.
   "description": "Dubbel premium beef patty, SP burger saus, sla, tomaat, ui, pickle",
   "price": 9.50,
   "tag": "Bestseller",
-  "image": "https://vermope.github.io/smashpatat.github.io/classic-smash.jpg"
+  "image": "classic-smash.png"
 }
 ```
 
@@ -139,6 +178,8 @@ Evenementen op de website worden automatisch opgehaald uit Google Agenda.
 2. Voeg een nieuw event toe met **naam, datum, tijd en locatie**
 3. De website toont het event automatisch — geen aanpassing nodig!
 
+Staan er geen events in de agenda, dan toont de site: *"Geen aankomende publieke evenementen gepland."*
+
 *Alleen jij kan de agenda bewerken — bezoekers kunnen enkel lezen.*
 
 ### Technische details:
@@ -159,6 +200,15 @@ Evenementen op de website worden automatisch opgehaald uit Google Agenda.
 ⚠️ **GitHub is hoofdlettergevoelig:** `Logo.png` ≠ `logo.png`
 
 Het logo wordt ook gebruikt als **favicon** (icoontje in het browsertabblad). Bij het vervangen van `logo.png` wordt het favicon automatisch ook bijgewerkt.
+
+---
+
+## 🐛 Afbeeldingen die niet laden
+
+Twee oorzaken die we al zijn tegengekomen:
+
+1. **Absolute URL's** naar `vermope.github.io/smashpatat.github.io/` — zie "altijd relatieve paden" hierboven.
+2. **Firefox en `loading="lazy"`.** Firefox laadt lazy-afbeeldingen die via JavaScript worden toegevoegd vaak niet. De fotoband en de menukaarten gebruiken daarom een eigen loader (`data-src` + IntersectionObserver, met een vangnet na 3 seconden). Voeg bij nieuwe, door JavaScript gegenereerde afbeeldingen dus **geen** `loading="lazy"` toe, maar gebruik `data-src` en roep `hydrateLazyImages(container)` aan.
 
 ---
 
@@ -199,7 +249,7 @@ De toezichthouder in België is de **Gegevensbeschermingsautoriteit (GBA):** geg
 
 ## 🚀 Hosting
 
-De website wordt **gratis gehost** via **GitHub Pages**. Elke wijziging is na **1-2 minuten** live.
+De website wordt **gratis gehost** via **GitHub Pages**, op het eigen domein `smashpatat.be`. Elke wijziging is na **1-2 minuten** live.
 
 ---
 
