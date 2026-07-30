@@ -161,26 +161,23 @@ section:not(.hero) { content-visibility:auto; contain-intrinsic-size:0 500px; }
 .over-fotos { display:flex; flex-direction:row; gap:1rem; }
 .over-foto { position:relative; flex:1; min-width:0; aspect-ratio:1/1; border:3px solid var(--red); box-shadow:6px 6px 0 var(--black); overflow:hidden; background:#1a1a1a; }
 .over-foto img { width:100%; height:100%; object-fit:cover; display:block; }
-#prikbord { padding:80px 5%; }
-.prikbord-container { position:relative; width:100%; }
-.prikbord { background-image:repeating-conic-gradient(#222 0% 25%,#ddd 0% 50%); background-size:36px 36px; padding:1.5rem 1.5rem 2.5rem; border:4px solid #333; overflow:hidden; }
-.prikbord-slides { display:flex; transition:transform .6s ease; width:100%; }
-.prikbord-slide { min-width:100%; width:100%; flex-shrink:0; }
-.mosaic { display:grid; grid-template-columns:repeat(12, 1fr); grid-auto-rows:minmax(80px, auto); gap:6px; }
-.pin-foto { background:#fff; box-shadow:4px 4px 12px rgba(0,0,0,.6),0 0 0 1px #ccc; transition:transform .3s ease, box-shadow .3s ease; cursor:pointer; position:relative; overflow:hidden; aspect-ratio: auto; }
-.pin-foto:hover { transform:scale(1.04) rotate(0deg) !important; box-shadow:8px 8px 20px rgba(0,0,0,.9); z-index:50 !important; }
-.pin-foto::before { content:''; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; pointer-events:none; }
-.foto-inner { width:100%; height:100%; padding:5px 5px 18px; box-sizing:border-box; background:#1a1a1a; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-.foto-inner img { width:100%; height:100%; object-fit:contain; object-position:center; display:block; }
-.carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); background:var(--red); color:var(--white); border:none; width:50px; height:50px; border-radius:50%; font-size:1.8rem; cursor:pointer; z-index:2000; transition:all .2s; box-shadow:0 4px 12px rgba(215,43,43,0.5); display:flex; align-items:center; justify-content:center; pointer-events:auto; }
-.carousel-arrow:hover { background:#b82424; transform:translateY(-50%) scale(1.1); }
-.carousel-arrow:active { transform:translateY(-50%) scale(0.95); }
-.carousel-arrow.prev { left:0.5rem; }
-.carousel-arrow.next { right:0.5rem; }
-.carousel-dots { position:absolute; bottom:0.6rem; left:50%; transform:translateX(-50%); display:flex; gap:0.5rem; z-index:2000; pointer-events:auto; }
-.carousel-dot { width:10px; height:10px; border-radius:50%; background:#666; border:2px solid var(--white); cursor:pointer; transition:all .2s; }
-.carousel-dot.active { background:var(--red); transform:scale(1.3); }
-.carousel-dot:hover { background:#999; }
+#prikbord { padding:80px 5%; overflow:hidden; }
+.marquee-band { margin:2.5rem -5% 0; display:flex; flex-direction:column; gap:14px; }
+.marquee-row { display:flex; gap:14px; width:max-content; }
+.marquee-row.a { animation:marquee-l 44s linear infinite; }
+.marquee-row.b { animation:marquee-r 56s linear infinite; }
+.marquee-band:hover .marquee-row { animation-play-state:paused; }
+.marquee-foto { position:relative; flex:none; width:380px; height:250px; overflow:hidden; cursor:pointer; background:#1a1a1a; border:2px solid #2a2a2a; transition:border-color .2s; }
+.marquee-row.b .marquee-foto { width:300px; height:200px; }
+.marquee-foto img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease; }
+.marquee-foto:hover { border-color:var(--red); }
+.marquee-foto:hover img { transform:scale(1.06); }
+@keyframes marquee-l { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+@keyframes marquee-r { from { transform:translateX(-50%); } to { transform:translateX(0); } }
+@media (prefers-reduced-motion:reduce) {
+  .marquee-row { animation:none; }
+  .marquee-band { overflow-x:auto; }
+}
 .lightbox { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; padding:2rem; }
 .lightbox.active { display:flex; animation:fadeIn .3s ease; }
 .lightbox img { max-width:90%; max-height:90vh; object-fit:contain; box-shadow:0 0 50px rgba(255,255,255,0.2); }
@@ -215,8 +212,8 @@ footer { text-align:center; padding:0; }
 @media(max-width:700px) {
   .nav-links { display:none; }
   .hamburger { display:flex; }
-  .mosaic { display:none; }
-  .mobile-foto-single { display:flex !important; }
+  .marquee-foto { width:260px; height:180px; }
+  .marquee-row.b .marquee-foto { width:210px; height:150px; }
   .hero { justify-content:flex-start; min-height:auto; }
   .hero-content { padding-top:215px; padding-bottom:90px; }
   .hero-logo-wrap { width:min(340px, 86vw); }
@@ -224,10 +221,6 @@ footer { text-align:center; padding:0; }
   .banner-item { font-size:.72rem; letter-spacing:1.5px; padding:0 1rem; }
   .allergenen-btn { padding:.9rem 1.4rem; font-size:.72rem; white-space:normal; max-width:100%; box-shadow:4px 4px 0 var(--white); }
 }
-.mobile-foto-single { display:none; width:100%; position:relative; }
-.mobile-foto-single .foto-inner { min-height:280px; padding:8px 8px 28px; background:#1a1a1a; }
-.mobile-foto-single .foto-inner img { width:100%; height:260px; object-fit:contain; object-position:center; display:block; }
-.mobile-foto-single::before { content:''; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#ff6b6b,var(--red)); box-shadow:0 2px 6px rgba(0,0,0,.5); z-index:3; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -327,14 +320,7 @@ footer { text-align:center; padding:0; }
 <section id="prikbord">
   <div class="sec-title">Smash Patat <span>in Beeld</span></div>
   <div class="divider"></div>
-  <div class="prikbord-container">
-    <div class="prikbord">
-      <div class="prikbord-slides" id="foto-grid"></div>
-    </div>
-    <button class="carousel-arrow prev" id="carousel-prev">‹</button>
-    <button class="carousel-arrow next" id="carousel-next">›</button>
-    <div class="carousel-dots" id="carousel-dots"></div>
-  </div>
+  <div class="marquee-band" id="foto-band"></div>
 </section>
 
 <div class="lightbox" id="lightbox">
@@ -443,138 +429,28 @@ async function fetchPhotos() {
     const j = Math.floor(Math.random() * (i + 1));
     [photos[i], photos[j]] = [photos[j], photos[i]];
   }
-  loadPhotos();
+  renderMarquee();
 }
-
-let currentSlide = 0;
-let totalSlides = 1;
-
-// Mosaic layout — elk entry: [colSpan (van 12), heightPx, rotatieDeg]
-// Rij 1 kolommen moeten optellen tot 12, rij 2 ook, enz.
-const mosaicLayouts = [
-  [
-    [5, 340, -2],
-    [4, 340,  1],
-    [3, 340, -1],
-    [4, 360,  2],
-    [4, 360, -1],
-    [4, 360,  1],
-    [4, 300,  2],
-    [4, 300, -2],
-    [4, 300,  1],
-  ],
-  [
-    [4, 340,  2],
-    [5, 340, -1],
-    [3, 340,  1],
-    [4, 360, -2],
-    [4, 360,  1],
-    [4, 360, -1],
-    [4, 300,  2],
-    [4, 300, -2],
-    [4, 300,  1],
-  ]
-];
-
-let mobilePhotoIndex = 0;
-let mobileAutoTimer = null;
 
 function wrapEmojis(name) {
   return name.replace(/([\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F\u20E3]?(\s*[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F\u20E3]?)*)\s*$/u, '<span style="white-space:nowrap">$1</span>');
 }
 
-function loadPhotos() {
-  const fotoGrid = document.getElementById('foto-grid');
-  const photosPerSlide = 9;
-  totalSlides = Math.ceil(photos.length / photosPerSlide);
-  let slidesHTML = '';
-
-  for (let s = 0; s < totalSlides; s++) {
-    const slidePhotos = photos.slice(s * photosPerSlide, (s + 1) * photosPerSlide);
-    const pattern = mosaicLayouts[s % mosaicLayouts.length];
-
-    // Desktop mosaic
-    let mosaicHTML = '<div class="mosaic">';
-    slidePhotos.forEach((photo, idx) => {
-      const [cols, h, rot] = pattern[idx] || [3, 280, 0];
-      mosaicHTML += `<div class="pin-foto" style="grid-column:span ${cols};height:${h}px;transform:rotate(${rot}deg);z-index:${idx+1};" onclick="openLightbox('${photo}')"><div class="foto-inner"><img src="${photo}" alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" loading="lazy" decoding="async" onerror="this.closest('.pin-foto').style.visibility='hidden'"></div></div>`;
-    });
-    mosaicHTML += '</div>';
-
-    slidesHTML += `<div class="prikbord-slide">${mosaicHTML}</div>`;
-  }
-
-  fotoGrid.innerHTML = slidesHTML;
-
-  // Mobile single photo (apart element, buiten slides)
-  updateMobilePhoto();
-
-  const dotsContainer = document.getElementById('carousel-dots');
-  dotsContainer.innerHTML = Array.from({length: totalSlides}, (_, i) =>
-    `<div class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`
-  ).join('');
-
-  startMobileAuto();
-}
-
-function updateMobilePhoto() {
-  let el = document.getElementById('mobile-single');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'mobile-single';
-    el.className = 'pin-foto mobile-foto-single';
-    el.innerHTML = `<div class="foto-inner"><img id="mobile-single-img" src="" alt="Smash Patat sfeer"></div>`;
-    el.onclick = () => openLightbox(photos[mobilePhotoIndex]);
-    document.getElementById('foto-grid').parentElement.appendChild(el);
-  }
-  const rot = [-3, 2, -1, 3, -2, 1, -3, 2, 0][mobilePhotoIndex % 9];
-  el.style.transform = `rotate(${rot}deg)`;
-  document.getElementById('mobile-single-img').src = photos[mobilePhotoIndex];
-}
-
-function nextMobilePhoto() {
-  mobilePhotoIndex = (mobilePhotoIndex + 1) % photos.length;
-  updateMobilePhoto();
-  resetMobileAuto();
-}
-
-function prevMobilePhoto() {
-  mobilePhotoIndex = (mobilePhotoIndex - 1 + photos.length) % photos.length;
-  updateMobilePhoto();
-  resetMobileAuto();
-}
-
-function startMobileAuto() {
-  mobileAutoTimer = setInterval(() => {
-    if (window.innerWidth <= 700) nextMobilePhoto();
-  }, 3500);
-}
-
-function resetMobileAuto() {
-  clearInterval(mobileAutoTimer);
-  startMobileAuto();
-}
-
-// Carousel navigation
-function goToSlide(index) {
-  currentSlide = index;
-  const slides = document.getElementById('foto-grid');
-  slides.style.transform = `translateX(-${currentSlide * 100}%)`;
-
-  // Update dots
-  document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
-    dot.classList.toggle('active', i === currentSlide);
-  });
-}
-
-function nextSlide() {
-  currentSlide = (currentSlide + 1) % totalSlides;
-  goToSlide(currentSlide);
-}
-
-function prevSlide() {
-  currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-  goToSlide(currentSlide);
+// Non-stop band: twee rijen die tegen elkaar in schuiven, gepauzeerd bij hover.
+function renderMarquee() {
+  const band = document.getElementById('foto-band');
+  if (!band || !photos.length) return;
+  const mid = Math.ceil(photos.length / 2);
+  const rows = [photos.slice(0, mid), photos.slice(mid)];
+  band.innerHTML = rows.map((row, i) => {
+    const set = row.length ? row : photos;
+    const cells = set.concat(set).map((p) =>
+      '<div class="marquee-foto" onclick="openLightbox(\'' + p + '\')">' +
+      '<img src="' + p + '" alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" loading="lazy" decoding="async" ' +
+      'onerror="this.parentElement.style.display=\'none\'"></div>'
+    ).join('');
+    return '<div class="marquee-row ' + (i === 0 ? 'a' : 'b') + '">' + cells + '</div>';
+  }).join('');
 }
 
 // Lightbox functionality
@@ -594,15 +470,6 @@ function closeLightbox() {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
-  // Carousel arrows
-  document.getElementById('carousel-prev').addEventListener('click', () => {
-    if (window.innerWidth <= 700) prevMobilePhoto();
-    else prevSlide();
-  });
-  document.getElementById('carousel-next').addEventListener('click', () => {
-    if (window.innerWidth <= 700) nextMobilePhoto();
-    else nextSlide();
-  });
 
   // Lightbox
   const lightboxClose = document.getElementById('lightbox-close');
@@ -616,8 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Keyboard navigation
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') prevSlide();
-    if (e.key === 'ArrowRight') nextSlide();
   });
 });
 
