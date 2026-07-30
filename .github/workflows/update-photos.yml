@@ -1,9 +1,12 @@
-name: Update photos.json
+name: Optimaliseer beelden + update photos.json
 
 on:
   push:
     paths:
       - 'fotos/**'
+      - '*.png'
+      - '*.jpg'
+      - '*.jpeg'
   workflow_dispatch:
 
 jobs:
@@ -16,31 +19,86 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Generate photos.json
+      - name: Installeer ImageMagick + pngquant
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick pngquant
+
+      # Sfeerfoto's: max 1600px breed/hoog, EXIF eruit, progressive JPEG op kwaliteit 82.
+      # Kleinere foto's blijven ongemoeid — "1600x1600>" verkleint alleen naar beneden.
+      - name: Optimaliseer sfeerfoto's
         run: |
-          BASE_URL="https://vermope.github.io/smashpatat.github.io/fotos"
-          FILES=$(find fotos -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | sort)
-          
-          echo "[" > photos.json
-          FIRST=true
-          while IFS= read -r file; do
-            FILENAME=$(basename "$file")
-            if [ "$FIRST" = true ]; then
-              echo "  \"${BASE_URL}/${FILENAME}\"" >> photos.json
-              FIRST=false
-            else
-              echo "  ,\"${BASE_URL}/${FILENAME}\"" >> photos.json
-            fi
-          done <<< "$FILES"
-          echo "]" >> photos.json
-          
+          shopt -s nullglob nocaseglob
+          for f in fotos/*.jpg fotos/*.jpeg fotos/*.png fotos/*.webp; do
+            before=$(stat -c%s "$f")
+            dims=$(identify -format "%wx%h" "$f[0]" 2>/dev/null || echo "?")
+            case "${f,,}" in
+              *.png)
+                mogrify -resize "1600x1600>" -strip "$f"
+                pngquant --quality=75-95 --skip-if-larger --strip --force --output "$f" "$f" || true
+                ;;
+              *)
+                mogrify -resize "1600x1600>" -strip -interlace Plane -quality 82 "$f"
+                ;;
+            esac
+            after=$(stat -c%s "$f")
+            echo "$f: $dims — $((before/1024))KB -> $((after/1024))KB"
+          done
+
+      # Beelden in de root (logo, burgerfoto's van de menukaart). Die staan klein op de
+      # pagina — logo 480px, menurondjes 120px — dus 960px is ruim genoeg voor retina.
+      # checker.png en insta.png worden overgeslagen: een tegelpatroon en een icoon
+      # mogen niet herschaald worden.
+      - name: Optimaliseer beelden in de root
+        run: |
+          shopt -s nullglob nocaseglob
+          SKIP="checker.png insta.png favicon.png"
+          for f in *.png *.jpg *.jpeg; do
+            base=$(basename "$f")
+            case " $SKIP " in *" $base "*) echo "skip $base"; continue;; esac
+            size=$(stat -c%s "$f")
+            # Alles onder 150KB laten we staan.
+            if [ "$size" -lt 153600 ]; then echo "skip $base (klein)"; continue; fi
+            before=$size
+            dims=$(identify -format "%wx%h" "$f[0]" 2>/dev/null || echo "?")
+            case "${f,,}" in
+              *.png)
+                mogrify -resize "960x960>" -strip "$f"
+                pngquant --quality=80-96 --skip-if-larger --strip --force --output "$f" "$f" || true
+                ;;
+              *)
+                mogrify -resize "960x960>" -strip -interlace Plane -quality 85 "$f"
+                ;;
+            esac
+            after=$(stat -c%s "$f")
+            echo "$f: $dims — $((before/1024))KB -> $((after/1024))KB"
+          done
+
+      - name: Genereer photos.json
+        run: |
+          FILES=$(find fotos -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | sort)
+
+          {
+            echo "["
+            FIRST=true
+            while IFS= read -r file; do
+              [ -z "$file" ] && continue
+              FILENAME=$(basename "$file")
+              if [ "$FIRST" = true ]; then
+                echo "  \"fotos/${FILENAME}\""
+                FIRST=false
+              else
+                echo "  ,\"fotos/${FILENAME}\""
+              fi
+            done <<< "$FILES"
+            echo "]"
+          } > photos.json
+
           echo "Generated photos.json:"
           cat photos.json
 
-      - name: Commit photos.json
+      - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add photos.json
-          git diff --staged --quiet || git commit -m "Auto-update photos.json"
+          git add -A fotos photos.json *.png *.jpg *.jpeg 2>/dev/null || git add -A
+          git diff --staged --quiet || git commit -m "Optimaliseer beelden + update photos.json"
           git push
