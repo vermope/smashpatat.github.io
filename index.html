@@ -173,9 +173,17 @@ section:not(.hero) { content-visibility:auto; contain-intrinsic-size:0 500px; }
 .marquee-foto:hover img { transform:scale(1.06); }
 @keyframes marquee-l { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 @keyframes marquee-r { from { transform:translateX(-50%); } to { transform:translateX(0); } }
+.prikbord-intro { max-width:640px; margin:1.6rem 0 0; font-size:.9rem; line-height:1.7; color:#aaa; text-wrap:pretty; }
+.acc-band { margin:2.2rem -5% 0; display:flex; gap:6px; height:460px; overflow:hidden; }
+.acc-panel { position:relative; flex:none; width:120px; height:100%; overflow:hidden; cursor:pointer; background:#141414; border:2px solid #2a2a2a; transition:width .7s cubic-bezier(.2,.8,.2,1), border-color .2s; }
+.acc-panel img { width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(.6) brightness(.85); transition:filter .6s ease; }
+.acc-panel.on { width:min(560px,52vw); border-color:var(--red); }
+.acc-panel.on img { object-fit:contain; filter:none; }
+.acc-panel:hover { border-color:var(--red); }
 @media (prefers-reduced-motion:reduce) {
   .marquee-row { animation:none; }
   .marquee-band { overflow-x:auto; }
+  .acc-band { overflow-x:auto; }
 }
 .lightbox { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; padding:2rem; }
 .lightbox.active { display:flex; animation:fadeIn .3s ease; }
@@ -321,7 +329,8 @@ footer { text-align:center; padding:0; }
 <section id="prikbord">
   <div class="sec-title">Smash Patat <span>in Beeld</span></div>
   <div class="divider"></div>
-  <div class="marquee-band" id="foto-band"></div>
+  <p class="prikbord-intro">Van de foodtruck op festivals en events tot de burgers zelf. Beweeg over een foto om ze open te klappen, klik voor het volledige beeld.</p>
+  <div class="acc-band" id="foto-band"></div>
 </section>
 
 <div class="lightbox" id="lightbox">
@@ -485,14 +494,75 @@ function hydrateLazyImages(root) {
   }, 3000);
 }
 
+function accPanel(photo, eager) {
+  const attrs = eager
+    ? 'src="' + photo + '" fetchpriority="high"'
+    : 'data-src="' + photo + '" fetchpriority="low"';
+  return '<div class="acc-panel" onclick="openLightbox(\'' + photo + '\')">' +
+    '<img ' + attrs + ' alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" decoding="async" ' +
+    'onerror="this.parentElement.style.display=\'none\'"></div>';
+}
+
+// Accordeon: alle foto's als smalle stroken, één klapt open. Schuift traag opzij,
+// pauzeert bij hover.
+const accState = { i: 0, paused: false, dir: 1, timer: null, raf: null, last: 0 };
+
+function accSetActive(band, i) {
+  const panels = band.querySelectorAll('.acc-panel');
+  if (!panels.length) return;
+  accState.i = ((i % panels.length) + panels.length) % panels.length;
+  panels.forEach((p, idx) => p.classList.toggle('on', idx === accState.i));
+}
+
+function startAccordion(band) {
+  clearInterval(accState.timer);
+  cancelAnimationFrame(accState.raf);
+  const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const panels = band.querySelectorAll('.acc-panel');
+  accSetActive(band, 0);
+  if (reduce || panels.length < 2) return;
+
+  panels.forEach((p, idx) => p.addEventListener('mouseenter', () => accSetActive(band, idx)));
+  band.addEventListener('mouseenter', () => { accState.paused = true; });
+  band.addEventListener('mouseleave', () => { accState.paused = false; });
+
+  accState.timer = setInterval(() => {
+    if (accState.paused) return;
+    let next = accState.i;
+    while (next === accState.i) next = Math.floor(Math.random() * panels.length);
+    accSetActive(band, next);
+  }, 3000);
+
+  accState.last = performance.now();
+  const step = (t) => {
+    const dt = Math.min(t - accState.last, 60);
+    accState.last = t;
+    if (!accState.paused) {
+      const max = band.scrollWidth - band.clientWidth;
+      if (max > 1) {
+        let x = band.scrollLeft + accState.dir * (22 * dt / 1000);
+        if (x >= max) { x = max; accState.dir = -1; }
+        if (x <= 0) { x = 0; accState.dir = 1; }
+        band.scrollLeft = x;
+      }
+    }
+    accState.raf = requestAnimationFrame(step);
+  };
+  accState.raf = requestAnimationFrame(step);
+}
+
 function renderMarquee() {
   const band = document.getElementById('foto-band');
   if (!band || !photos.length) return;
+
+  clearInterval(accState.timer);
+  cancelAnimationFrame(accState.raf);
 
   // Mobiel: één veegbare strip. Geen duplicaten, geen animatie — anders laadt de
   // browser de foto's in een getransformeerde track niet.
   if (isMobileBand()) {
     band.dataset.mode = 'mobile';
+    band.className = 'marquee-band';
     band.innerHTML = '<div class="marquee-row a">' +
       photos.map((p, i) => bandCell(p, i < 3)).join('') + '</div>';
     hydrateLazyImages(band);
@@ -500,13 +570,10 @@ function renderMarquee() {
   }
 
   band.dataset.mode = 'desktop';
-  const mid = Math.ceil(photos.length / 2);
-  band.innerHTML = [photos.slice(0, mid), photos.slice(mid)].map((row, i) => {
-    const set = row.length ? row : photos;
-    const cells = set.concat(set).map((p, idx) => bandCell(p, idx < 4)).join('');
-    return '<div class="marquee-row ' + (i === 0 ? 'a' : 'b') + '">' + cells + '</div>';
-  }).join('');
+  band.className = 'acc-band';
+  band.innerHTML = photos.map((p, i) => accPanel(p, i < 6)).join('');
   hydrateLazyImages(band);
+  startAccordion(band);
 }
 
 // Wisselt van variant zodra de breakpoint wordt overgestoken (rotatie, resize)
