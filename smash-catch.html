@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="nl-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smash &amp; Catch — Smash Patat</title>
+<meta name="description" content="Wachten op je burger? Vang de vallende burgers met de truck. Drie missers en je bent af.">
+<meta name="theme-color" content="#111111">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+/* Tokens identiek aan index.html, plus vier spel-specifieke waarden. */
+:root {
+  --black:#111111; --white:#f5f5f0; --red:#D72B2B; --green:#4CAF50; --cs:40px;
+  --red-hover:#b82424;
+  --panel:#181818;    /* het LCD-vlak */
+  --border:#2a2a2a;
+  --divider:#222222;
+  --ghost:#242424;    /* uit-segment: net zichtbaar, zoals een echt LCD */
+  --bun:#E8B25C;      /* broodjesgoud, overgenomen uit de burger-cursor */
+  --cols:5;
+}
+
+/* Burger-cursor, gelijk aan index.html. */
+:root { --burger-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg stroke='%23111111' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M5 13.5A11 8.5 0 0 1 27 13.5Z' fill='%23E8B25C'/%3E%3Crect x='4' y='14.5' width='24' height='4.2' rx='2.1' fill='%23D72B2B'/%3E%3Cpath d='M5 19.5h22a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z' fill='%23E8B25C'/%3E%3C/g%3E%3C/svg%3E") 4 4; }
+html, body { cursor:var(--burger-cursor), auto; }
+a, button, [role="button"], [onclick], .hamburger, .pad { cursor:default; }
+
+body {
+  font-family:'Inter',sans-serif;
+  background:var(--black); color:var(--white);
+  overflow-x:hidden;
+  min-height:100vh; display:flex; flex-direction:column;
+}
+.checker { background-image:repeating-conic-gradient(var(--black) 0% 25%,var(--white) 0% 50%); background-size:var(--cs) var(--cs); }
+
+/* ---------- BEHANG ----------
+   Het logo groot en flauw achter de pagina. Geen transparantie: gewoon een
+   volle kleur die net iets lichter is dan de achtergrond. Hetzelfde pad als
+   de sprite, dus het kost geen extra bytes voor de tekening. */
+.behang {
+  position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none;
+  display:flex; align-items:center; justify-content:center;
+  color:#1c1c1c;
+}
+.behang svg { width:min(118vh,118vw); max-width:1000px; height:auto; flex:none; }
+
+/* ---------- NAV (overgenomen uit index.html) ---------- */
+nav { position:fixed; top:0; width:100%; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 5%; height:64px; background:var(--black); border-bottom:3px solid var(--red); }
+.nav-logo img { height:42px; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+@media(max-width:1050px) { .nav-links { gap:1.1rem; } .nav-links a { font-size:.78rem; } }
+.nav-links a { color:var(--white); text-decoration:none; font-weight:700; font-size:.85rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; }
+.nav-links a:hover { color:var(--red); }
+/* Het spel is het enige rode item in de balk. */
+.nav-links a.spel, .mobile-menu a.spel { color:var(--red); }
+.nav-links a.spel:hover, .mobile-menu a.spel:hover { color:var(--white); }
+.hamburger { display:none; flex-direction:column; gap:5px; padding:8px; background:none; border:none; }
+.hamburger span { width:24px; height:2px; background:var(--white); transition:all .3s; display:block; }
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; background:var(--black); border-bottom:3px solid var(--red); z-index:99; padding:1rem 5%; flex-direction:column; gap:0; }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:var(--white); text-decoration:none; font-weight:700; font-size:.9rem; letter-spacing:1px; text-transform:uppercase; padding:.9rem 0; border-bottom:1px solid #222; transition:color .2s; }
+.mobile-menu a:last-child { border-bottom:none; }
+.mobile-menu a:hover { color:var(--red); }
+@media (max-width:820px) { .nav-links { display:none; } .hamburger { display:flex; } }
+
+/* ---------- KOP ---------- */
+main { flex:1; padding-top:64px; display:flex; flex-direction:column; }
+header { text-align:center; padding:1.5rem 1.2rem 1.2rem; }
+.kicker { font-family:'Alfa Slab One',serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); display:block; margin-bottom:.7rem; }
+h1 { font-family:'Alfa Slab One',serif; font-weight:400; font-size:clamp(1.75rem,9vw,3.2rem); line-height:1.05; letter-spacing:2px; text-transform:uppercase; }
+h1 span { color:var(--red); }
+.divider { width:55px; height:5px; background:var(--red); margin:.9rem auto 0; }
+
+/* ---------- SPEELVELD ---------- */
+.stage { padding:0 1.2rem 2.5rem; display:flex; flex-direction:column; align-items:center; }
+
+.lcd {
+  position:relative; width:100%; max-width:460px;
+  background:var(--panel); border:3px solid var(--border);
+  box-shadow:5px 5px 0 var(--white);
+  padding:1rem; transition:border-color .2s;
+}
+.lcd.hit { border-color:var(--red); }
+.lcd.miss { border-color:var(--white); }
+
+.hud { display:flex; align-items:center; justify-content:space-between; font-family:'Alfa Slab One',serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; color:#777777; border-bottom:3px solid var(--divider); padding-bottom:.7rem; margin-bottom:.9rem; }
+.hud b { color:var(--white); font-weight:400; margin-left:.4rem; }
+#score { display:inline-block; min-width:2.2ch; }
+.lives { display:inline-flex; gap:5px; margin-left:.5rem; vertical-align:-1px; }
+.lives i { width:11px; height:11px; background:var(--ghost); display:block; }
+.lives i.spent { background:var(--red); }
+
+/* Vijf banen breed. Op een telefoon is een kolom ~62px, dus de cellen
+   blijven bijna vierkant en de burger vult ze net. */
+/* z-index:0 is hier geen decoratie maar noodzaak: het maakt .grid een
+   stacking context, zodat de z-index van de cellen bínnen het raster
+   blijft. Zonder dat gelden ze in de wortel van de pagina en liggen de
+   cellen boven de overlay — dan is de Spelen-knop niet meer aan te
+   klikken, terwijl je hem nog wel ziet. */
+.grid { position:relative; z-index:0; display:grid; grid-template-columns:repeat(var(--cols),1fr); gap:4px; }
+/* De cellen tonen alleen: klikken hoeven ze nooit te vangen. */
+.cell { position:relative; z-index:1; pointer-events:none; aspect-ratio:6/5; display:flex; align-items:center; justify-content:center; }
+.cell svg { height:88%; width:auto; max-width:92%; display:block; }
+
+/* Het Smash Patat-logo als achtergrond van het speelveld. Absoluut
+   gepositioneerd, dus het neemt geen rastercel in.
+
+   logo-veld.png is een MASKER: witte tekening met alpha uit de donkerte van
+   het origineel. De kleur komt uit CSS, niet uit het bestand — wil je het
+   flauwer, zet background-color dan op #222222. var(--border) = #2a2a2a is
+   sterk genoeg om het logo te lezen en zwak genoeg om de goud-rode burgers
+   te laten domineren. */
+.veldlogo {
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-color:var(--border);
+  -webkit-mask:url("logo-veld.png") center / contain no-repeat;
+          mask:url("logo-veld.png") center / contain no-repeat;
+}
+/* Zonder mask-ondersteuning zou hier een grijs vlak staan: dan liever niets. */
+@supports not ((mask: url("x")) or (-webkit-mask: url("x"))) {
+  .veldlogo { background-color:transparent; }
+}
+
+.truckrow { pointer-events:none; display:grid; grid-template-columns:repeat(var(--cols),1fr); gap:4px; border-top:3px solid var(--divider); margin-top:6px; padding-top:10px; }
+.slot { display:flex; align-items:flex-end; justify-content:center; }
+.slot svg { width:100%; height:auto; display:block; }
+/* Op smalle kolommen slibben de dunne logolijnen dicht, dus dikker zetten.
+   CSS verslaat het stroke-width-attribuut in de sprite. */
+.slot svg > g { stroke-width:8; }
+@media (min-width:640px) { .slot svg > g { stroke-width:6; } }
+
+/* ---------- SMASH BIJ EEN MISSER ----------
+   Eigen laag over het raster, zodat de pers breder mag zijn dan één baan.
+   z-index 3 zit boven de cellen (1) maar nog altijd binnen .grid, en .grid
+   is een stacking context op 0 — dus de overlay met de Spelen-knop blijft
+   er hoe dan ook boven. De rijen worden vanuit JS gezet, zodat ROWS één
+   bron van waarheid blijft. */
+.splatlaag {
+  position:absolute; inset:0; z-index:3; pointer-events:none;
+  display:grid; grid-template-columns:repeat(var(--cols),1fr); gap:4px;
+}
+.splat { position:relative; }
+/* Duur komt per smash uit JS via --sm en schaalt mee met het tempo:
+   bij 190ms per valstap mag de klap niet over de volgende misser lopen. */
+.splat .plat, .splat .pers { position:absolute; left:50%; }
+.splat .plat {
+  bottom:5%; width:116%; margin-left:-58%;
+  transform-origin:50% 100%;
+  animation:platslaan var(--sm) linear forwards;
+}
+.splat .pers {
+  bottom:26%; width:132%; margin-left:-66%;
+  animation:persslag var(--sm) cubic-bezier(.45,0,.85,1) forwards;
+}
+.splat .plat svg, .splat .pers svg { width:100%; height:auto; display:block; }
+/* Spatjes: vierkant, geen radius — leest als weggeschoten stukjes */
+.splat i {
+  position:absolute; bottom:14%; left:50%;
+  width:6px; height:6px; margin-left:-3px;
+  background:var(--bun); border:1px solid var(--black);
+  animation:spat var(--sm) ease-out forwards;
+}
+.splat i:nth-of-type(2n) { background:var(--red); }
+.splat i:nth-of-type(1) { --dx:-26px; --dy:-15px; }
+.splat i:nth-of-type(2) { --dx:-12px; --dy:-23px; }
+.splat i:nth-of-type(3) { --dx: 12px; --dy:-23px; }
+.splat i:nth-of-type(4) { --dx: 26px; --dy:-15px; }
+
+@keyframes persslag {
+  0%   { transform:translateY(-210%); }
+  24%  { transform:translateY(0); }
+  40%  { transform:translateY(0); }
+  100% { transform:translateY(-210%); }
+}
+@keyframes platslaan {
+  0%, 20% { transform:scale(1,1); }
+  28%     { transform:scale(1.32,.19); }
+  100%    { transform:scale(1.32,.19); }
+}
+@keyframes spat {
+  0%, 22% { transform:translate(0,0) scale(0); }
+  38%     { transform:translate(calc(var(--dx) * .55), calc(var(--dy) * 1.15)) scale(1); }
+  100%    { transform:translate(var(--dx), calc(var(--dy) * -.15)) scale(.3); }
+}
+
+/* Lege cellen blijven leeg: het logo is nu de achtergrond van het veld.
+   De truckrij houdt wél zijn ghost-standen — die vertellen je waar je
+   naartoe kunt schuiven, en dat is speelinformatie. CSS verslaat de
+   fill/stroke-attributen in de SVG, dus één regel dooft de hele sprite. */
+.cell:not(.on) svg { visibility:hidden; }
+.slot:not(.on) svg { visibility:hidden; }
+
+/* De luifel klappert. Scharnier ligt op het punt waar hij aan de
+   carrosserie hangt, in viewBox-coördinaten. */
+.luifel { transform-box:view-box; transform-origin:348px 55px; }
+.slot.on .luifel { animation:klapper 2.8s ease-in-out infinite; }
+.slot.on.klap .luifel { animation:klapperHard .45s ease-out; }
+@keyframes klapper { 0%,100% { transform:rotate(0); } 50% { transform:rotate(-3.5deg); } }
+@keyframes klapperHard { 0% { transform:rotate(0); } 30% { transform:rotate(-6deg); } 100% { transform:rotate(0); } }
+
+.overlay { position:absolute; inset:3px; z-index:2; background:var(--panel); }
+.overlay[hidden] { display:none; }
+/* Drie schermen in dezelfde overlay: game over, naam invullen, lijst.
+   Elk scherm vult de overlay en centreert zichzelf. */
+.scherm { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:1.2rem; gap:1rem; }
+.scherm[hidden] { display:none; }
+.knoppen { display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; align-items:stretch; }
+/* Tweede knop: zelfde vorm, omgekeerd, zodat er één primaire actie blijft */
+.btn-2 { background:var(--panel); color:var(--white); border:3px solid var(--white); box-shadow:5px 5px 0 var(--white); font-size:.75rem; padding:.7rem 1.1rem; }
+.btn-2:hover, .btn-2:focus-visible { background:var(--white); color:var(--black); }
+
+/* ---------- HI-SCORE: NAAM INVULLEN ----------
+   Drie letters, zoals op een arcadekast. Werkt met tikken op de pijlen,
+   en met het toetsenbord: letters typen, pijltjes om te schuiven of te
+   bladeren, enter om te bevestigen. */
+.letters { display:flex; gap:.5rem; }
+.lslot { display:flex; flex-direction:column; align-items:center; gap:.2rem; }
+.lslot .pijl {
+  width:44px; height:26px; line-height:1;
+  background:var(--panel); color:#777777; border:2px solid var(--border);
+  font-size:.75rem; cursor:default; transition:color .15s,border-color .15s;
+}
+.lslot .pijl:hover, .lslot .pijl:focus-visible { color:var(--white); border-color:var(--red); }
+.lslot .letter {
+  width:44px; height:48px; display:flex; align-items:center; justify-content:center;
+  font-family:'Alfa Slab One',serif; font-size:1.7rem; line-height:1;
+  color:var(--white); background:var(--black); border:3px solid var(--border);
+  cursor:default; transition:border-color .15s,color .15s;
+}
+.lslot.actief .letter { border-color:var(--red); color:var(--red); }
+
+/* ---------- HI-SCORE: LIJST ---------- */
+.hs-lijst {
+  list-style:none; position:relative; width:100%; max-width:270px;
+  max-height:210px; overflow-y:auto;
+  font-family:'Alfa Slab One',serif; font-size:.78rem; letter-spacing:1px;
+  border-top:3px solid var(--divider); border-bottom:3px solid var(--divider);
+}
+.hs-lijst li { display:flex; align-items:baseline; gap:.5rem; padding:.3rem .1rem; color:#aaaaaa; }
+.hs-lijst li + li { border-top:1px solid #1e1e1e; }
+.hs-lijst .rang { width:2.4ch; text-align:right; color:#555555; flex:none; }
+.hs-lijst .naam { letter-spacing:3px; color:var(--white); }
+.hs-lijst .punt { margin-left:auto; color:#aaaaaa; }
+.hs-lijst li.nieuw { color:var(--red); }
+.hs-lijst li.nieuw .naam, .hs-lijst li.nieuw .punt { color:var(--red); }
+.hs-leeg { color:#555555; font-size:.85rem; }
+/* Melding in plaats van de knoppen terwijl de naaminvoer nog komt:
+   anders tik je "Nog eens" en is je score weg. */
+.hs-melding { font-family:'Alfa Slab One',serif; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); }
+.hs-melding[hidden] { display:none; }
+.hs-waarschuwing { font-size:.72rem; line-height:1.4; color:#777777; max-width:26ch; }
+.hs-waarschuwing[hidden] { display:none; }
+/* De game-over-animatie. De video heeft de paneelkleur ingebakken als
+   achtergrond (#171714 tegen #181818), dus het rechthoekje valt weg tegen
+   de overlay — een video kan geen transparantie hebben die overal werkt. */
+/* Op een telefoon is de overlay ~347px hoog en moeten titel, film, score
+   en knop er samen in. Vandaar kleiner op mobiel dan op desktop. */
+.overlay .film { width:100%; max-width:225px; line-height:0; }
+@media (min-width:640px) { .overlay .film { max-width:330px; } }
+.overlay .film[hidden] { display:none; }
+.overlay video { width:100%; height:auto; display:block; }
+/* Bij game over staat er meer in de overlay: strakker zetten zodat het op
+   een telefoon binnen het paneel blijft. */
+.scherm.af { gap:.55rem; }
+.scherm.af .final { font-size:2.4rem; margin:.1rem 0 .25rem; }
+.overlay h2 { font-family:'Alfa Slab One',serif; font-weight:400; font-size:clamp(1.4rem,7vw,2rem); letter-spacing:2px; text-transform:uppercase; line-height:1.1; }
+.overlay h2 span { color:var(--red); }
+.overlay p { font-size:.9rem; line-height:1.55; color:#aaaaaa; max-width:26ch; }
+.final-label { font-family:'Alfa Slab One',serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; color:#777777; display:block; }
+.final { font-family:'Alfa Slab One',serif; font-size:3.4rem; line-height:1; color:var(--red); letter-spacing:2px; display:block; margin:.2rem 0 .4rem; }
+.best { font-family:'Alfa Slab One',serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; color:#555555; display:block; }
+
+/* ---------- BUTTON ---------- */
+.btn { font-family:'Alfa Slab One',serif; font-size:.85rem; letter-spacing:2px; text-transform:uppercase; background:var(--red); color:var(--white); border:3px solid var(--white); box-shadow:5px 5px 0 var(--white); padding:.75rem 1.6rem; transition:transform .15s,box-shadow .15s,background .15s; }
+.btn:hover, .btn:focus-visible { background:var(--red-hover); box-shadow:8px 8px 0 var(--white); transform:translate(-3px,-3px); }
+.btn:active { box-shadow:2px 2px 0 var(--white); transform:translate(3px,3px); }
+
+/* ---------- STUREN ----------
+   Op een telefoon een echte slider: één veeg brengt je van baan 1 naar 5,
+   en je vinger zit onder het speelveld in plaats van erover. Op laptop en
+   desktop pijlen, want daar klik je liever dan dat je sleept. */
+.stuur { width:100%; max-width:460px; margin-top:14px; padding:1rem 1rem .75rem; background:var(--panel); border:3px solid var(--border); box-shadow:5px 5px 0 var(--border); }
+.slider { -webkit-appearance:none; appearance:none; display:block; width:100%; height:40px; margin:0; background:none; touch-action:none; cursor:default; }
+.slider:focus { outline:none; }
+/* WebKit: de duim moet handmatig op de baan gecentreerd worden.
+   baanhoogte 14 + 2x3 rand = 20, duim 40, dus (20-40)/2 = -10. */
+.slider::-webkit-slider-runnable-track { height:14px; background:var(--black); border:3px solid var(--divider); }
+.slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:60px; height:40px; margin-top:-10px; background:var(--red); border:3px solid var(--white); border-radius:0; }
+.slider:active::-webkit-slider-thumb, .slider:focus-visible::-webkit-slider-thumb { background:var(--red-hover); }
+.slider::-moz-range-track { height:14px; background:var(--black); border:3px solid var(--divider); }
+.slider::-moz-range-thumb { width:54px; height:40px; background:var(--red); border:3px solid var(--white); border-radius:0; }
+.slider:active::-moz-range-thumb, .slider:focus-visible::-moz-range-thumb { background:var(--red-hover); }
+/* Streepjes onder de slider, uitgelijnd op de vijf banen */
+.ticks { display:grid; grid-template-columns:repeat(var(--cols),1fr); margin-top:.55rem; }
+.ticks i { display:block; width:3px; height:9px; background:var(--border); margin:0 auto; transition:background .15s,height .15s; }
+.ticks i.on { background:var(--red); height:15px; }
+
+/* ---------- PIJLEN (laptop/desktop) ---------- */
+.pad-row { display:none; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:460px; margin-top:14px; }
+.pad { background:var(--panel); border:3px solid var(--border); box-shadow:5px 5px 0 var(--border); height:78px; display:flex; align-items:center; justify-content:center; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; transition:border-color .2s,box-shadow .15s,transform .15s; }
+.pad svg { width:26px; height:26px; display:block; fill:var(--white); }
+.pad:hover, .pad:focus-visible { border-color:var(--red); }
+.pad:active, .pad.down { border-color:var(--red); box-shadow:2px 2px 0 var(--border); transform:translate(3px,3px); }
+
+/* ---------- UITLEG + FOOTER ---------- */
+.howto { max-width:460px; width:100%; margin-top:1.8rem; border-top:3px solid var(--divider); padding-top:1.2rem; font-size:.85rem; line-height:1.6; color:#aaaaaa; }
+.howto strong { display:block; font-family:'Alfa Slab One',serif; font-weight:400; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; color:#777777; margin-bottom:.5rem; }
+.howto .keys { color:#555555; font-size:.78rem; margin-top:.5rem; }
+
+.strip { height:50px; opacity:.75; }
+footer { background:var(--black); border-top:3px solid var(--divider); padding:1.6rem 1.2rem; text-align:center; }
+footer p { font-family:'Alfa Slab One',serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; color:#555555; }
+footer a { color:#aaaaaa; text-decoration:none; border-bottom:2px solid var(--red); }
+footer a:hover, footer a:focus-visible { color:var(--white); }
+
+/* Op een telefoon moeten speelveld en tikvlakken samen in beeld. */
+@media (max-width:639px) {
+  header { padding:1rem 1.2rem .9rem; }
+  .kicker { margin-bottom:.5rem; }
+  .divider { margin-top:.7rem; }
+  .stage { padding-bottom:1.5rem; }
+}
+@media (min-width:640px) {
+  .lcd { padding:1.3rem; }
+  .stuur { display:none; }
+  .pad-row { display:grid; }
+  .pad { height:64px; }
+}
+@media (prefers-reduced-motion:reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="behang" id="behang" aria-hidden="true"></div>
+
+<nav>
+  <div class="nav-logo"><a href="index.html"><img src="logo.png" alt="Smash Patat logo" width="42" height="42" decoding="async"></a></div>
+  <ul class="nav-links">
+    <li><a href="index.html#over">Over ons</a></li>
+    <li><a href="index.html#menu">Menu</a></li>
+    <li><a href="index.html#reviews">Reviews</a></li>
+    <li><a href="index.html#locaties">Locaties</a></li>
+    <li><a href="reservering.html">Contact</a></li>
+    <li><a href="smash-catch.html" class="spel" aria-current="page">Smash &amp; Catch</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" type="button" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#over" onclick="closeMenu()">Over ons</a>
+  <a href="index.html#menu" onclick="closeMenu()">Menu</a>
+  <a href="index.html#reviews" onclick="closeMenu()">Reviews</a>
+  <a href="index.html#locaties" onclick="closeMenu()">Locaties</a>
+  <a href="reservering.html">Contact</a>
+  <a href="smash-catch.html" class="spel" aria-current="page">Smash &amp; Catch</a>
+</div>
+
+<main>
+  <header>
+    <span class="kicker">Don't get smashed!</span>
+    <h1>Smash &amp; <span>Catch</span></h1>
+    <div class="divider"></div>
+  </header>
+
+  <div class="stage">
+    <div class="lcd" id="lcd">
+      <div class="hud">
+        <span>Score <b id="score">0</b></span>
+        <span>Mis
+          <span class="lives" id="lives" aria-label="Missers"><i></i><i></i><i></i></span>
+        </span>
+      </div>
+
+      <div class="grid" id="grid" aria-hidden="true"><div class="veldlogo"></div><div class="splatlaag" id="splatlaag"></div></div>
+      <div class="truckrow" id="truckrow" aria-hidden="true"></div>
+
+      <p id="live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></p>
+
+      <div class="overlay" id="overlay">
+
+        <!-- Scherm 1: start en game over -->
+        <div class="scherm" id="schermAf">
+          <h2 id="ovTitle">Wachten op je <span>burger</span>?</h2>
+          <div class="film" id="film" hidden aria-hidden="true">
+            <video id="filmpje" muted playsinline preload="auto" disablepictureinpicture>
+              <source src="smash-gameover.mp4" type="video/mp4">
+            </video>
+          </div>
+          <p id="ovText">Vang ze op met de truck. Drie missers en je bent smashed.</p>
+          <div class="hs-melding" id="hsMelding" hidden>Nieuwe hi-score!</div>
+          <div class="knoppen" id="knoppen">
+            <button class="btn" id="startBtn" type="button">Spelen</button>
+            <button class="btn btn-2" id="naarLijst" type="button">Hi-scores</button>
+          </div>
+        </div>
+
+        <!-- Scherm 2: drie letters invullen -->
+        <div class="scherm" id="schermNaam" hidden>
+          <h2>Nieuwe <span>hi-score</span></h2>
+          <span class="final-label">Jouw score</span>
+          <span class="final" id="naamScore">0</span>
+          <div class="letters" id="letters"></div>
+          <button class="btn" id="naamOk" type="button">Bevestig</button>
+        </div>
+
+        <!-- Scherm 3: de lijst -->
+        <div class="scherm" id="schermLijst" hidden>
+          <h2>Hi-<span>scores</span></h2>
+          <ol class="hs-lijst" id="hsLijst"></ol>
+          <p class="hs-waarschuwing" id="hsWaarschuwing" hidden>Deze browser bewaart geen scores, dus deze lijst verdwijnt als je de pagina verlaat.</p>
+          <button class="btn" id="lijstTerug" type="button">Terug</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="stuur">
+      <input class="slider" id="slider" type="range" min="0" max="4" step="1" value="2" aria-label="Baan van de truck">
+      <div class="ticks" id="ticks"></div>
+    </div>
+
+    <div class="pad-row">
+      <button class="pad" id="padL" type="button" aria-label="Truck naar links">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3 6 12l9 9V3z"/></svg>
+      </button>
+      <button class="pad" id="padR" type="button" aria-label="Truck naar rechts">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3l9 9-9 9V3z"/></svg>
+      </button>
+    </div>
+
+    <div class="howto">
+      <strong>Hoe het werkt</strong>
+      Er vallen burgers uit de lucht in vijf banen. Zet de truck eronder voor
+      de burger de bodem raakt. Elke burger die je mist is een streep. Bij drie
+      strepen ben je smashed! Hoe verder je komt, hoe sneller ze vallen.
+      <div class="keys">Op een telefoon sleep je de rode schuif. Op een laptop gebruik je de pijlen, of de pijltjestoetsen; spatie om te starten.</div>
+    </div>
+  </div>
+</main>
+
+<div class="checker strip"></div>
+
+<footer>
+  <p>Smash on! &nbsp;&middot;&nbsp; <a href="index.html">smashpatat.be</a></p>
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+</script>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================= SPRITES =====================================
+     De padgegevens staan een keer in dit bestand; JS kopieert ze naar
+     de cellen. Inline en niet via <symbol>+<use>, want alleen dan kan
+     een CSS-regel de hele sprite doven tot ghost-silhouet.
+
+     BURGER - dezelfde opbouw en kleuren als de cursor in index.html
+     (goud broodje, rode patty, #111 omlijning), maar groter, met
+     sesamzaad en een dubbele patty. Geen salade: groen is in dit
+     project voorbehouden aan vegetarisch.
+  ================================================================ */
+  var BURGER =
+    '<svg viewBox="0 0 40 34" xmlns="http://www.w3.org/2000/svg">' +
+      '<g stroke="#111111" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">' +
+        '<path d="M4 15A16 12 0 0 1 36 15Z" fill="#E8B25C"/>' +
+        '<rect x="3" y="16" width="34" height="4.4" rx="2.2" fill="#D72B2B"/>' +
+        '<rect x="3" y="21.4" width="34" height="4.4" rx="2.2" fill="#D72B2B"/>' +
+        '<path d="M4 26.6h32v1.9a4.5 4.5 0 0 1-4.5 4.5H8.5A4.5 4.5 0 0 1 4 28.5Z" fill="#E8B25C"/>' +
+      '</g>' +
+      '<ellipse cx="13" cy="8.6" rx="1.8" ry="1.1" fill="#f5f5f0"/>' +
+      '<ellipse cx="20" cy="6.4" rx="1.8" ry="1.1" fill="#f5f5f0"/>' +
+      '<ellipse cx="27" cy="8.9" rx="1.8" ry="1.1" fill="#f5f5f0"/>' +
+    '</svg>';
+
+  /* SMASHER - de burgerpers met T-greep op een vlakke schijf, zoals het
+     gereedschap zelf. Tekenvolgorde is hier niet vrij: de steel gaat OVER
+     de schijf, want twee off-white vormen naast elkaar met een dunne
+     omlijning lopen op 60 pixels in elkaar en dan verdwijnt de steel.
+     Zo krijg je drie leesbare banden: greep, steel, schijf. */
+  var PERS =
+    '<svg viewBox="-1 -1 46 27" xmlns="http://www.w3.org/2000/svg">' +
+      '<g fill="#f5f5f0" stroke="#111111" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">' +
+        '<path d="M2 15v3a20 6 0 0 0 40 0v-3Z"/>' +   /* rand van de schijf */
+        '<ellipse cx="22" cy="15" rx="20" ry="6"/>' + /* bovenvlak */
+        '<rect x="18.5" y="4" width="7" height="11"/>' +
+        '<rect x="4" y="0.6" width="36" height="5.6" rx="2.8"/>' +
+      '</g>' +
+    '</svg>';
+
+  /* TRUCK - gevectoriseerd uit het logo van Smash Patat, zonder de
+     omringende cirkel. Twee paden: de carrosserie en de luifel. De
+     luifel is apart gehouden zodat hij om zijn scharnier kan klapperen.
+     Wil je hem opnieuw natrekken: de bron is de logotekening, wit op
+     zwart, en de snede tussen luifel en carrosserie loopt net links
+     van de koepel. */
+  var PAD_ROMP   = 'M179.7 378.6C171.4 375.6 165.1 368.5 160.3 356.4C157.8 350.1 157.6 348.4 157.6 335.2L157.5 320.8L152.9 321.4C147 322.2 145.3 321.5 144.5 318.1C144 315.6 143.3 315.2 136.7 314.1C132.7 313.4 124.5 312 118.5 311C112.5 309.9 101.8 308.2 94.8 307.1C79.7 304.7 74.5 302.4 67.7 295.1L62.9 290L63.2 210.3C63.6 122.2 63.3 125.9 70.4 104.5C72.5 97.9 72.8 97.5 75.9 97.2L79.1 96.9L77.7 99.7C75.3 104.4 71.2 119.9 69.5 130.5C68.1 138.9 67.9 151.7 67.8 212.5C67.7 283.8 67.7 284.5 69.8 288.6C74 296.9 77.7 298.7 97 302C103.3 303 116.6 305.3 126.4 307C136.3 308.6 145.1 309.8 146 309.5C147 309.2 149.1 305.5 151 300.7C155.4 289.5 155.9 289 163.9 289C170.9 289 190.9 290.6 194.8 291.5C196.5 291.9 198.6 295.2 203.5 305.1C208 313.9 210.8 318.4 212.3 319C214.4 319.8 220.2 320.9 245.5 324.9C251.6 325.9 277.5 330.2 303.2 334.6C328.9 338.9 350.2 342.2 350.5 341.8C350.8 341.5 350.6 340 350 338.4C348.6 334.8 348.6 139.9 350 116.4C352.5 74.6 364 45.5 387.7 21.2L395.8 12.8L392.2 13.5C387 14.4 363.6 19.7 356.9 21.5C349.8 23.4 349 23.4 349 21.2C349 17.9 350.8 16.8 359.1 15C363.7 14 372.7 12 379 10.6C385.3 9.1 395 7 400.5 5.9C406 4.8 412.3 3.4 414.5 3C425.7 0.5 439.6 2.9 451 9.2C480 25.3 499.3 58.2 507.1 104.5C508.2 110.9 508.7 133.1 510.2 226.8C511.3 298 511.2 303.5 509.6 308.5C505.8 320.6 500.7 323.7 476 329C471.3 330 462.3 332 456 333.4C449.7 334.9 439.3 337.2 433 338.6C426.7 340 417.7 342 413 343.1C408.3 344.2 400.2 346 395 347.1C378.8 350.5 372.4 352.8 370.6 355.5C368.2 359.2 364.1 360.6 349.1 363.1C329 366.3 322.6 366.2 316.5 362.4C310.5 358.7 304.5 351.2 303.1 345.5C301.4 338.8 303.7 339.5 268 334C261.1 333 253.1 331.6 250.2 330.9C247.3 330.3 244.6 330 244.4 330.3C244.1 330.6 243.8 336.1 243.6 342.6C243.2 362 237.2 372.6 225.3 375C222.1 375.6 218.2 376.5 216.5 377C207.1 379.9 185.8 380.7 179.7 378.6ZM193 371.2C205.8 364.8 210.4 335.6 201.6 316.5C193.9 299.6 178.9 295.7 169.8 308.2C161.6 319.2 159.7 341.1 165.7 355C172.6 370.9 182.2 376.7 193 371.2ZM334.8 357.9C339.5 355.6 345 348.6 343.4 347C342.5 346.1 325.6 343 313.1 341.4C307.8 340.7 307.8 340.7 308.5 343.1C311.1 351.5 320.4 359.9 327.4 360C329 360 332.3 359 334.8 357.9ZM379.8 345.6C392.4 342.5 398.3 341.2 429 334.5C479.5 323.5 492.8 320.3 496.6 317.9C500.8 315.4 503.5 311.7 504.9 306.5C506.2 301.9 504.6 139.7 503 118.5C497.9 48.2 457.2 -0.8 413.5 10.6C388.5 17 364 53.8 356.3 96C354.8 104.5 354.6 117 354.3 220C353.9 345.8 353.6 340.5 359.8 344.7C365.7 348.7 367 348.8 379.8 345.6ZM158.5 315C159.9 314.5 161.5 312.8 162.1 311.3C163.6 307.3 169.9 300 173.8 297.7C176.8 295.9 177 295.6 175.4 295C171.3 293.5 161.3 293.1 159.7 294.3C158.3 295.4 151 312.7 151 315.1C151 316.3 155.2 316.3 158.5 315ZM293 199.3C290 199.2 241.4 198.6 185 198C91 197.1 82.4 196.8 81.3 195.3C79.7 193.2 79.5 155.3 81 141C83.2 120.2 88.9 99.2 93.1 97C94.1 96.4 95.8 96 97 96C99.1 96 99.1 96 96.7 99.2C93.1 104.2 91 110.2 88.4 124C85.6 138.5 83.3 173 84.4 183.1L85.1 189.8L103.3 190.4C135.4 191.5 323.5 192.8 324.4 191.9C324.9 191.5 324.7 183.1 324 171.9C321.6 135.5 325.1 102 334.3 75.1C336.4 69 338.1 65.5 339.2 65.2C340.9 64.8 342 62.1 342 58.3C342 55.1 343.8 54.5 345.1 57.3C346 59.3 345.7 60.7 343.2 65.6C331.6 88.9 326.5 127.6 329.1 173.2L330.4 196.3L328.1 198.1C325.8 200 313.9 200.4 293 199.3ZM404.8 194.8C403.2 193.2 403 190.7 403.1 168.2C403.2 122.5 404.3 103.4 407.2 97C417 75.3 442.2 77.9 453.7 101.9L457.4 109.5L458.1 138.5C459.1 177.8 459.1 189.3 458.2 190.7C457.7 191.4 450.5 192.5 439 193.6C428.8 194.5 417.4 195.6 413.5 195.9C407.6 196.5 406.3 196.3 404.8 194.8ZM445.2 187.5L454 186.8L453.9 171.2C453.7 134 452.4 111.9 450.1 105.9C446.2 95.8 436.2 87 428.7 87C422.1 87 414.1 92.6 411.3 99C408.5 105.6 406.4 189.3 409.1 190.2C409.6 190.4 416 190 423.3 189.4C430.6 188.7 440.4 187.9 445.2 187.5Z';
+  var PAD_LUIFEL = 'M76.4 90.5L79.9 84.1L75.2 82C56.8 73.8 34.8 68.9 16.6 68.9C3.8 68.9 2 68.5 2 66.1C2 64 5.6 62.8 18.7 60.5C23.8 59.7 28.6 58.7 29.4 58.4C30.1 58.1 35.2 57.1 40.6 56C46 55 66.5 51 86 47C105.5 43 125.8 39 131 38C146 35 156 33 163 31.5C166.6 30.7 174.4 29.1 180.5 27.9C205.9 22.9 210.1 22 222.5 19.5C229.7 18 237.5 16.4 240 15.8C250.7 13.5 282.1 18.8 301.3 26.2C304.3 27.4 307.3 27 320 24.1C324.7 23 333.3 21.1 339.2 19.7L349.9 17.4L349.3 19.9C348.5 23.5 348.8 23.4 335 26.4C328.1 28 320.5 29.7 318.1 30.4L313.7 31.5L322.1 36.7C334.8 44.5 343.3 52.5 342.6 56.1C340.7 65.8 341.3 65 336.2 65C333.6 65 328.6 65.5 325 66C321.4 66.6 311.3 67.9 302.5 69C293.7 70 277.5 72.1 266.5 73.5C238 77.2 210 80.7 191.5 83C182.7 84.1 166.7 86.1 156 87.5C145.3 88.9 129.3 90.9 120.5 92C111.7 93.1 102.9 94.4 101 94.9C92.8 97.2 92.2 97.2 92.7 94.6C93.1 92.9 92.4 91.7 90.5 90.1C86.4 86.9 84.4 87.4 81.4 92.5C79.3 96.2 78.3 97 75.9 97L73 97L76.4 90.5ZM121.7 87C130.4 85.8 144.6 84 153.2 83C189.6 78.4 202.5 76.8 240.5 72C286.4 66.2 305.6 63.8 325.8 61.3C335.5 60.2 340 59.2 340 58.4C340 57 325 43.9 319.9 40.8C303.1 30.6 285.3 25 257.2 21C249.1 19.9 245.8 20.4 194 30.9C180.5 33.6 138.9 42 101.5 49.5C64.1 57 33.2 63.5 32.8 63.9C32.4 64.2 37.5 65.8 44.3 67.4C68.3 72.9 84.5 79.2 93.2 86.5C96.9 89.6 100.6 89.7 121.7 87Z';
+
+  var TRUCK =
+    '<svg viewBox="0 0 513 382" xmlns="http://www.w3.org/2000/svg">' +
+      '<g fill="#f5f5f0" stroke="#f5f5f0" stroke-width="4" stroke-linejoin="round">' +
+        '<path d="' + PAD_ROMP + '"/>' +
+        '<path class="luifel" d="' + PAD_LUIFEL + '"/>' +
+      '</g>' +
+    '</svg>';
+
+  /* Het volledige logo — truck in de cirkel — als behang. In de bron stond de
+     cirkel op middelpunt (365,230) met straal 351, en begon de truck op
+     (84,63). De straal is 345 zodat de lijn niet door de viewBox-rand snijdt. */
+  var LOGO =
+    '<svg viewBox="0 0 702 702" xmlns="http://www.w3.org/2000/svg">' +
+      '<g transform="translate(-14,121)" fill="none" stroke="currentColor" stroke-linejoin="round">' +
+        '<circle cx="365" cy="230" r="345" stroke-width="10"/>' +
+        '<g transform="translate(84,63)" fill="currentColor" stroke-width="7">' +
+          '<path d="' + PAD_ROMP + '"/><path d="' + PAD_LUIFEL + '"/>' +
+        '</g>' +
+      '</g>' +
+    '</svg>';
+
+  /* ================= HI-SCORES =====================================
+     Twintig plaatsen, drie letters per naam, zoals op een arcadekast.
+     Bewaard in localStorage. Let op wat dat betekent: de lijst staat op
+     dít toestel in deze browser. Er is geen server, dus er is ook geen
+     gedeelde ranglijst — wie op zijn eigen telefoon speelt, ziet zijn
+     eigen lijst. Leeg iemand zijn browsergegevens, dan is ze weg.
+  ================================================================== */
+  var HS_MAX = 20;
+  var HS_KEY = 'sp_hiscores';
+
+  /* Startlijst. Namen en scores zijn door mij verzonnen om de lijst niet
+     leeg te laten; overschrijf ze gerust met echte. */
+  var HS_START = [
+    { naam:'PET', score:20 }, { naam:'VIN', score:19 }, { naam:'SAM', score:18 },
+    { naam:'JAN', score:17 }, { naam:'LUC', score:16 }, { naam:'EVA', score:15 },
+    { naam:'TIM', score:14 }, { naam:'NEL', score:13 }, { naam:'BOB', score:12 },
+    { naam:'MIA', score:11 }, { naam:'RIK', score:10 }, { naam:'ANS', score:9 },
+    { naam:'JOS', score:8 },  { naam:'LIS', score:7 },  { naam:'WIM', score:6 },
+    { naam:'KAY', score:5 },  { naam:'ROB', score:4 },  { naam:'ELS', score:3 },
+    { naam:'TOM', score:2 },  { naam:'GUY', score:1 }
+  ];
+
+  /* Alles wat uit localStorage komt is onbetrouwbaar: opschonen voor gebruik. */
+  function schoonNaam(v){
+    var t = String(v || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+    while(t.length < 3) t += 'A';
+    return t;
+  }
+
+  function leesHs(){
+    try {
+      var rauw = JSON.parse(window.localStorage.getItem(HS_KEY));
+      if(!Array.isArray(rauw) || rauw.length === 0) throw 0;
+      return rauw
+        .map(function(r){ return { naam: schoonNaam(r && r.naam), score: Math.max(0, Math.min(99999, parseInt(r && r.score, 10) || 0)) }; })
+        .sort(function(a, b){ return b.score - a.score; })
+        .slice(0, HS_MAX);
+    } catch(e){
+      return HS_START.slice();
+    }
+  }
+
+  /* Werkt localStorage hier eigenlijk? In een privévenster, met opslag
+     geblokkeerd, of vanaf file:// kan het weigeren. Dan is de lijst niet
+     stuk, maar hij overleeft de pagina niet — en dat zeggen we dan ook. */
+  var opslagWerkt = (function(){
+    try {
+      window.localStorage.setItem('sp_test', '1');
+      window.localStorage.removeItem('sp_test');
+      return true;
+    } catch(e){ return false; }
+  })();
+
+  function schrijfHs(lijst){
+    if(!opslagWerkt) return;
+    try { window.localStorage.setItem(HS_KEY, JSON.stringify(lijst)); } catch(e){}
+  }
+
+  var hiscores = leesHs();
+
+  function haaltHet(punten){
+    if(punten <= 0) return false;
+    if(hiscores.length < HS_MAX) return true;
+    return punten > hiscores[hiscores.length - 1].score;
+  }
+
+  function toonLijst(markeer){
+    hsLijstEl.innerHTML = '';
+    hsWaarsch.hidden = opslagWerkt;
+    if(hiscores.length === 0){
+      hsLijstEl.innerHTML = '<li class="hs-leeg">Nog geen scores.</li>';
+      return;
+    }
+    var nieuweRij = null;
+    hiscores.forEach(function(r, i){
+      var li = document.createElement('li');
+      if(markeer && r === markeer){ li.className = 'nieuw'; nieuweRij = li; }
+      li.innerHTML = '<span class="rang">' + (i + 1) + '</span>' +
+                     '<span class="naam">' + r.naam + '</span>' +
+                     '<span class="punt">' + r.score + '</span>';
+      hsLijstEl.appendChild(li);
+    });
+    /* De lijst is hoger dan het venstertje. Zonder dit staat een score op
+       plaats 15 buiten beeld en lijkt het alsof hij niet bewaard is. */
+    if(nieuweRij){
+      hsLijstEl.scrollTop = Math.max(0,
+        nieuweRij.offsetTop - (hsLijstEl.clientHeight - nieuweRij.offsetHeight) / 2);
+    } else {
+      hsLijstEl.scrollTop = 0;
+    }
+  }
+
+  /* ── Drie letters invullen ── */
+  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var initialen = [0, 0, 0];   // index in LETTERS
+  var actiefSlot = 0;
+  var letterVakken = [];
+
+  function bouwLetters(){
+    lettersEl.innerHTML = '';
+    letterVakken = [];
+    for(var i = 0; i < 3; i++){
+      (function(i){
+        var slot = document.createElement('div');
+        slot.className = 'lslot';
+        var op = document.createElement('button');
+        op.type = 'button'; op.className = 'pijl'; op.innerHTML = '&#9650;';
+        op.setAttribute('aria-label', 'Letter ' + (i + 1) + ' vooruit');
+        var vak = document.createElement('button');
+        vak.type = 'button'; vak.className = 'letter';
+        var neer = document.createElement('button');
+        neer.type = 'button'; neer.className = 'pijl'; neer.innerHTML = '&#9660;';
+        neer.setAttribute('aria-label', 'Letter ' + (i + 1) + ' terug');
+        op.addEventListener('click', function(){ actiefSlot = i; draaiLetter(i, 1); });
+        neer.addEventListener('click', function(){ actiefSlot = i; draaiLetter(i, -1); });
+        vak.addEventListener('click', function(){ actiefSlot = i; tekenLetters(); });
+        slot.appendChild(op); slot.appendChild(vak); slot.appendChild(neer);
+        lettersEl.appendChild(slot);
+        letterVakken.push({ slot: slot, vak: vak });
+      })(i);
+    }
+  }
+
+  function draaiLetter(i, richting){
+    initialen[i] = (initialen[i] + richting + 26) % 26;
+    tekenLetters();
+  }
+
+  function tekenLetters(){
+    letterVakken.forEach(function(v, i){
+      v.vak.textContent = LETTERS[initialen[i]];
+      v.slot.classList.toggle('actief', i === actiefSlot);
+    });
+  }
+
+  function bewaarNaam(){
+    var naam = initialen.map(function(i){ return LETTERS[i]; }).join('');
+    var record = { naam: naam, score: score };
+    hiscores.push(record);
+    hiscores.sort(function(a, b){ return b.score - a.score; });
+    hiscores = hiscores.slice(0, HS_MAX);
+    schrijfHs(hiscores);
+    toonLijst(record);
+    knoppenEl.hidden = false;
+    hsMelding.hidden = true;
+    zetScherm('lijst');
+  }
+
+  /* ── Schermen ── */
+  var scherm = 'af';
+  function zetScherm(naam){
+    scherm = naam;
+    schermAf.hidden = naam !== 'af';
+    schermNaam.hidden = naam !== 'naam';
+    schermLijst.hidden = naam !== 'lijst';
+  }
+
+  /* ================= INSTELLINGEN ================= */
+  var COLS = 5, ROWS = 5;
+  var START_TICK = 520;       /* ms per valstap bij de start */
+  var MIN_TICK   = 190;       /* ondergrens */
+  var TICK_STEP  = 18;        /* versnelling per 5 punten */
+  var SPAWN_GAP  = 3;         /* ticks tussen twee burgers */
+  var SPAWN_GAP_FAST = 2;     /* vanaf score 15 */
+
+  var grid     = document.getElementById('grid');
+  var truckrow = document.getElementById('truckrow');
+  var lcd      = document.getElementById('lcd');
+  var scoreEl  = document.getElementById('score');
+  var livesEl  = document.getElementById('lives');
+  var overlay  = document.getElementById('overlay');
+  var ovTitle  = document.getElementById('ovTitle');
+  var ovText   = document.getElementById('ovText');
+  var startBtn = document.getElementById('startBtn');
+  var live     = document.getElementById('live');
+  var slider   = document.getElementById('slider');
+  var ticksEl  = document.getElementById('ticks');
+  var splatlaag = document.getElementById('splatlaag');
+  var film     = document.getElementById('film');
+  var schermAf   = document.getElementById('schermAf');
+  var schermNaam = document.getElementById('schermNaam');
+  var schermLijst= document.getElementById('schermLijst');
+  var naamScore  = document.getElementById('naamScore');
+  var lettersEl  = document.getElementById('letters');
+  var hsLijstEl  = document.getElementById('hsLijst');
+  var hsMelding  = document.getElementById('hsMelding');
+  var knoppenEl  = document.getElementById('knoppen');
+  var hsWaarsch  = document.getElementById('hsWaarschuwing');
+  var filmpje  = document.getElementById('filmpje');
+  // Wie beweging wegzet, krijgt ook de game-over-animatie niet.
+  var rustig   = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var cells = [], slots = [], ticks = [];
+  var MIDDEN = Math.floor(COLS / 2);
+  var burgers = [], truckCol = MIDDEN;
+  var score = 0, misses = 0, best = 0;
+  var running = false, timer = null, tickMs = START_TICK;
+  var sinceSpawn = 0, lastCol = -1;
+
+  function build(){
+    var r, c, div, frag = document.createDocumentFragment();
+    for(r = 0; r < ROWS; r++){
+      cells[r] = [];
+      for(c = 0; c < COLS; c++){
+        div = document.createElement('div');
+        div.className = 'cell';
+        div.innerHTML = BURGER;
+        frag.appendChild(div);
+        cells[r][c] = div;
+      }
+    }
+    grid.appendChild(frag);
+
+    frag = document.createDocumentFragment();
+    for(c = 0; c < COLS; c++){
+      div = document.createElement('div');
+      div.className = 'slot';
+      div.innerHTML = TRUCK;
+      frag.appendChild(div);
+      slots[c] = div;
+    }
+    truckrow.appendChild(frag);
+
+    frag = document.createDocumentFragment();
+    for(c = 0; c < COLS; c++){
+      div = document.createElement('i');
+      frag.appendChild(div);
+      ticks[c] = div;
+    }
+    ticksEl.appendChild(frag);
+
+    splatlaag.style.gridTemplateRows = 'repeat(' + ROWS + ',1fr)';
+    slider.max = COLS - 1;
+    slider.value = truckCol;
+    document.getElementById('behang').innerHTML = LOGO;
+  }
+
+  function draw(){
+    var r, c, i;
+    for(r = 0; r < ROWS; r++){
+      for(c = 0; c < COLS; c++) cells[r][c].classList.remove('on');
+    }
+    for(i = 0; i < burgers.length; i++){
+      if(burgers[i].row >= 0 && burgers[i].row < ROWS){
+        cells[burgers[i].row][burgers[i].col].classList.add('on');
+      }
+    }
+    for(c = 0; c < COLS; c++){
+      slots[c].classList.toggle('on', c === truckCol);
+      ticks[c].classList.toggle('on', c === truckCol);
+    }
+    // De slider volgt ook de pijltjestoetsen en de pijlknoppen
+    if(slider.value !== String(truckCol)) slider.value = truckCol;
+  }
+
+  function drawHud(){
+    scoreEl.textContent = score;
+    var pips = livesEl.children, i;
+    for(i = 0; i < pips.length; i++) pips[i].classList.toggle('spent', i < misses);
+  }
+
+  var flashTimer = null, klapTimer = null;
+  function flash(cls){
+    lcd.classList.remove('hit','miss');
+    void lcd.offsetWidth;                 /* forceer herstart van de transitie */
+    lcd.classList.add(cls);
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(function(){ lcd.classList.remove('hit','miss'); }, 180);
+  }
+
+  /* Bij een gevangen burger klapt de luifel een keer stevig op. */
+  function klap(){
+    var el = slots[truckCol];
+    slots.forEach(function(s){ s.classList.remove('klap'); });
+    void el.offsetWidth;
+    el.classList.add('klap');
+    clearTimeout(klapTimer);
+    klapTimer = setTimeout(function(){ el.classList.remove('klap'); }, 460);
+  }
+
+  /* Eén platgedrukte burger op de onderste rij van de gemiste baan. De duur
+     schaalt mee met het tempo: bij 190ms per valstap zou een klap van 340ms
+     over de volgende misser heen lopen. */
+  var smashTimers = [];
+  var naamTimer = null;
+  function smash(col){
+    var ms = Math.max(190, Math.min(340, Math.round(tickMs * 0.7)));
+    var el = document.createElement('div');
+    el.className = 'splat';
+    el.style.gridColumn = col + 1;
+    el.style.gridRow = ROWS;
+    el.style.setProperty('--sm', ms + 'ms');
+    el.innerHTML =
+      '<div class="plat">' + BURGER + '</div>' +
+      '<div class="pers">' + PERS + '</div>' +
+      '<i></i><i></i><i></i><i></i>';
+    splatlaag.appendChild(el);
+    smashTimers.push(setTimeout(function(){
+      if(el.parentNode) el.parentNode.removeChild(el);
+    }, ms + 60));
+  }
+
+  function wisSmashes(){
+    smashTimers.forEach(clearTimeout);
+    smashTimers = [];
+    splatlaag.innerHTML = '';
+  }
+
+  function tick(){
+    var i, b, caught = 0, kept = [], gemist = [];
+
+    for(i = 0; i < burgers.length; i++){
+      b = burgers[i];
+      b.row++;
+      if(b.row >= ROWS){
+        if(b.col === truckCol) caught++; else gemist.push(b.col);
+      } else {
+        kept.push(b);
+      }
+    }
+    burgers = kept;
+
+    if(caught){ score += caught; flash('hit'); klap(); retune(); }
+    if(gemist.length){
+      misses += gemist.length;
+      flash('miss');
+      gemist.forEach(smash);
+    }
+
+    sinceSpawn++;
+    if(sinceSpawn >= (score >= 15 ? SPAWN_GAP_FAST : SPAWN_GAP)){
+      spawn();
+      sinceSpawn = 0;
+    }
+
+    drawHud();
+    draw();
+    if(misses >= 3) gameOver();
+  }
+
+  function spawn(){
+    var col = Math.floor(Math.random() * COLS);
+    /* Niet te vaak dezelfde baan op rij: dat voelt stuk, niet moeilijk. */
+    if(col === lastCol && Math.random() < 0.6){
+      col = (col + 1 + Math.floor(Math.random() * (COLS - 1))) % COLS;
+    }
+    lastCol = col;
+    burgers.push({ col:col, row:0 });
+  }
+
+  function retune(){
+    var want = Math.max(MIN_TICK, START_TICK - Math.floor(score / 5) * TICK_STEP);
+    if(want !== tickMs){
+      tickMs = want;
+      if(running){ clearInterval(timer); timer = setInterval(tick, tickMs); }
+    }
+  }
+
+  function moveTo(col){
+    if(!running) return;
+    if(col < 0 || col >= COLS || col === truckCol) return;
+    truckCol = col;
+    draw();
+  }
+
+  function move(dir){ moveTo(truckCol + dir); }
+
+  function start(){
+    wisSmashes();
+    clearTimeout(naamTimer);
+    burgers = []; truckCol = MIDDEN; score = 0; misses = 0;
+    tickMs = START_TICK; sinceSpawn = 0; lastCol = -1;
+    running = true;
+    overlay.hidden = true;
+    zetScherm('af');
+    schermAf.classList.remove('af');
+    knoppenEl.hidden = false;
+    hsMelding.hidden = true;
+    film.hidden = true;
+    try { filmpje.pause(); } catch(e){}
+    drawHud(); draw();
+    clearInterval(timer);
+    timer = setInterval(tick, tickMs);
+    live.textContent = 'Het spel is gestart.';
+  }
+
+  function gameOver(){
+    running = false;
+    clearInterval(timer);
+    timer = null;
+    if(score > best) best = score;
+
+    ovTitle.innerHTML = 'Game <span>over</span>';
+    ovText.innerHTML =
+      '<span class="final-label">Score</span>' +
+      '<span class="final">' + score + '</span>' +
+      '<span class="best">Beste deze sessie: ' + best + '</span>';
+    startBtn.textContent = 'Nog eens';
+    schermAf.classList.add('af');
+    knoppenEl.hidden = false;
+    hsMelding.hidden = true;
+    zetScherm('af');
+    overlay.hidden = false;
+    if(!rustig){
+      film.hidden = false;
+      try {
+        filmpje.currentTime = 0;
+        var bezig = filmpje.play();
+        // play() geeft een promise die mag falen (autoplay-beleid); dan
+        // blijft het eerste beeld staan en is er niks stuk.
+        if(bezig && bezig.catch) bezig.catch(function(){});
+      } catch(e){}
+    }
+    startBtn.focus();
+    live.textContent = 'Af. Je score is ' + score + '.';
+
+    /* Haalt de score de lijst, dan komt de naaminvoer na de animatie —
+       zo blijft het filmpje het eerste dat je ziet. */
+    if(haaltHet(score)){
+      /* Geen ontsnapping: tik je hier "Nog eens", dan was je score weg. */
+      knoppenEl.hidden = true;
+      hsMelding.hidden = false;
+      var wachten = rustig ? 400 : 2100;
+      clearTimeout(naamTimer);
+      naamTimer = setTimeout(function(){
+        if(running) return;              // al opnieuw begonnen
+        naamScore.textContent = score;
+        initialen = [0, 0, 0];
+        actiefSlot = 0;
+        tekenLetters();
+        zetScherm('naam');
+        live.textContent = 'Nieuwe hi-score. Vul drie letters in.';
+      }, wachten);
+    }
+  }
+
+  document.addEventListener('keydown', function(e){
+    /* In de naaminvoer sturen de toetsen de letters, niet de truck. */
+    if(scherm === 'naam'){
+      if(/^[a-zA-Z]$/.test(e.key)){
+        initialen[actiefSlot] = LETTERS.indexOf(e.key.toUpperCase());
+        if(actiefSlot < 2) actiefSlot++;
+        tekenLetters(); e.preventDefault(); return;
+      }
+      if(e.key === 'ArrowUp')    { draaiLetter(actiefSlot, 1);  e.preventDefault(); return; }
+      if(e.key === 'ArrowDown')  { draaiLetter(actiefSlot, -1); e.preventDefault(); return; }
+      if(e.key === 'ArrowRight') { actiefSlot = Math.min(2, actiefSlot + 1); tekenLetters(); e.preventDefault(); return; }
+      if(e.key === 'ArrowLeft')  { actiefSlot = Math.max(0, actiefSlot - 1); tekenLetters(); e.preventDefault(); return; }
+      if(e.key === 'Backspace')  { actiefSlot = Math.max(0, actiefSlot - 1); tekenLetters(); e.preventDefault(); return; }
+      if(e.key === 'Enter')      { bewaarNaam(); e.preventDefault(); return; }
+      return;
+    }
+    if(scherm === 'lijst'){
+      if(e.key === 'Escape' || e.key === 'Enter'){ zetScherm('af'); e.preventDefault(); }
+      return;
+    }
+    if(e.key === 'ArrowLeft'  || e.key === 'a' || e.key === 'A'){ move(-1); e.preventDefault(); }
+    if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D'){ move(1);  e.preventDefault(); }
+    if((e.key === ' ' || e.key === 'Enter') && !running){ start(); e.preventDefault(); }
+  });
+
+  function bindPad(el, dir){
+    /* pointerdown: de truck springt bij het aanraken, niet bij het opheffen */
+    el.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      el.classList.add('down');
+      move(dir);
+    });
+    ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+      el.addEventListener(ev, function(){ el.classList.remove('down'); });
+    });
+  }
+  bindPad(document.getElementById('padL'), -1);
+  bindPad(document.getElementById('padR'),  1);
+
+  slider.addEventListener('input', function(){
+    // Voor de start mag de duim niet blijven staan waar je hem sleepte:
+    // dan zou hij niet meer bij de truck horen.
+    if(!running){ slider.value = truckCol; return; }
+    moveTo(Number(slider.value));
+  });
+
+  startBtn.addEventListener('click', start);
+  document.getElementById('naarLijst').addEventListener('click', function(){
+    toonLijst(null);
+    zetScherm('lijst');
+  });
+  document.getElementById('lijstTerug').addEventListener('click', function(){ zetScherm('af'); });
+  document.getElementById('naamOk').addEventListener('click', bewaarNaam);
+
+  /* Tab weg = pauze. Anders sta je af als je terugkomt. */
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden && running){
+      clearInterval(timer); timer = null;
+    } else if(!document.hidden && running && !timer){
+      timer = setInterval(tick, tickMs);
+    }
+  });
+
+  build();
+  bouwLetters();
+  tekenLetters();
+  drawHud();
+  draw();
+})();
+</script>
+
+</body>
+</html>

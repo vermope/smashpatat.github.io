@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allergeneninformatie - Smash Patat</title>
+<meta name="description" content="Bekijk de volledige allergeneninformatie van Smash Patat. Overzicht van gluten, melk, ei, mosterd en sesam per burger, topping en drank." />
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --black:#111111; --white:#f5f5f0; --red:#D72B2B; --red-hover:#b82424;
+  --green:#4CAF50;          /* uitsluitend vegetarisch, zie huisstijl 6.3 */
+  --cs:40px;
+}
+body { font-family:'Inter',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
+.checker { background-image:repeating-conic-gradient(var(--black) 0% 25%,var(--white) 0% 50%); background-size:var(--cs) var(--cs); }
+.checker-strip { height:50px; opacity:.75; }
+
+/* ---------- NAVIGATIE (gelijk aan de andere pagina's) ---------- */
+nav { position:fixed; top:0; left:0; width:100%; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 5%; height:64px; background:var(--black); border-bottom:3px solid var(--red); }
+nav .nav-logo img { height:42px; display:block; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+@media(max-width:1050px) { .nav-links { gap:1.1rem; } .nav-links a { font-size:.78rem; } }
+.nav-links a { color:var(--white); text-decoration:none; font-weight:700; font-size:.85rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; }
+.nav-links a:hover { color:var(--red); }
+/* Het spel is het enige rode item in de balk; hover keert om. */
+.nav-links a.spel, .mobile-menu a.spel { color:var(--red); }
+.nav-links a.spel:hover, .mobile-menu a.spel:hover { color:var(--white); }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
+.hamburger span { width:24px; height:2px; background:var(--white); transition:all .3s; display:block; }
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; background:var(--black); border-bottom:3px solid var(--red); z-index:99; padding:1rem 5%; flex-direction:column; }
+.mobile-menu.open { display:flex; }
+.mobile-menu a { color:var(--white); text-decoration:none; font-weight:700; font-size:.9rem; letter-spacing:1px; text-transform:uppercase; padding:.9rem 0; border-bottom:1px solid #222; transition:color .2s; }
+.mobile-menu a:last-child { border-bottom:none; }
+.mobile-menu a:hover { color:var(--red); }
+@media(max-width:820px) { .nav-links { display:none; } .hamburger { display:flex; } }
+
+/* ---------- PAGINAKOP (zelfde patroon als privacy.html) ---------- */
+.page-header { padding:120px 5% 60px; background:#181818; border-bottom:3px solid var(--red); }
+.page-header h1 { font-family:'Alfa Slab One',serif; font-weight:400; font-size:clamp(1.5rem,7vw,3.5rem); letter-spacing:2px; text-transform:uppercase; }
+.page-header h1 span { color:var(--red); }
+.divider { width:55px; height:5px; background:var(--red); margin:1rem 0 0; }
+.page-header p { margin-top:1rem; color:#777777; font-size:.85rem; letter-spacing:1px; }
+
+.content { max-width:1000px; margin:0 auto; padding:60px 5% 40px; }
+
+/* ---------- WAARSCHUWING ---------- */
+.warning-box { background:#181818; border:3px solid var(--red); box-shadow:5px 5px 0 var(--red); padding:1.5rem; margin-bottom:3rem; }
+.warning-box h2 { font-family:'Alfa Slab One',serif; font-weight:400; font-size:1.1rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.6rem; }
+.warning-box p { line-height:1.7; color:#dddddd; font-size:.92rem; }
+
+/* ---------- SECTIETITELS ---------- */
+.section-title { font-family:'Alfa Slab One',serif; font-weight:400; font-size:clamp(1.15rem,4.5vw,1.6rem); letter-spacing:2px; text-transform:uppercase; color:var(--red); margin:2.5rem 0 1rem; }
+
+/* ---------- TABELLEN ---------- */
+.table-container { overflow-x:auto; margin-bottom:2.5rem; border:2px solid #2a2a2a; }
+table { width:100%; border-collapse:collapse; background:#181818; }
+thead { background:var(--red); }
+th { padding:.85rem 1rem; text-align:left; color:var(--white); font-family:'Alfa Slab One',serif; font-weight:400; font-size:.68rem; text-transform:uppercase; letter-spacing:2px; white-space:nowrap; }
+td { padding:.85rem 1rem; border-bottom:1px solid #2a2a2a; font-size:.9rem; color:#aaaaaa; }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover { background:#1f1f1f; }
+.product-name { font-weight:700; color:var(--white); white-space:nowrap; }
+
+/* Drie standen, in de triade: rood = aanwezig, off-white = sporen,
+   grijs = niet aanwezig. Groen kan hier niet, dat is voorbehouden aan
+   vegetarisch. Rood voor "aanwezig" is bovendien de juiste kant op:
+   bij allergenen is aanwezigheid het signaal, niet de afwezigheid. */
+.check, .cross, .warning { font-size:1.15rem; line-height:1; font-weight:700; }
+.check { color:var(--red); }
+.warning { color:var(--white); }
+.cross { color:#555555; }
+
+/* ---------- LEGENDA ---------- */
+.legend { background:#181818; border:2px solid #2a2a2a; padding:1.5rem; margin-bottom:2rem; }
+.legend h3 { font-family:'Alfa Slab One',serif; font-weight:400; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:1rem; }
+.legend-item { display:flex; align-items:center; gap:1rem; margin:.5rem 0; font-size:.88rem; color:#aaaaaa; }
+
+/* ---------- INFOKAARTEN ---------- */
+.info-boxes { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; margin:2rem 0; }
+.info-box { background:#181818; border:2px solid #2a2a2a; border-left:4px solid var(--red); padding:1.5rem; transition:border-color .2s,transform .2s; }
+.info-box:hover { border-color:var(--red); transform:translateY(-5px); }
+.info-box h3 { font-family:'Alfa Slab One',serif; font-weight:400; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:.6rem; }
+.info-box p { color:#aaaaaa; line-height:1.7; font-size:.88rem; }
+.info-box p strong { color:var(--white); }
+/* De groene uitzondering: uitsluitend de vegetarische kaart. */
+.info-box.veggie { border-left-color:var(--green); }
+.info-box.veggie:hover { border-color:var(--green); }
+.info-box.veggie h3 { color:var(--green); }
+.veggie-pill { display:inline-block; margin-left:.5rem; padding:3px 8px; background:transparent; color:var(--green); border:1px solid var(--green); font-family:'Inter',sans-serif; font-weight:900; font-size:.6rem; letter-spacing:2px; text-transform:uppercase; vertical-align:middle; }
+
+/* ---------- KNOP ---------- */
+.back-btn { display:inline-block; background:var(--red); color:var(--white); text-decoration:none; font-family:'Alfa Slab One',serif; font-size:.75rem; letter-spacing:2px; text-transform:uppercase; padding:.75rem 1.5rem; border:3px solid var(--white); box-shadow:5px 5px 0 var(--white); transition:transform .15s,box-shadow .15s,background .15s; }
+.back-btn:hover { background:var(--red-hover); box-shadow:8px 8px 0 var(--white); transform:translate(-3px,-3px); }
+.back-btn:active { box-shadow:2px 2px 0 var(--white); transform:translate(3px,3px); }
+
+/* ---------- VOET ---------- */
+.footer-note { text-align:center; padding:2.5rem 5%; }
+.footer-note p { color:#777777; font-size:.85rem; line-height:1.7; }
+.footer-note p strong { color:var(--white); }
+.footer-note .datum { font-family:'Alfa Slab One',serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; color:#555555; margin-top:1.2rem; }
+footer { text-align:center; padding:0; }
+.footer-inner { background:var(--black); padding:2rem; border-top:3px solid var(--red); font-size:.8rem; color:#555555; letter-spacing:1px; }
+.footer-inner a { color:var(--red); text-decoration:none; }
+
+@media(max-width:768px) {
+  th, td { padding:.6rem .55rem; font-size:.8rem; }
+  .content { padding:40px 5% 30px; }
+  .page-header { padding:100px 5% 40px; }
+  .page-header h1 { letter-spacing:1px; }
+  .section-title { letter-spacing:1px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><a href="index.html"><img src="logo.png" alt="Smash Patat logo" width="42" height="42" decoding="async"></a></div>
+  <ul class="nav-links">
+    <li><a href="index.html#over">Over ons</a></li>
+    <li><a href="index.html#menu">Menu</a></li>
+    <li><a href="index.html#reviews">Reviews</a></li>
+    <li><a href="index.html#locaties">Locaties</a></li>
+    <li><a href="reservering.html">Contact</a></li>
+    <li><a href="smash-catch.html" class="spel">Smash &amp; Catch</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#over" onclick="closeMenu()">Over ons</a>
+  <a href="index.html#menu" onclick="closeMenu()">Menu</a>
+  <a href="index.html#reviews" onclick="closeMenu()">Reviews</a>
+  <a href="index.html#locaties" onclick="closeMenu()">Locaties</a>
+  <a href="reservering.html">Contact</a>
+  <a href="smash-catch.html" class="spel">Smash &amp; Catch</a>
+</div>
+
+<div class="page-header">
+  <h1>Alle<span>rgenen</span></h1>
+  <div class="divider"></div>
+  <p>Per burger, topping en drank</p>
+</div>
+
+<div class="checker-strip checker"></div>
+
+<div class="content">
+
+<div class="warning-box">
+  <h2>Meld het ons</h2>
+  <p>Heb je een allergie of intolerantie? Zeg het aan de toonbank, dan houden we er rekening mee. Eén ding kunnen we niet beloven: onze truck is klein en we werken met veel ingrediënten tegelijk, dus kruisbesmetting is nooit volledig uit te sluiten. 🍔🍔</p>
+</div>
+
+<!-- BURGERS -->
+<h1 class="section-title">Burgers</h1>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Gluten</th>
+        <th>Melk</th>
+        <th>Ei</th>
+        <th>Mosterd</th>
+        <th>Sesam</th>
+        <th>Andere</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="product-name">Kids Smash Patat 🎈</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Smash Patat Classic</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Smash Patat Double Cheese</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Veggie Smash 🌱<span class="veggie-pill">Veggie</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>Soja (hoisin) · Haver</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SPECIALS -->
+<h1 class="section-title">Specials</h1>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Gluten</th>
+        <th>Melk</th>
+        <th>Ei</th>
+        <th>Mosterd</th>
+        <th>Sesam</th>
+        <th>Andere</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="product-name">Gorgo Smash 🧀🔵</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>Schimmelkaas</td>
+      </tr>
+      <tr>
+        <td class="product-name">Chili Smash 🌶️</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="warning">⚠</span></td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXTRAS -->
+<h1 class="section-title">Extra toppings</h1>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Gluten</th>
+        <th>Melk</th>
+        <th>Ei</th>
+        <th>Mosterd</th>
+        <th>Sesam</th>
+        <th>Andere</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="product-name">Pancetta 🥓</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Extra Patty 🥩</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Cheddar 🧀</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Zesty Gorgo Saus 🧀🔵</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>Schimmelkaas</td>
+      </tr>
+      <tr>
+        <td class="product-name">Jalapeño Mix 🌶️</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Rucola 🥗</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Pickled Onion 🧅</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Oklahoma Stijl 🧅</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Ajuin Peer Confijt 🍐</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Bourbon Bacon Jam 🥃</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Balsamico Glaze 🍶</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">SP Burger Saus 🍔</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">SP Chili Saus 🌶️</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DRANKEN -->
+<h1 class="section-title">Dranken</h1>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Gluten</th>
+        <th>Melk</th>
+        <th>Ei</th>
+        <th>Mosterd</th>
+        <th>Sesam</th>
+        <th>Andere</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="product-name">Fris / Pils 🥤</td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="product-name">Speciaal Bier 🍺</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>Gerst/Gluten</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="legend">
+  <h3>LEGENDA</h3>
+  <div class="legend-item">
+    <span class="check">✓</span>
+    <span>Aanwezig</span>
+  </div>
+  <div class="legend-item">
+    <span class="warning">⚠</span>
+    <span>Kan sporen bevatten, via leverancier of kruisbesmetting</span>
+  </div>
+  <div class="legend-item">
+    <span class="cross">✗</span>
+    <span>Niet aanwezig</span>
+  </div>
+</div>
+
+<h2 class="section-title">Belangrijke info</h2>
+
+<div class="info-boxes">
+  <div class="info-box">
+    <h3>Onze broodjes</h3>
+    <p>Onze brioche broodjes bevatten Gluten (tarwe) en Melk. Ze kunnen sporen van Sesam bevatten.</p>
+  </div>
+  <div class="info-box">
+    <h3>Onze kazen</h3>
+    <p>Cheddar en Zesty Gorgo Saus bevatten Melk/Lactose. De Gorgonzola is een schimmelkaas.</p>
+  </div>
+  <div class="info-box">
+    <h3>Onze sauzen</h3>
+    <p>SP Burger Saus en SP Chili Saus bevatten Ei (mayonaisebasis) en Mosterd.</p>
+  </div>
+  <div class="info-box veggie">
+    <h3>Onze veggie patty</h3>
+    <p>Huisgemaakt op basis van kidneybonen, hoisinsaus, havervlokken en gefrituurde uitjes. Bevat daardoor <strong>Soja</strong> en <strong>Gluten</strong> (tarwe uit de hoisin en de uitjes, haver). Vegetarisch, maar niet veganistisch: het brioche broodje bevat melk en onze SP Burger Saus bevat ei. De patty wordt gebakken op dezelfde plancha als onze beef patties.</p>
+  </div>
+  <div class="info-box">
+    <h3>Kruisbesmetting</h3>
+    <p>In onze gezellige maar kleine truck werken we met veel ingrediënten tegelijk. We kunnen daarom geen 100% garantie geven tegen minieme sporen.</p>
+  </div>
+</div>
+
+<div style="margin-top:2.5rem;">
+  <a href="index.html" class="back-btn">&#8592; Terug naar het menu</a>
+</div>
+
+</div>
+
+<div class="checker-strip checker"></div>
+
+<div class="footer-note">
+  <p><strong>Vraag onze crew naar de volledige ingrediëntenlijst op de verpakkingen.</strong></p>
+  <p class="datum">Laatste update: augustus 2026</p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    &copy; 2026 Smash Patat &middot; Alle rechten voorbehouden &middot; <a href="mailto:smashpatat@gmail.com">smashpatat@gmail.com</a> &middot; <a href="privacy.html">Privacybeleid</a>
+  </div>
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+</script>
+</body>
+</html>
