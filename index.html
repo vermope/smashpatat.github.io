@@ -75,7 +75,7 @@ html { scroll-behavior: smooth; }
 /* Burger-cursor over de hele site; klikbare elementen krijgen de gewone pijl terug. */
 :root { --burger-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg stroke='%23111111' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M5 13.5A11 8.5 0 0 1 27 13.5Z' fill='%23E8B25C'/%3E%3Crect x='4' y='14.5' width='24' height='4.2' rx='2.1' fill='%23D72B2B'/%3E%3Cpath d='M5 19.5h22a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z' fill='%23E8B25C'/%3E%3C/g%3E%3C/svg%3E") 4 4; }
 html, body { cursor: var(--burger-cursor), auto; }
-a, button, summary, label, select, [role="button"], [onclick], .marquee-foto, .acc-panel, .menu-card, .hamburger, .back-to-top, .lightbox, .lightbox-close { cursor: default; }
+a, button, summary, label, select, [role="button"], [onclick], .marquee-foto, .sheet-cell, .menu-card, .hamburger, .back-to-top, .lightbox, .lightbox-close { cursor: default; }
 input, textarea { cursor: text; }
 body { font-family:'Inter',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
 .checker { background-image:repeating-conic-gradient(var(--black) 0% 25%,var(--white) 0% 50%); background-size:var(--cs) var(--cs); }
@@ -192,16 +192,19 @@ section:not(.hero) { content-visibility:auto; contain-intrinsic-size:0 500px; }
 @keyframes marquee-l { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 @keyframes marquee-r { from { transform:translateX(-50%); } to { transform:translateX(0); } }
 .prikbord-intro { max-width:640px; margin:1.6rem 0 0; font-size:.9rem; line-height:1.7; color:#aaa; text-wrap:pretty; }
-.acc-band { margin:2.2rem -5% 0; display:flex; gap:6px; height:460px; overflow:hidden; }
-.acc-panel { position:relative; flex:none; width:120px; height:100%; overflow:hidden; cursor:default; background:#141414; border:2px solid #2a2a2a; transition:width .7s cubic-bezier(.2,.8,.2,1), border-color .2s; }
-.acc-panel img { width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(.6) brightness(.85); transition:filter .6s ease; }
-.acc-panel.on { width:min(560px,52vw); border-color:var(--red); }
-.acc-panel.on img { object-fit:contain; filter:none; }
-.acc-panel:hover { border-color:var(--red); }
+.prikbord-head { display:flex; align-items:flex-end; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+.insta-btn { display:inline-flex; align-items:center; gap:12px; font-family:'Alfa Slab One',serif; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; color:var(--white); background:var(--red); border:3px solid var(--white); padding:14px 20px; box-shadow:5px 5px 0 var(--white); transition:box-shadow .15s, transform .15s; }
+.insta-btn:hover { box-shadow:8px 8px 0 var(--white); transform:translate(-3px,-3px); }
+.insta-btn:active { box-shadow:2px 2px 0 var(--white); transform:translate(0,0); }
+.sheet-grid { margin:2.4rem 0 0; display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+.sheet-cell { position:relative; aspect-ratio:1; overflow:hidden; background:#1a1a1a; outline:2px solid #2a2a2a; outline-offset:-2px; transition:outline-color .2s; }
+.sheet-cell img { width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(1) brightness(.72); transition:filter .35s ease, transform .5s ease; }
+.sheet-cell:hover { outline:3px solid var(--red); }
+.sheet-cell:hover img { filter:none; transform:scale(1.05); }
 @media (prefers-reduced-motion:reduce) {
   .marquee-row { animation:none; }
   .marquee-band { overflow-x:auto; }
-  .acc-band { overflow-x:auto; }
+  .sheet-cell:hover img { transform:none; }
 }
 .lightbox { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; padding:2rem; }
 .lightbox.active { display:flex; animation:fadeIn .3s ease; }
@@ -403,10 +406,15 @@ footer { text-align:center; padding:0; }
 <div class="checker-strip checker"></div>
 
 <section id="prikbord">
-  <div class="sec-title">Smash Patat <span>in Beeld</span></div>
-  <div class="divider"></div>
-  <p class="prikbord-intro">Van de foodtruck op festivals en events tot de burgers zelf. Beweeg over een foto om ze open te klappen, klik voor het volledige beeld.</p>
-  <div class="acc-band" id="foto-band"></div>
+  <div class="prikbord-head">
+    <div>
+      <div class="sec-title">Smash Patat <span>in Beeld</span></div>
+      <div class="divider"></div>
+    </div>
+    <a class="insta-btn" href="https://www.instagram.com/smash.patat" target="_blank" rel="noopener">Meer op Instagram &#8594;</a>
+  </div>
+  <p class="prikbord-intro">Van de foodtruck op festivals en events tot de burgers zelf. Klik op een foto voor het volledige beeld.</p>
+  <div class="sheet-grid" id="foto-band"></div>
 </section>
 
 <div class="lightbox" id="lightbox">
@@ -570,69 +578,25 @@ function hydrateLazyImages(root) {
   }, 3000);
 }
 
-function accPanel(photo, eager) {
+function sheetCell(photo, eager) {
   const attrs = eager
     ? 'src="' + photo + '" fetchpriority="high"'
     : 'data-src="' + photo + '" fetchpriority="low"';
-  return '<div class="acc-panel" onclick="openLightbox(\'' + photo + '\')">' +
+  return '<div class="sheet-cell" onclick="openLightbox(\'' + photo + '\')">' +
     '<img ' + attrs + ' alt="Smash Patat sfeerbeeld – smashburgers en foodtruck" decoding="async" ' +
     'onerror="this.parentElement.style.display=\'none\'"></div>';
 }
 
-// Accordeon: alle foto's als smalle stroken, één klapt open. Schuift traag opzij,
-// pauzeert bij hover.
-const accState = { i: 0, paused: false, dir: 1, timer: null, raf: null, last: 0 };
-
-function accSetActive(band, i) {
-  const panels = band.querySelectorAll('.acc-panel');
-  if (!panels.length) return;
-  accState.i = ((i % panels.length) + panels.length) % panels.length;
-  panels.forEach((p, idx) => p.classList.toggle('on', idx === accState.i));
-}
-
-function startAccordion(band) {
-  clearInterval(accState.timer);
-  cancelAnimationFrame(accState.raf);
-  const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const panels = band.querySelectorAll('.acc-panel');
-  accSetActive(band, 0);
-  if (reduce || panels.length < 2) return;
-
-  panels.forEach((p, idx) => p.addEventListener('mouseenter', () => accSetActive(band, idx)));
-  band.addEventListener('mouseenter', () => { accState.paused = true; });
-  band.addEventListener('mouseleave', () => { accState.paused = false; });
-
-  accState.timer = setInterval(() => {
-    if (accState.paused) return;
-    let next = accState.i;
-    while (next === accState.i) next = Math.floor(Math.random() * panels.length);
-    accSetActive(band, next);
-  }, 3000);
-
-  accState.last = performance.now();
-  const step = (t) => {
-    const dt = Math.min(t - accState.last, 60);
-    accState.last = t;
-    if (!accState.paused) {
-      const max = band.scrollWidth - band.clientWidth;
-      if (max > 1) {
-        let x = band.scrollLeft + accState.dir * (22 * dt / 1000);
-        if (x >= max) { x = max; accState.dir = -1; }
-        if (x <= 0) { x = 0; accState.dir = 1; }
-        band.scrollLeft = x;
-      }
-    }
-    accState.raf = requestAnimationFrame(step);
-  };
-  accState.raf = requestAnimationFrame(step);
+// Aantal kolommen in het contactblad. Bepaalt ook hoeveel foto's er passen:
+// we tonen altijd volle rijen.
+function sheetCols() {
+  if (window.matchMedia('(max-width:1100px)').matches) return 4;
+  return 6;
 }
 
 function renderMarquee() {
   const band = document.getElementById('foto-band');
   if (!band || !photos.length) return;
-
-  clearInterval(accState.timer);
-  cancelAnimationFrame(accState.raf);
 
   // Mobiel: één veegbare strip. Geen duplicaten, geen animatie — anders laadt de
   // browser de foto's in een getransformeerde track niet.
@@ -645,11 +609,13 @@ function renderMarquee() {
     return;
   }
 
-  band.dataset.mode = 'desktop';
-  band.className = 'acc-band';
-  band.innerHTML = photos.map((p, i) => accPanel(p, i < 6)).join('');
+  const cols = sheetCols();
+  band.dataset.mode = 'grid' + cols;
+  band.className = 'sheet-grid';
+  band.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+  const fit = Math.max(cols, Math.floor(photos.length / cols) * cols);
+  band.innerHTML = photos.slice(0, fit).map((p, i) => sheetCell(p, i < 12)).join('');
   hydrateLazyImages(band);
-  startAccordion(band);
 }
 
 // Wisselt van variant zodra de breakpoint wordt overgestoken (rotatie, resize)
@@ -657,7 +623,7 @@ let bandResizeTimer = null;
 window.addEventListener('resize', () => {
   const band = document.getElementById('foto-band');
   if (!band) return;
-  const want = isMobileBand() ? 'mobile' : 'desktop';
+  const want = isMobileBand() ? 'mobile' : 'grid' + sheetCols();
   if (band.dataset.mode === want) return;
   clearTimeout(bandResizeTimer);
   bandResizeTimer = setTimeout(renderMarquee, 150);
